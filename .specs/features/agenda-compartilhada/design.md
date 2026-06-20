@@ -582,19 +582,61 @@ Cada módulo segue o padrão: `routes.ts` + `service.ts` + `schema.ts` (Zod).
 - **Purpose**: Diálogo de confirmação reutilizável
 - **Props**: `title`, `message`, `confirmText`, `cancelText`, `onConfirm`
 
-### Frontend — Composable / Stores
+### Frontend — Server State vs Client State
 
-#### useAuth (composable + Pinia store)
+```
+TanStack Query (@tanstack/vue-query)     Pinia
+─────────────────────────────             ─────────────────
+Server State (dados da API)              Client State (sessão + UI)
+- appointments                          - user, isAuthenticated, role
+- professionals                         - login(), logout(), refreshToken()
+- services                              - UI flags (sidebar open, filters)
+- clients
+- blocks
+```
+
+#### TanStack Query — Composables de Domínio
+
+Cada domínio da API tem seu composable que encapsula `useQuery`:
+
+- `composables/use-appointments.ts` — `useAppointments(date)`, `useAppointmentsByProfessional(date, professionalId)`
+- `composables/use-user-profile.ts` — `useUserProfile(userId)`
+- (futuro) `composables/use-services.ts` — `useServices(professionalId)`
+- (futuro) `composables/use-clients.ts` — `useClients(query)`
+
+**SSR prefetch pattern** (páginas SSR):
+```ts
+// No setup da página:
+const queryClient = useQueryClient()
+await useAsyncData('key', () =>
+  queryClient.prefetchQuery({ queryKey: ['appointments', date], queryFn })
+)
+// Plugin faz dehydrate() no app:rendered
+// Cliente faz hydrate() no app:created
+// useQuery() com mesma key lê do cache sem fetch extra
+```
+
+#### Nuxt Plugin (`plugins/vue-query.ts`)
+
+- **SSR**: QueryClient isolado por requisição (Nuxt recria app por request)
+- **Dehydrate**: hook `app:rendered` → `dehydrate(queryClient)` → `nuxtApp.payload.vueQuery`
+- **Hydrate**: hook `app:created` → `hydrate(queryClient, nuxtApp.payload.vueQuery)`
+- **Client**: singleton QueryClient com `staleTime: 2min`, `gcTime: 5min`
+
+#### Pinia — Stores
+
+##### useAuth (Pinia store)
 - **State**: `user`, `isAuthenticated`, `role`
 - **Actions**: `login()`, `logout()`, `refreshToken()`
-- **Plugin**: Intercepta 401, chama refresh, repete requisição
+- **Interaction**: `logout()` chama `queryClient.clear()` para limpar cache do TanStack Query
 
-#### useCalendar (composable + Pinia store)
-- **State**: `currentWeekStart`, `appointments`, `blocks`, `professionalFilter`
-- **Actions**: `navigateWeek()`, `fetchWeek()`, `createAppointment()`, etc.
+##### useCalendar (Pinia store — *planejado*)
+- **State**: `currentWeekStart`, `professionalFilter` (apenas UI state)
+- **Actions**: `navigateWeek()`, `setFilter()`
+- *Dados reais de appointments/blocks vêm do TanStack Query*
 
 #### useSSE (composable)
-- **Behavior**: Connect `EventSource` → dispatch events to stores → reconnect on close
+- **Behavior**: Connect `EventSource` → invalida queries do TanStack Query → reconnect on close
 - **Auth**: Cookie-based (EventSource doesn't send headers)
 
 #### self-service store (Pinia)

@@ -156,6 +156,22 @@
 **Trade-off:** Proprietária não terá relatórios formatados no lançamento. Dashboard com dados brutos por enquanto.
 **Impact:** Removido de PROJECT.md v1 scope e ROADMAP Milestone 3. Move para v3 no roadmap.
 
+### AD-023: TanStack Query (Vue Query) para Server State (2026-06-20)
+
+**Decision:** Adotar `@tanstack/vue-query` para gerenciar todo o estado do servidor (Server State — agendamentos, profissionais, serviços, clientes). Pinia fica exclusivamente responsável pelo estado global local do cliente (Client State — `user`, `isAuthenticated`, `role`, flags de UI).
+**Reason:** 
+  - Separação clara de responsabilidades: TanStack Query gerencia cache, refetch, stale-while-revalidate e sincronização automática; Pinia gerencia apenas estado da sessão e UI.
+  - Evita duplicação de lógica de fetching (loading/error/success) que seria manual no Pinia.
+  - Cache query-first reduz requisições desnecessárias.
+  - SSR hydration nativa via `dehydrate`/`hydrate` com `useAsyncData`.
+**Trade-off:** Dependência adicional no frontend. Curva de aprendizado do TanStack Query (query keys, staleTime, gcTime, mutations).
+**Impact:**
+  - `@tanstack/vue-query` adicionado como dependência.
+  - Nuxt plugin `web/plugins/vue-query.ts` gerencia QueryClient: isolado por requisição SSR, dehydrate no `app:rendered`, hydrate no `app:created`.
+  - `web/composables/` — cada domínio tem seu composable (ex: `useAppointments`, `useUserProfile`).
+  - `useAuthStore.logout()` chama `queryClient.clear()` ao deslogar.
+  - Pinia `auth` store mantém apenas `user`, `isAuthenticated`, `role`, `login()`, `logout()`, `refreshToken()`.
+
 ### AD-022: Deploy apenas após validação com usuária final (2026-06-19)
 
 **Decision:** Deploy em Oracle Cloud ocorre somente após a proprietária do Studio Blessed validar o MVP em ambiente local (Docker Compose).

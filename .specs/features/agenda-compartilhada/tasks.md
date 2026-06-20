@@ -101,79 +101,114 @@ Tarefas de infraestrutura inicial: monorepo, containers, banco, esqueletos do Fa
 
 Fluxo completo de autenticação: schema de profissionais (apenas o necessário para login), JWT com cookies, RBAC, tela de login, store de usuário e proteção de rotas.
 
-### AUTH-01: Backend — Schema de professionals (campos de auth)
+### AUTH-01: Backend — Schema de professionals (campos de auth) ✅
 
 **Subtarefas:**
-- [ ] Criar no Drizzle a tabela `professionals` (id UUID, name, cpf, phone, passwordHash, role ENUM, isActive, createdAt, updatedAt)
-  - *Nota: workHoursStart/workHoursEnd serão adicionados no domínio Partner*
-- [ ] Criar Zod schemas de validação (telefone com normalize, CPF)
-- [ ] Gerar migration e aplicar
-- [ ] Adicionar índices únicos em cpf e phone
+- [x] Criar no Drizzle a tabela `professionals` (id serial, name, cpf, phone, passwordHash, role ENUM, isActive, createdAt, updatedAt)
+- [x] Criar Zod schemas de validação (telefone com normalize, CPF)
+- [x] Gerar migration e aplicar
+- [x] Adicionar índices únicos em cpf e phone
 
 ---
 
-### AUTH-02: Backend — Rotas de autenticação
+### AUTH-02: Backend — Rotas de autenticação ✅
 
 **Subtarefas:**
-- [ ] Estruturar módulo Fastify `api/src/modules/auth/` com routes + service + schema
-- [ ] Implementar `POST /api/auth/login` (valida telefone normalizado + bcrypt, gera tokens)
-- [ ] Implementar `POST /api/auth/refresh` (valida refresh_token, emite novos tokens)
-- [ ] Implementar `POST /api/auth/logout` (limpa cookies)
-- [ ] Configurar cookies HttpOnly, SameSite, Secure (prod)
+- [x] Estruturar módulo Fastify `api/src/modules/auth/` com routes + service + schema
+- [x] Implementar `POST /api/auth/login` (valida telefone normalizado + bcrypt, gera tokens)
+- [x] Implementar `POST /api/auth/refresh` (valida refresh_token, emite novos tokens)
+- [x] Implementar `POST /api/auth/logout` (limpa cookies)
+- [x] Configurar cookies HttpOnly, SameSite, Secure (prod)
   - access_token: 15 min
   - refresh_token: 30 dias
 
 ---
 
-### AUTH-03: Backend — JWT plugin + middleware de autorização
+### AUTH-03: Backend — JWT plugin + middleware de autorização ✅
 
 **Subtarefas:**
-- [ ] Criar plugin Fastify que decodifica JWT do cookie `access_token`
-- [ ] Injetar `request.user` com `{ professionalId, role }` em todas as rotas
-- [ ] Criar middleware `requireAuth` (verifica JWT → 401 se inválido/expirado)
-- [ ] Criar middleware `requireRole('OWNER')` (verifica role → 403 se negado)
-- [ ] Criar middleware `requireRole('OWNER', 'PARTNER')`
+- [x] Criar plugin Fastify que decodifica JWT do cookie `access_token`
+- [x] Injetar `request.user` com `{ professionalId, role }` em todas as rotas
+- [x] Criar middleware `requireAuth` (verifica JWT → 401 se inválido/expirado)
+- [x] Criar middleware `requireRole('OWNER')` (verifica role → 403 se negado)
+- [x] Criar middleware `requireRole('OWNER', 'PARTNER')`
 
 ---
 
-### AUTH-04: Backend — RBAC com CASL.js
+### AUTH-04: Backend — RBAC com CASL.js ✅
 
 **Subtarefas:**
-- [ ] Instalar `@casl/ability`
-- [ ] Implementar fábrica `createAbility(role, professionalId)` com AbilityBuilder
-- [ ] **OWNER:** `can('manage', 'all')`
-- [ ] **PARTNER:**
+- [x] Instalar `@casl/ability`
+- [x] Implementar fábrica `createAbility(role, professionalId)` com AbilityBuilder
+- [x] **OWNER:** `can('manage', 'all')`
+- [x] **PARTNER:**
   - `can('read', 'Appointment')` (vê horários ocupados de todas)
   - `can(['create','update','cancel','setStatus'], 'Appointment', { professionalId: ownId })`
   - `can('read', 'Client')`
   - `can(['read','create','update','delete'], 'Service', { professionalId: ownId })`
   - `can(['read','update'], 'Professional', { id: ownId })`
   - `can(['read','create','delete'], 'Block', { professionalId: ownId })`
-- [ ] Integrar ability nos services (service layer oculta `price` se `professionalId !== ownId`)
+- [x] Integrar ability nos services (service layer oculta `price` se `professionalId !== ownId`) — *pendente implementação dos services*
 
 ---
 
-### AUTH-05: Frontend — Tela de login
+### AUTH-05: Frontend — Tela de login ✅
 
 **Subtarefas:**
-- [ ] Criar página `/login` com formulário (telefone + senha)
-- [ ] Criar componente `PhoneInput` com máscara (XX) XXXXX-XXXX
-- [ ] Criar utility `web/utils/phone.ts` (mask, unmask, normalize)
-- [ ] Validar formulário com Zod
-- [ ] Exibir erro genérico para credenciais inválidas
-- [ ] Redirecionar para `/dashboard/agenda` após login
+- [x] Criar página `/login` com formulário (telefone + senha)
+- [x] Criar componente `PhoneInput` com máscara (XX) XXXXX-XXXX — *embutido inline na página*
+- [x] Criar utility `web/utils/phone.ts` (mask, unmask, normalize)
+- [x] Validar formulário com Zod
+- [x] Exibir erro genérico para credenciais inválidas
+- [x] Redirecionar para `/dashboard/agenda` após login
 
 ---
 
-### AUTH-06: Frontend — Store de auth + proteção de rotas
+### AUTH-06: Frontend — Store de auth + proteção de rotas ✅
 
 **Subtarefas:**
-- [ ] Criar store Pinia `auth` (`user`, `isAuthenticated`, `role`, `login()`, `logout()`, `refreshToken()`)
-- [ ] Criar plugin Nuxt que intercepta 401, chama refresh, repete requisição
-- [ ] Criar middleware `auth` (redireciona para `/login` se não autenticado)
-- [ ] Criar middleware `owner` (redireciona se role não for OWNER)
-- [ ] Criar wrapper API `web/utils/api.ts` (get, post, put, patch, delete com base URL)
-- [ ] Componente `ConfirmDialog` reutilizável
+- [x] Criar store Pinia `auth` (`user`, `isAuthenticated`, `role`, `login()`, `logout()`, `refreshToken()`)
+- [x] Criar plugin Nuxt que intercepta 401, chama refresh, repete requisição — *embutido em `web/utils/api.ts`*
+- [x] Criar middleware `auth` (redireciona para `/login` se não autenticado)
+- [ ] Criar middleware `owner` (redireciona se role não for OWNER) — *pendente*
+- [x] Criar wrapper API `web/utils/api.ts` (get, post, put, patch, delete com base URL)
+- [ ] Componente `ConfirmDialog` reutilizável — *pendente*
+
+---
+
+## Domínio: TanStack Query (Server State)
+
+Configuração do TanStack Query no frontend para gerenciar estado do servidor, com SSR hydration e composables por domínio.
+
+### TANSTACK-01: Frontend — Plugin Vue Query com SSR hydration
+
+**Subtarefas:**
+- [x] Instalar `@tanstack/vue-query`
+- [x] Criar `web/plugins/vue-query.ts` com QueryClient isolado por requisição SSR
+- [x] Implementar dehydrate no hook `app:rendered`
+- [x] Implementar hydrate no hook `app:created`
+
+### TANSTACK-02: Frontend — Composables de domínio
+
+**Subtarefas:**
+- [x] Criar `web/composables/use-appointments.ts` — `useAppointments(date)`, `useAppointmentsByProfessional(date, professionalId)`
+- [x] Criar `web/composables/use-user-profile.ts` — `useUserProfile(userId)`
+- [ ] Criar `web/composables/use-services.ts` — *pendente*
+- [ ] Criar `web/composables/use-clients.ts` — *pendente*
+
+### TANSTACK-03: Frontend — Integração com Pinia auth store
+
+**Subtarefas:**
+- [x] `useAuthStore.logout()` chama `queryClient.clear()` para limpar cache
+- [x] API wrapper (`web/utils/api.ts`) faz refresh automático em 401
+- [ ] SSE events invalidam queries do TanStack Query — *pendente implementação SSE*
+
+### TANSTACK-04: Frontend — SSR prefetch pattern
+
+**Subtarefas:**
+- [x] Implementar `useAsyncData` + `queryClient.prefetchQuery` na página `dashboard/agenda.vue`
+- [x] Plugin dehydrate/hydrate captura e restaura o estado automaticamente
+- [ ] Aplicar pattern nas demais páginas SSR — *pendente*
 
 ---
 
