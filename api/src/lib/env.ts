@@ -11,11 +11,11 @@ const envSchema = z.object({
   EVOLUTION_API_URL: z.string().url().optional(),
   EVOLUTION_API_KEY: z.string().optional(),
 
-  // Seed
-  SEED_ADMIN_NAME: z.string().default("Administrador"),
-  SEED_ADMIN_PHONE: z.string(),
-  SEED_ADMIN_CPF: z.string(),
-  SEED_ADMIN_PASSWORD: z.string().min(6),
+  // Seed (only required when running seed)
+  SEED_ADMIN_NAME: z.string().default("Administrador").optional(),
+  SEED_ADMIN_PHONE: z.string().optional(),
+  SEED_ADMIN_CPF: z.string().optional(),
+  SEED_ADMIN_PASSWORD: z.string().min(6).optional(),
 });
 
 function loadEnv() {

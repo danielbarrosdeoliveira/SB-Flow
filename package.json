@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev:api": "npm run dev -w api",
+    "dev:api:seed": "npm run db:seed -w api",
     "dev:web": "npm run dev -w web",
     "build:api": "npm run build -w api",
     "build:web": "npm run build -w web",
