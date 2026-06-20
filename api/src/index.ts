@@ -2,6 +2,8 @@ import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import Fastify from "fastify";
 import { env } from "./lib/env.js";
+import { jwtPlugin } from "./lib/plugins/auth.js";
+import { authRoutes } from "./modules/auth/routes.js";
 
 const app = Fastify({
   logger: {
@@ -18,6 +20,8 @@ await app.register(cookie, {
   secret: env.JWT_SECRET,
 });
 
+await app.register(jwtPlugin);
+
 app.setErrorHandler((error: Error & { statusCode?: number }, _request, reply) => {
   app.log.error(error);
   const statusCode = error.statusCode ?? 500;
@@ -30,6 +34,8 @@ app.setErrorHandler((error: Error & { statusCode?: number }, _request, reply) =>
 app.get("/api/health", async () => {
   return { status: "ok", timestamp: new Date().toISOString() };
 });
+
+await app.register(authRoutes);
 
 try {
   await app.listen({ port: env.API_PORT, host: "0.0.0.0" });

@@ -1,6 +1,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
+  modules: ["@pinia/nuxt"],
   routeRules: {
     "/": { prerender: true },
     "/agendar/**": { ssr: false },
