@@ -18,7 +18,10 @@ export const useAuthStore = defineStore("auth", () => {
   const role = computed(() => user.value?.role ?? null);
 
   async function login(phone: string, password: string) {
-    const data = await api.post<LoginResponse>("/api/auth/login", { phone, password });
+    const data = await api.post<LoginResponse>("/api/auth/login", {
+      phone,
+      password,
+    });
     user.value = data.user;
   }
 
@@ -37,6 +40,10 @@ export const useAuthStore = defineStore("auth", () => {
       await api.post("/api/auth/logout");
     } finally {
       user.value = null;
+      // Limpa todo cache do TanStack Query ao deslogar
+      const { useQueryClient } = await import("@tanstack/vue-query");
+      const queryClient = useQueryClient();
+      queryClient.clear();
     }
   }
 
