@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sbflow
+      POSTGRES_PASSWORD: sbflow
+      POSTGRES_DB: sbflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sbflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./api
+      target: runner
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgres://sbflow:sbflow@db:5432/sbflow
+      JWT_SECRET: ${JWT_SECRET:-change-me-dev}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
+      NODE_ENV: ${NODE_ENV:-development}
+      API_PORT: "3001"
+      WEB_URL: ${WEB_URL:-http://localhost:3000}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./web
+      target: runner
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NUXT_PUBLIC_API_URL: ${API_URL:-http://localhost:3001}
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
