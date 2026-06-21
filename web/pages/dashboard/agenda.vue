@@ -213,6 +213,7 @@
 import { useQueryClient, useQuery } from "@tanstack/vue-query";
 import { api } from "../../utils/api";
 import { useAuthStore } from "../../stores/auth";
+import { useSSE } from "../../composables/use-sse";
 import type { Appointment } from "../../composables/use-appointments";
 
 definePageMeta({
@@ -241,6 +242,11 @@ const todayStr = computed(() => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 });
 const selectedDate = ref(todayStr.value);
+
+// SSE — real-time updates
+const { connect: connectSSE, disconnect: disconnectSSE } = useSSE();
+onMounted(() => connectSSE());
+onUnmounted(() => disconnectSSE());
 
 // Appointments
 const {
