@@ -12,10 +12,11 @@
 | Fundação | FOUNDATION-01 a 05 | 5/5 | 100% |
 | Auth | AUTH-01 a 06 | 6/6 | 100% |
 | TanStack Query | TANSTACK-01 a 04 | 3/4 | 75% |
-| Partner | PARTNER-01 a 05 | 0/5 | 0% |
+| Partner (backend) | PARTNER-01 a 03 | 3/3 | 100% |
+| Partner (frontend) | PARTNER-04 a 05 | 0/2 | 0% |
 | Services | SERVICES-01 a 03 | 0/3 | 0% |
 | Clients | CLIENTS-01 a 03 | 0/3 | 0% |
-| Booking | BOOKING-01 a 12 | 0/12 | 0% |
+| Booking | BOOKING-01 a 14 | 0/14 | 0% |
 
 ---
 
@@ -50,8 +51,9 @@
 - [x] Configurar runtimeConfig (API URL)
 
 ### FOUNDATION-05: Schema + Migrations + Seed ✅
-- [x] Criar schema Drizzle `professionals`
-- [x] Gerar migration e aplicar
+- [x] Criar schema Drizzle `professionals` (com workHoursStart/workHoursEnd)
+- [x] Criar schema Drizzle `blocks`
+- [x] Gerar migrations e aplicar
 - [x] Criar script de seed com conta OWNER admin
 - [x] Rodar seed e validar no banco
 
@@ -101,7 +103,7 @@
 
 ---
 
-## Execução — Fase 3 (TanStack Query) ✅
+## Execução — Fase 3 (TanStack Query) 🟡
 
 ### TANSTACK-01: Plugin Vue Query com SSR hydration ✅
 - [x] `@tanstack/vue-query` instalado
@@ -127,15 +129,103 @@
 
 ---
 
+## Execução — Fase 4 (Partner Backend) ✅
+
+### PARTNER-01: Schema professionals completo ✅
+- [x] Schema já inclui `workHoursStart` (08:00) e `workHoursEnd` (20:00) com defaults
+- [x] Migration 0000 já aplicada com esses campos
+
+### PARTNER-02: CRUD de profissionais ✅
+- [x] Módulo `api/src/modules/partner/` (routes + service + schema)
+- [x] `GET /api/professionals` — OWNER: todas; PARTNER: só própria
+- [x] `GET /api/professionals/:id` — com RBAC
+- [x] `POST /api/professionals` — OWNER only, valida CPF + telefone
+- [x] `PUT /api/professionals/:id` — OWNER: qualquer campo; PARTNER: só nome/phone/workHours
+- [x] `PATCH /api/professionals/:id/toggle-active` — OWNER only
+- [x] Validação de CPF (dígitos verificadores) e telefone (normalize)
+
+### PARTNER-03: CRUD de bloqueios de agenda ✅
+- [x] Tabela `blocks` no Drizzle (migration 0001)
+- [x] Módulo `api/src/modules/partner/blocks/` (routes + service + schema)
+- [x] `GET /api/blocks` — filtro por professional_id, start, end
+- [x] `POST /api/blocks` — OWNER: qualquer; PARTNER: só próprio
+- [x] `DELETE /api/blocks/:id`
+- [x] Atalho "dia inteiro" (00:00-23:45)
+- [x] **EDGE-02**: overlap com block existente → warning
+- [x] **EDGE-03 (parcial)**: estrutura preparada para appointments check
+
+---
+
+## Execução — Fase 5 (Partner Frontend) ⬜
+
+### PARTNER-04: Tela de gestão de profissionais ⬜
+- [ ] Criar página `/dashboard/profissionais` (OWNER only)
+- [ ] Listar profissionais com status (ativo/inativo)
+- [ ] Modal de criação
+- [ ] Modal de edição
+- [ ] Botão ativar/desativar
+
+### PARTNER-05: Bloqueios de agenda ⬜
+- [ ] Formulário `BlockForm` (data, hora, "dia inteiro", razão)
+- [ ] Integrar no calendário do dashboard (Booking)
+
+---
+
+## Execução — Fase 6 (Services) ⬜
+
+### SERVICES-01: Schema de services ⬜
+- [ ] Criar tabela `services` no Drizzle
+
+### SERVICES-02: CRUD de serviços ⬜
+- [ ] Módulo `api/src/modules/services/` (routes + service + schema)
+- [ ] `GET /api/services`, `POST`, `PUT`, `DELETE`
+
+### SERVICES-03: Frontend ⬜
+- [ ] Página `/dashboard/servicos`
+
+---
+
+## Execução — Fase 6 (Clients) ⬜
+
+### CLIENTS-01: Schema de clients ⬜
+- [ ] Criar tabela `clients` no Drizzle
+
+### CLIENTS-02: CRUD de clientes ⬜
+- [ ] Módulo `api/src/modules/clients/` (routes + service + schema)
+
+### CLIENTS-03: Frontend ⬜
+- [ ] Página `/dashboard/clientes`
+
+---
+
+## Execução — Fase 7 (Booking) ⬜
+
+### BOOKING-01 a BOOKING-14 ⬜
+- [ ] Schema appointments + CRUD
+- [ ] Transação com checagem de conflito
+- [ ] Cancelar e alterar status
+- [ ] SSE (tempo real)
+- [ ] Envio/verificação código WhatsApp
+- [ ] Listagens públicas booking
+- [ ] Criação/cancelamento pelo cliente
+- [ ] Landing page (SSR)
+- [ ] Store de booking
+- [ ] Fluxo autoatendimento (multi-step)
+- [ ] Meus agendamentos (cliente)
+- [ ] Calendário do dashboard
+- [ ] Páginas do dashboard
+
+---
+
 ## Próximas Tasks
 
 | Ordem | Task | Depende de | Status |
 |-------|------|-----------|--------|
-| 1 | PARTNER-01: Schema professionals completo | AUTH-01 | Pendente |
-| 2 | PARTNER-02: CRUD de profissionais | PARTNER-01 | Pendente |
-| 3 | SERVICES-01: Schema + CRUD serviços | AUTH-04 | Pendente |
-| 4 | CLIENTS-01: Schema + CRUD clientes | AUTH-04 | Pendente |
-| 5 | BOOKING-01: Schema appointments + CRUD | PARTNER-02, SERVICES-01, CLIENTS-01 | Pendente |
+| 1 | TANSTACK-02: `use-services.ts` + `use-clients.ts` | — | Pendente |
+| 2 | SERVICES-01: Schema services | AUTH-04 | Pendente |
+| 3 | CLIENTS-01: Schema clients | AUTH-04 | Pendente |
+| 4 | PARTNER-04: Frontend profissionais | AUTH-06 | Pendente |
+| 5 | PARTNER-05: Frontend bloqueios | PARTNER-03 | Pendente |
 
 ---
 
