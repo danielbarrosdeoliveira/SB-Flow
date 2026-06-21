@@ -16,7 +16,7 @@
 | Partner (frontend) | PARTNER-04 a 05 | 2/2 | 100% |
 | Services | SERVICES-01 a 03 | 3/3 | 100% |
 | Clients | CLIENTS-01 a 03 | 3/3 | 100% |
-| Booking | BOOKING-01 a 14 | 5/13 | 38% |
+| Booking | BOOKING-01 a 14 | 6/13 | 46% |
 
 ---
 
@@ -230,9 +230,21 @@
 ### BOOKING-06: Envio/verificação código WhatsApp ❌ Cancelado
 - Cancelado por decisão da proprietária (AD-025). Cliente agenda sem verificação; se errar telefone, a proprietária corrige.
 
-### BOOKING-07 a BOOKING-14 ⬜
-- [ ] Listagens públicas booking
-- [ ] Criação/cancelamento pelo cliente
+### BOOKING-07: Listagens públicas booking + criação/cancelamento pelo cliente ✅
+- [x] Backend: `GET /api/booking/professionals` — profissionais ativas
+- [x] Backend: `GET /api/booking/professionals/:id/services` — serviços da profissional
+- [x] Backend: `GET /api/booking/professionals/:id/slots?date=` — horários disponíveis (30min slots, exclui ocupados/bloqueios)
+- [x] Backend: `POST /api/booking/appointments` — criar agendamento (cria cliente se novo)
+- [x] Backend: `GET /api/booking/appointments?phone=` — listar agendamentos do cliente
+- [x] Backend: `POST /api/booking/appointments/:id/cancel` — cancelar pelo cliente
+- [x] Frontend: Página `/agendar` com fluxo multi-step (dados → profissional → serviço → data/hora → confirmar)
+- [x] Frontend: Seletor de horários com grade visual (disponível/indisponível)
+- [x] Frontend: Confirmação sem verificação WhatsApp (AD-025)
+- [x] SSE broadcast ao criar agendamento público
+
+### BOOKING-08 a BOOKING-14 ⬜
+- [ ] Landing page (SSR)
+- [ ] Store de booking
 - [ ] Landing page (SSR)
 - [ ] Store de booking
 - [ ] Fluxo autoatendimento (multi-step)
@@ -246,8 +258,8 @@
 
 | Ordem | Task | Depende de | Status |
 |-------|------|-----------|--------|
-| 1 | BOOKING-07: Listagens públicas booking | BOOKING-05 | Pendente |
-| 2 | BOOKING-08: Criação/cancelamento pelo cliente | BOOKING-07 | Pendente |
+| 1 | BOOKING-07: Listagens públicas booking + criação/cancelamento | BOOKING-05 | ✅ Concluído |
+| 2 | BOOKING-08: Landing page (SSR) | BOOKING-07 | Pendente |
 
 ---
 

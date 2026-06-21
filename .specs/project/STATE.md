@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-06-20T00:00:00Z
-**Current Work:** AD-025 registrado — verificação WhatsApp removida do v1. Docs atualizados (PROJECT, ROADMAP, spec, TASKS).
+**Current Work:** BOOKING-07 — autoatendimento do cliente: backend público + frontend multi-step em /agendar
 
 ---
 
