@@ -5,6 +5,7 @@ import { ZodError } from "zod";
 import { env } from "./lib/env.js";
 import { jwtPlugin } from "./lib/plugins/auth.js";
 import { authRoutes } from "./modules/auth/routes.js";
+import { blocksRoutes } from "./modules/partner/blocks/routes.js";
 import { partnerRoutes } from "./modules/partner/routes.js";
 
 const app = Fastify({
@@ -35,6 +36,7 @@ app.setErrorHandler((error: Error & { statusCode?: number }, _request, reply) =>
       statusCode: 400,
     });
   }
+
   app.log.error(error);
   const statusCode = error.statusCode ?? 500;
   reply.status(statusCode).send({
@@ -49,6 +51,7 @@ app.get("/api/health", async () => {
 
 await app.register(authRoutes);
 await app.register(partnerRoutes);
+await app.register(blocksRoutes);
 
 try {
   await app.listen({ port: env.API_PORT, host: "0.0.0.0" });
