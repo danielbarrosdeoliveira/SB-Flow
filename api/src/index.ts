@@ -1,9 +1,11 @@
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import Fastify from "fastify";
+import { ZodError } from "zod";
 import { env } from "./lib/env.js";
 import { jwtPlugin } from "./lib/plugins/auth.js";
 import { authRoutes } from "./modules/auth/routes.js";
+import { partnerRoutes } from "./modules/partner/routes.js";
 
 const app = Fastify({
   logger: {
@@ -20,9 +22,19 @@ await app.register(cookie, {
   secret: env.JWT_SECRET,
 });
 
-await app.register(jwtPlugin);
+await jwtPlugin(app);
 
 app.setErrorHandler((error: Error & { statusCode?: number }, _request, reply) => {
+  if (error instanceof ZodError) {
+    return reply.status(400).send({
+      error: "Dados inválidos",
+      details: error.issues.map((i) => ({
+        field: i.path.join("."),
+        message: i.message,
+      })),
+      statusCode: 400,
+    });
+  }
   app.log.error(error);
   const statusCode = error.statusCode ?? 500;
   reply.status(statusCode).send({
@@ -36,6 +48,7 @@ app.get("/api/health", async () => {
 });
 
 await app.register(authRoutes);
+await app.register(partnerRoutes);
 
 try {
   await app.listen({ port: env.API_PORT, host: "0.0.0.0" });

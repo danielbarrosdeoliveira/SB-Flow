@@ -1,4 +1,4 @@
-import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import jwt from "jsonwebtoken";
 import { env } from "../env.js";
 
@@ -15,7 +15,7 @@ export async function jwtPlugin(app: FastifyInstance) {
   app.decorateRequest("user", undefined);
 
   app.addHook("preHandler", async (request: FastifyRequest) => {
-    const token = request.cookies.access_token;
+    const token = request.cookies?.access_token;
     if (!token) return;
 
     try {
@@ -25,7 +25,7 @@ export async function jwtPlugin(app: FastifyInstance) {
       };
       request.user = payload;
     } catch {
-      // Invalid token — user stays undefined
+      // Invalid or expired token
     }
   });
 }
