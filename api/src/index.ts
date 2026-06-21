@@ -4,6 +4,7 @@ import Fastify from "fastify";
 import { ZodError } from "zod";
 import { env } from "./lib/env.js";
 import { jwtPlugin } from "./lib/plugins/auth.js";
+import { appointmentsRoutes } from "./modules/appointments/routes.js";
 import { authRoutes } from "./modules/auth/routes.js";
 import { clientsRoutes } from "./modules/clients/routes.js";
 import { blocksRoutes } from "./modules/partner/blocks/routes.js";
@@ -56,6 +57,7 @@ await app.register(partnerRoutes);
 await app.register(blocksRoutes);
 await app.register(servicesRoutes);
 await app.register(clientsRoutes);
+await app.register(appointmentsRoutes);
 
 try {
   await app.listen({ port: env.API_PORT, host: "0.0.0.0" });
