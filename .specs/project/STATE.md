@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-06-20T00:00:00Z
-**Current Work:** BOOKING-05 — SSE tempo real: backend + frontend, broadcasts em appointments e blocks
+**Current Work:** AD-025 registrado — verificação WhatsApp removida do v1. Docs atualizados (PROJECT, ROADMAP, spec, TASKS).
 
 ---
 
@@ -14,12 +14,11 @@
 **Trade-off:** Menos isolamento entre frontend e backend, sem caching de build compartilhado.
 **Impact:** Configurações de TypeScript e Biome na raiz com subprojetos referenciando.
 
-### AD-002: WhatsApp Bot Conversacional postergado para v2 (2026-06-19)
+### AD-002: WhatsApp Bot Conversacional postergado para v2 (2026-06-19) — 🔄 SUPERSEDED by AD-025
 
-**Decision:** Bot de WhatsApp conversacional não será implementado no v1. Apenas envio de código de verificação via EvolutionAPI entra no v1.
-**Reason:** Complexidade adicional (fluxo conversacional, webhooks) atrasaria a entrega do problema central (agenda compartilhada).
-**Trade-off:** Clientes continuarão agendando via WhatsApp humano ou autoatendimento web.
-**Impact:** v1 inclui autoatendimento web do cliente + verificação WhatsApp mínima (código). Bot conversacional fica para v2.
+**Decision original:** Bot de WhatsApp conversacional não será implementado no v1. Apenas envio de código de verificação via EvolutionAPI entra no v1.
+**Reason original:** Complexidade adicional (fluxo conversacional, webhooks) atrasaria a entrega do problema central (agenda compartilhada).
+**Status:** Totalmente supersedida por AD-025. Nenhuma integração WhatsApp/EvolutionAPI no v1.
 
 ### AD-003: Foco inicial na agenda compartilhada (2026-06-19)
 
@@ -48,12 +47,11 @@
 **Trade-off original:** Maior complexidade no backend comparado a polling simples.
 **Status:** Decisão de *ter* tempo real mantida. AD-017 refinou o *como*: SSE (não WebSocket), apenas no dashboard (cliente usa REST).
 
-### AD-007: Autoatendimento do cliente antecipado para v1 (2026-06-19)
+### AD-007: Autoatendimento do cliente antecipado para v1 (2026-06-19) — 🔄 SUPERSEDED by AD-025
 
-**Decision:** Cliente pode agendar e cancelar próprios horários via link público, com verificação de telefone via WhatsApp.
-**Reason:** Sua esposa identificou que o maior gargalo hoje é o tempo gasto respondendo WhatsApp para agendar clientes. Autoatendimento resolve isso.
-**Trade-off:** Aumenta escopo do v1 significativamente. Depende de integração EvolutionAPI (mesmo que mínima).
-**Impact:** Spec precisa de novas stories P1 para fluxo do cliente. EvolutionAPI entra como dependência v1 (apenas envio de código).
+**Decision original:** Cliente pode agendar e cancelar próprios horários via link público, com verificação de telefone via WhatsApp.
+**Reason original:** Sua esposa identificou que o maior gargalo hoje é o tempo gasto respondendo WhatsApp para agendar clientes. Autoatendimento resolve isso.
+**Status:** Autoatendimento mantido no v1, mas sem verificação WhatsApp. Cliente agenda com telefone sem verificação; se errar o número, a proprietária corrige. AD-025 documenta a decisão.
 
 ### AD-008: Seed de dados na primeira migração (2026-06-19)
 
@@ -187,6 +185,20 @@
   - `web/composables/` — cada domínio tem seu composable (ex: `useAppointments`, `useUserProfile`).
   - `useAuthStore.logout()` chama `queryClient.clear()` ao deslogar.
   - Pinia `auth` store mantém apenas `user`, `isAuthenticated`, `role`, `login()`, `logout()`, `refreshToken()`.
+
+### AD-025: Verificação WhatsApp removida do v1 (2026-06-20)
+
+**Decision:** Autoatendimento do cliente não terá verificação de telefone via WhatsApp/EvolutionAPI. O cliente informa o telefone diretamente, sem código de verificação. Se o número for cadastrado errado, a proprietária (OWNER) corrige manualmente no cadastro do cliente.
+**Reason:** A proprietária (usuária OWNER) decidiu que verificação WhatsApp adiciona complexidade desnecessária. Se o cliente errar o telefone, ela mesma resolve — é mais simples que depender da EvolutionAPI.
+**Trade-off:** Clientes podem digitar telefone incorreto (próprio ou de terceiros). A proprietária precisa monitorar e corrigir. Não há garantia de que o telefone pertence ao cliente.
+**Impact:**
+  - EvolutionAPI removida das dependências do v1
+  - Container `evolution-api` removido do docker-compose.yml
+  - Fluxo de autoatendimento simplificado: cliente informa telefone → seleciona profissional/serviço → escolhe horário → confirma
+  - AD-002 e AD-007 parcialmente supersedidos
+  - BOOKING-06 (envio/verificação código WhatsApp) cancelada
+  - Normalização de telefone mantida (consistência de dados)
+  - Proprietária pode editar telefone do cliente no dashboard
 
 ### AD-022: Deploy apenas após validação com usuária final (2026-06-19)
 

@@ -16,7 +16,7 @@
 | Partner (frontend) | PARTNER-04 a 05 | 2/2 | 100% |
 | Services | SERVICES-01 a 03 | 3/3 | 100% |
 | Clients | CLIENTS-01 a 03 | 3/3 | 100% |
-| Booking | BOOKING-01 a 14 | 5/14 | 36% |
+| Booking | BOOKING-01 a 14 | 5/13 | 38% |
 
 ---
 
@@ -227,8 +227,10 @@
 - [x] Composable `useSSE` no frontend com reconexão automática
 - [x] Agenda page conecta SSE e invalida queries em tempo real
 
-### BOOKING-06 a BOOKING-14 ⬜
-- [ ] Envio/verificação código WhatsApp
+### BOOKING-06: Envio/verificação código WhatsApp ❌ Cancelado
+- Cancelado por decisão da proprietária (AD-025). Cliente agenda sem verificação; se errar telefone, a proprietária corrige.
+
+### BOOKING-07 a BOOKING-14 ⬜
 - [ ] Listagens públicas booking
 - [ ] Criação/cancelamento pelo cliente
 - [ ] Landing page (SSR)
@@ -244,9 +246,8 @@
 
 | Ordem | Task | Depende de | Status |
 |-------|------|-----------|--------|
-| 1 | TANSTACK-02: `use-services.ts` + `use-clients.ts` | — | ✅ Concluído |
-| 2 | PARTNER-05: Frontend bloqueios | PARTNER-03 | ✅ Concluído |
-| 3 | BOOKING-05: SSE (tempo real) | BOOKING-04 | ✅ Concluído |
+| 1 | BOOKING-07: Listagens públicas booking | BOOKING-05 | Pendente |
+| 2 | BOOKING-08: Criação/cancelamento pelo cliente | BOOKING-07 | Pendente |
 
 ---
 

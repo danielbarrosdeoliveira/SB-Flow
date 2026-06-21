@@ -39,7 +39,6 @@
 - @fastify/cookie (cookies HTTP-Only para auth + SSE)
 - @fastify/cors (CORS entre Nuxt e Fastify)
 - jsonwebtoken (JWT access + refresh tokens)
-- EvolutionAPI (verificação de telefone via WhatsApp)
 
 ## Scope
 
@@ -49,7 +48,7 @@
 - Cadastro de Clientes (nome + telefone, sem email/senha)
 - Agenda compartilhada — proprietária vê e gerencia agendas de todas; autônoma parceira vê horários ocupados de todas mas gerencia só a própria
 - Bloqueio de agenda individual (cada uma bloqueia a própria)
-- **Autoatendimento do cliente** — link público, login por telefone com verificação WhatsApp, escolha de profissional/serviço/horário, cancelamento próprio
+- **Autoatendimento do cliente** — link público, informa telefone, escolhe profissional/serviço/horário, cancela próprio agendamento
 - Dashboard individual (autônoma parceira: própria agenda, seus clientes, seus valores)
 - Dashboard da proprietária (visão consolidada financeira, agenda de todas, clientes)
 - Script de seed para primeiro uso (OWNER admin)
@@ -72,14 +71,13 @@
 
 ### Arquitetura de Containers
 
-4 containers na mesma rede Docker:
+3 containers na mesma rede Docker:
 
 | Container        | Função                          | Expõe porta |
 | ---------------- | ------------------------------- | ----------- |
 | `db`             | PostgreSQL nativo                | 5432        |
 | `backend`        | Fastify API + regras de negócio  | 3001        |
 | `frontend`       | Nuxt 3 (SSR landing + SPA dash) | 3000        |
-| `evolution-api`  | EvolutionAPI WhatsApp            | 8080        |
 
 ### Database
 
@@ -95,7 +93,6 @@ Nuxt 3 com `routeRules`:
 ### Normalização de Telefone
 
 - **Banco:** Armazenar apenas dígitos (DDD + número), 10-11 chars. Sem prefixo 55.
-- **EvolutionAPI:** Backend adiciona prefixo `55` dinamicamente nas requisições.
 - **Zod:** `z.string().transform()` para limpar não-dígitos e remover 55/+55 do payload.
 - **Frontend:** Máscara visual apenas. Limpa dados antes do envio.
 

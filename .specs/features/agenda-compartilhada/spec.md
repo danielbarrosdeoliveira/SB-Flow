@@ -213,21 +213,19 @@ No Studio Blessed, a proprietária e uma autônoma parceira que aluga espaço di
 
 ### P1: Autoatendimento — Agendamento pelo Cliente ⭐ MVP
 
-**User Story**: Como cliente, quero acessar um link público, informar meu telefone, receber um código de verificação no WhatsApp e agendar um horário com a profissional e serviço que desejo.
+**User Story**: Como cliente, quero acessar um link público, informar meu telefone e agendar um horário com a profissional e serviço que desejo.
 
 **Why P1**: Sua esposa identificou que o maior gargalo é o tempo gasto respondendo WhatsApp para agendar. Autoatendimento libera esse tempo.
 
 **Acceptance Criteria**:
 
 1. WHEN cliente acessa o link público THEN sistema SHALL exibir página com campo para informar telefone
-2. WHEN cliente informa telefone válido THEN sistema SHALL enviar código de verificação via WhatsApp (EvolutionAPI) e solicitar confirmação
-3. WHEN cliente informa código incorreto THEN sistema SHALL exibir erro e permitir reenviar código (com cooldown de 60s)
-4. WHEN cliente confirma telefone com código válido THEN sistema SHALL exibir seleção de profissional (lista de profissionais ativas)
-5. WHEN cliente seleciona profissional THEN sistema SHALL exibir serviços daquela profissional com nome, duração e valor
-6. WHEN cliente seleciona serviço THEN sistema SHALL exibir calendário com horários disponíveis (excluindo bloqueios e agendamentos ocupados)
-7. WHEN cliente seleciona horário THEN sistema SHALL exibir resumo (profissional, serviço, valor, data/hora) e botão "Confirmar Agendamento"
-8. WHEN cliente confirma THEN sistema SHALL criar agendamento, vincular cliente (criar se novo) e exibir confirmação na tela
-9. WHEN horário selecionado é bloqueado ou ocupado entre a seleção e a confirmação THEN sistema SHALL avisar e sugerir horário alternativo
+2. WHEN cliente informa telefone válido THEN sistema SHALL exibir seleção de profissional (lista de profissionais ativas)
+3. WHEN cliente seleciona profissional THEN sistema SHALL exibir serviços daquela profissional com nome, duração e valor
+4. WHEN cliente seleciona serviço THEN sistema SHALL exibir calendário com horários disponíveis (excluindo bloqueios e agendamentos ocupados)
+5. WHEN cliente seleciona horário THEN sistema SHALL exibir resumo (profissional, serviço, valor, data/hora) e botão "Confirmar Agendamento"
+6. WHEN cliente confirma THEN sistema SHALL criar agendamento, vincular cliente (criar se novo) e exibir confirmação na tela
+7. WHEN horário selecionado é bloqueado ou ocupado entre a seleção e a confirmação THEN sistema SHALL avisar e sugerir horário alternativo
 
 **Independent Test**: Abrir link público em janela anônima, agendar com novo telefone, verificar agendamento aparece no dashboard da profissional.
 
@@ -241,7 +239,7 @@ No Studio Blessed, a proprietária e uma autônoma parceira que aluga espaço di
 
 **Acceptance Criteria**:
 
-1. WHEN cliente acessa "Meus Agendamentos" e informa telefone + código WhatsApp THEN sistema SHALL listar todos os agendamentos futuros daquele cliente
+1. WHEN cliente acessa "Meus Agendamentos" e informa telefone THEN sistema SHALL listar todos os agendamentos futuros daquele cliente
  2. WHEN cliente seleciona um agendamento futuro para cancelar THEN sistema SHALL solicitar confirmação e cancelar
 3. WHEN cliente confirma cancelamento THEN sistema SHALL cancelar o agendamento e liberar o horário em tempo real
 4. WHEN cliente tenta cancelar agendamento passado THEN sistema SHALL exibir "agendamento já realizado"
@@ -261,8 +259,7 @@ No Studio Blessed, a proprietária e uma autônoma parceira que aluga espaço di
 - WHEN conexão em tempo real é perdida THEN sistema SHALL reconectar automaticamente e sincronizar eventos perdidos
 - WHEN horário de agendamento já passou THEN sistema SHALL impedir edição e permitir apenas alteração de status (realizado/não compareceu)
 - WHEN cliente tenta agendar com telefone já cadastrado para outro cliente THEN sistema SHALL sugerir "já é cliente! Confirme seus dados"
-- WHEN EvolutionAPI está indisponível THEN sistema SHALL exibir "serviço temporariamente indisponível" e logar erro (sem travar o sistema para usuários logados)
-- WHEN telefone informado pelo cliente é inválido (formato) THEN sistema SHALL exibir erro de validação antes de tentar enviar código
+- WHEN telefone informado pelo cliente é inválido (formato) THEN sistema SHALL exibir erro de validação
 
 ---
 
@@ -368,10 +365,9 @@ No Studio Blessed, a proprietária e uma autônoma parceira que aluga espaço di
 - **RBAC**: CASL.js para gerenciamento de permissões (roles: OWNER, PARTNER, CLIENT)
 - **UI Framework**: Nuxt 3 com TailwindCSS (landing page + autoatendimento) e Vuetify (dashboard). `routeRules` define SSR/SPA por rota.
 - **Autenticação profissionais**: Telefone + senha. Cadastro com Nome Completo, CPF, Telefone, Senha.
-- **Autenticação clientes**: Telefone + código WhatsApp (EvolutionAPI).
-- **Normalização de telefone**: Armazenar apenas dígitos (DDD + número, 10-11 chars) sem prefixo 55. Backend adiciona +55 para EvolutionAPI. Zod transform limpa input. Frontend usa máscara só para exibição.
+- **Autenticação clientes**: Telefone (sem verificação). Se errar o número, proprietária corrige no cadastro.
+- **Normalização de telefone**: Armazenar apenas dígitos (DDD + número, 10-11 chars) sem prefixo 55. Zod transform limpa input. Frontend usa máscara só para exibição.
 - **Tempo real**: SSE (Server-Sent Events) unidirecional, exclusivo para o dashboard profissional. Cliente (autoatendimento) usa REST puro.
-- **Verificação WhatsApp**: EvolutionAPI — escopo mínimo (apenas envio de código de verificação, sem bot conversacional)
 - **Concorrência**: `db.transaction()` no Drizzle com checagem de disponibilidade imediatamente antes do insert. SELECT de verificação + INSERT na mesma transação. Retorna 409 em caso de conflito.
 - **Autenticação**: Duplo cookie HTTP-Only — `access_token` (15 min) + `refresh_token` (30 dias). SSE autentica via cookie (EventSource não envia headers). Nuxt com interceptor global de refresh.
 - **Infraestrutura**: Docker Compose (dev). Deploy em Oracle Cloud apenas após validação com a proprietária.

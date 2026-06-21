@@ -10,7 +10,7 @@
 
 - [ ] Inicializar monorepo (raiz com `api/` e `web/`)
 - [ ] Configurar TypeScript, Biome, tooling compartilhado
-- [ ] Configurar Docker Compose (db + backend + frontend + evolution-api)
+- [ ] Configurar Docker Compose (db + backend + frontend)
 - [ ] Configurar Fastify + DrizzleORM + PostgreSQL (container `db`)
 - [ ] Configurar Nuxt 3 + TailwindCSS + Vuetify + routeRules
 - [ ] Configurar autenticação (JWT)
@@ -29,9 +29,8 @@
 - [ ] Visualização de agenda compartilhada (todos veem horários ocupados sem ver valores)
 - [ ] Bloqueio de agenda individual
 - [ ] Dashboard individual (agenda do dia, clientes, valores próprios)
-- [ ] **Autoatendimento do cliente** — link público, login por telefone + verificação WhatsApp, escolha profissional/serviço/horário
+- [ ] **Autoatendimento do cliente** — link público, informa telefone, escolhe profissional/serviço/horário
 - [ ] **Cliente ver/cancelar próprios agendamentos**
-- [ ] Integração EvolutionAPI para verificação de telefone
 - [ ] Tempo real (SSE) para atualizações
 
 ### Milestone 3: Dashboards (Semanas 6-7)
