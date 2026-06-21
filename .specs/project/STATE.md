@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-06-20T00:00:00Z
-**Current Work:** PARTNER-05 — bloqueios de agenda integrados na página /dashboard/agenda
+**Current Work:** BOOKING-05 — SSE tempo real: backend + frontend, broadcasts em appointments e blocks
 
 ---
 

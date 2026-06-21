@@ -16,7 +16,7 @@
 | Partner (frontend) | PARTNER-04 a 05 | 2/2 | 100% |
 | Services | SERVICES-01 a 03 | 3/3 | 100% |
 | Clients | CLIENTS-01 a 03 | 3/3 | 100% |
-| Booking | BOOKING-01 a 14 | 4/14 | 29% |
+| Booking | BOOKING-01 a 14 | 5/14 | 36% |
 
 ---
 
@@ -218,8 +218,16 @@
 ### BOOKING-04: Agendamentos listados no dashboard ✅
 - [x] Página `/dashboard/agenda` com appointments do dia
 
-### BOOKING-05 a BOOKING-14 ⬜
-- [ ] SSE (tempo real)
+### BOOKING-05: SSE (tempo real) ✅
+- [x] Gerenciador de conexões SSE no backend (`api/src/lib/sse-manager.ts`)
+- [x] Endpoint `/api/sse` autenticado via cookie com heartbeat
+- [x] Broadcast em appointments: create, update, cancel, status-changed
+- [x] Broadcast em blocks: created, deleted
+- [x] OWNER recebe eventos de todos os profissionais
+- [x] Composable `useSSE` no frontend com reconexão automática
+- [x] Agenda page conecta SSE e invalida queries em tempo real
+
+### BOOKING-06 a BOOKING-14 ⬜
 - [ ] Envio/verificação código WhatsApp
 - [ ] Listagens públicas booking
 - [ ] Criação/cancelamento pelo cliente
@@ -238,7 +246,7 @@
 |-------|------|-----------|--------|
 | 1 | TANSTACK-02: `use-services.ts` + `use-clients.ts` | — | ✅ Concluído |
 | 2 | PARTNER-05: Frontend bloqueios | PARTNER-03 | ✅ Concluído |
-| 3 | BOOKING-05: SSE (tempo real) | BOOKING-04 | Pendente |
+| 3 | BOOKING-05: SSE (tempo real) | BOOKING-04 | ✅ Concluído |
 
 ---
 
