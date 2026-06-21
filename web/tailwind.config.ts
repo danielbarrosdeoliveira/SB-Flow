@@ -1,0 +1,26 @@
+import type { Config } from "tailwindcss";
+
+export default (<Config>{
+  content: ["./components/**/*.{vue,js,ts}", "./layouts/**/*.vue", "./pages/**/*.vue", "./app.vue"],
+  corePlugins: {
+    preflight: false,
+  },
+  theme: {
+    extend: {
+      colors: {
+        "sb-white": "var(--color-bg)",
+        "sb-dark": "var(--color-foreground)",
+        "sb-primary": "var(--color-primary)",
+        "sb-primary-light": "var(--color-primary-light)",
+        "sb-primary-dark": "var(--color-primary-dark)",
+        "sb-warm": "var(--color-warm)",
+        "sb-sand": "var(--color-sand)",
+      },
+      fontFamily: {
+        serif: ["Playfair Display", "Georgia", "serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        cursive: ["Dancing Script", "cursive"],
+      },
+    },
+  },
+});

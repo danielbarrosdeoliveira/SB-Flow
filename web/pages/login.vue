@@ -47,8 +47,8 @@
 
 <script setup lang="ts">
 import { z } from "zod";
-import { maskPhone, unmaskPhone, normalizePhone } from "../utils/phone";
 import { useAuthStore } from "../stores/auth";
+import { maskPhone, normalizePhone, unmaskPhone } from "../utils/phone";
 
 const router = useRouter();
 const auth = useAuthStore();

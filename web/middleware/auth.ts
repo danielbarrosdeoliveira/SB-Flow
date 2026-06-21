@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (to.path === "/login") return;
+  if (!to.path.startsWith("/dashboard")) return;
 
   const auth = useAuthStore();
 

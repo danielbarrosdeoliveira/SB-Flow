@@ -1,200 +1,223 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex items-center justify-between mb-8">
-        <h1 class="text-2xl font-bold">Profissionais</h1>
-        <div class="flex items-center gap-4">
-          <span class="text-sm text-gray-600">{{ auth.user?.name }} ({{ auth.user?.role }})</span>
-          <button
-            v-if="auth.user?.role === 'OWNER'"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
-            @click="openCreateModal"
-          >
-            + Novo Profissional
-          </button>
-          <NuxtLink to="/dashboard/agenda" class="text-sm text-gray-600 hover:text-gray-800">
-            Agenda
-          </NuxtLink>
-          <NuxtLink to="/dashboard/clientes" class="text-sm text-gray-600 hover:text-gray-800">
-            Clientes
-          </NuxtLink>
-          <NuxtLink to="/dashboard/servicos" class="text-sm text-gray-600 hover:text-gray-800">
-            Serviços
-          </NuxtLink>
-          <button class="text-sm text-red-600 hover:text-red-700" @click="handleLogout">Sair</button>
-        </div>
-      </div>
+  <div>
+    <v-row class="mb-4">
+      <v-col cols="12" sm="6" class="d-flex align-center">
+        <span class="text-h6 font-weight-regular">Gerenciar Profissionais</span>
+      </v-col>
+      <v-col cols="12" sm="6" class="d-flex align-center justify-sm-end">
+        <v-btn
+          v-if="auth.user?.role === 'OWNER'"
+          color="primary"
+          prepend-icon="mdi-plus"
+          @click="openCreateModal"
+        >
+          Novo Profissional
+        </v-btn>
+      </v-col>
+    </v-row>
 
-      <div v-if="status === 'pending'" class="text-center py-8 text-gray-500">Carregando...</div>
+    <v-alert
+      v-if="status === 'pending'"
+      type="info"
+      variant="tonal"
+      text="Carregando..."
+    />
+    <v-alert
+      v-else-if="error"
+      type="error"
+      variant="tonal"
+      :text="String(error)"
+    />
+    <v-alert
+      v-else-if="professionals.length === 0"
+      type="info"
+      variant="tonal"
+      text="Nenhum profissional cadastrado."
+    />
 
-      <div v-else-if="error" class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
-        {{ error }}
-      </div>
-
-      <div v-else-if="professionals.length === 0" class="text-center py-8 text-gray-500">
-        Nenhum profissional cadastrado.
-      </div>
-
-      <div v-else class="space-y-3">
-        <div
+    <v-card v-else variant="outlined">
+      <v-list lines="three">
+        <v-list-item
           v-for="prof in professionals"
           :key="prof.id"
-          class="bg-white rounded-lg shadow-sm border p-4 flex items-center justify-between"
+          :title="prof.name"
         >
-          <div class="flex-1">
-            <div class="font-medium">{{ prof.name }}</div>
-            <div class="text-sm text-gray-500">
-              {{ formatPhone(prof.phone) }} · {{ formatCpf(prof.cpf) }}
-            </div>
-            <div class="text-sm text-gray-400">
-              {{ prof.workHoursStart }} — {{ prof.workHoursEnd }}
-              <span class="ml-2">· {{ prof.role === 'OWNER' ? 'Proprietária' : 'Parceira' }}</span>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span
-              class="text-xs px-2 py-1 rounded"
-              :class="prof.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+          <template #prepend>
+            <v-avatar color="secondary" variant="tonal">
+              <span class="text-uppercase">{{ prof.name.charAt(0) }}</span>
+            </v-avatar>
+          </template>
+
+          <template #subtitle>
+            <span>{{ formatPhone(prof.phone) }} · {{ formatCpf(prof.cpf) }}</span>
+            <br />
+            <span class="text-caption">{{ prof.workHoursStart }} — {{ prof.workHoursEnd }}</span>
+            <v-chip
+              size="x-small"
+              variant="flat"
+              class="ml-1"
+              :color="prof.role === 'OWNER' ? 'primary' : 'secondary'"
+            >
+              {{ prof.role === 'OWNER' ? 'Proprietária' : 'Parceira' }}
+            </v-chip>
+          </template>
+
+          <template #append>
+            <v-chip
+              size="small"
+              variant="tonal"
+              :color="prof.isActive ? 'success' : 'error'"
+              class="mr-2"
             >
               {{ prof.isActive ? 'Ativo' : 'Inativo' }}
-            </span>
-            <button
+            </v-chip>
+            <v-btn
               v-if="auth.user?.role === 'OWNER'"
-              class="text-sm text-blue-600 hover:text-blue-700"
+              icon="mdi-pencil"
+              variant="text"
+              size="small"
+              color="primary"
               @click="openEditModal(prof)"
-            >
-              Editar
-            </button>
-            <button
+            />
+            <v-btn
               v-if="auth.user?.role === 'OWNER' && prof.role !== 'OWNER'"
-              class="text-sm"
-              :class="prof.isActive ? 'text-red-600 hover:text-red-700' : 'text-green-600 hover:text-green-700'"
+              :icon="prof.isActive ? 'mdi-account-cancel' : 'mdi-account-check'"
+              variant="text"
+              size="small"
+              :color="prof.isActive ? 'error' : 'success'"
               @click="toggleActive(prof)"
-            >
-              {{ prof.isActive ? 'Desativar' : 'Ativar' }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+            />
+          </template>
+        </v-list-item>
+      </v-list>
+    </v-card>
 
-    <!-- Create/Edit Modal -->
-    <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="closeModal">
-      <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-4">
-        <h2 class="text-lg font-bold mb-4">{{ editingProfessional ? 'Editar Profissional' : 'Novo Profissional' }}</h2>
-
-        <form @submit.prevent="handleSave">
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-            <input
+    <!-- Create/Edit Dialog -->
+    <v-dialog v-model="showModal" max-width="500">
+      <v-card>
+        <v-card-title>{{ editingProfessional ? 'Editar Profissional' : 'Novo Profissional' }}</v-card-title>
+        <v-card-text>
+          <v-form @submit.prevent="handleSave">
+            <v-text-field
               v-model="form.name"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              :class="{ 'border-red-500': formErrors.name }"
+              label="Nome"
+              variant="outlined"
+              density="compact"
+              class="mb-3"
+              :error="!!formErrors.name"
+              :error-messages="formErrors.name"
               required
             />
-          </div>
 
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
-            <input
+            <v-text-field
               v-model="formPhoneMasked"
-              type="tel"
+              label="Telefone"
               placeholder="(11) 98888-0015"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              :class="{ 'border-red-500': formErrors.phone }"
+              variant="outlined"
+              density="compact"
+              type="tel"
+              class="mb-3"
+              :error="!!formErrors.phone"
+              :error-messages="formErrors.phone"
               @input="handlePhoneInput"
             />
-          </div>
 
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">CPF</label>
-            <input
+            <v-text-field
               v-model="formCpfMasked"
+              label="CPF"
               placeholder="000.000.000-00"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              :class="{ 'border-red-500': formErrors.cpf }"
+              variant="outlined"
+              density="compact"
+              class="mb-3"
+              :error="!!formErrors.cpf"
+              :error-messages="formErrors.cpf"
               :disabled="!!editingProfessional && auth.user?.role !== 'OWNER'"
               @input="handleCpfInput"
             />
-          </div>
 
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
-            <input
+            <v-text-field
               v-model="form.password"
+              label="Senha"
               type="password"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              :class="{ 'border-red-500': formErrors.password }"
+              variant="outlined"
+              density="compact"
+              class="mb-3"
+              :error="!!formErrors.password"
+              :error-messages="formErrors.password"
               :placeholder="editingProfessional ? 'Deixe em branco para manter' : ''"
               :required="!editingProfessional"
             />
-          </div>
 
-          <div class="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Início</label>
-              <input
-                v-model="form.workHoursStart"
-                type="time"
-                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                :class="{ 'border-red-500': formErrors.workHoursStart }"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Fim</label>
-              <input
-                v-model="form.workHoursEnd"
-                type="time"
-                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                :class="{ 'border-red-500': formErrors.workHoursEnd }"
-              />
-            </div>
-          </div>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="form.workHoursStart"
+                  type="time"
+                  label="Início"
+                  variant="outlined"
+                  density="compact"
+                  :error="!!formErrors.workHoursStart"
+                  :error-messages="formErrors.workHoursStart"
+                />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="form.workHoursEnd"
+                  type="time"
+                  label="Fim"
+                  variant="outlined"
+                  density="compact"
+                  :error="!!formErrors.workHoursEnd"
+                  :error-messages="formErrors.workHoursEnd"
+                />
+              </v-col>
+            </v-row>
 
-          <div v-if="editingProfessional && auth.user?.role === 'OWNER'" class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Função</label>
-            <select
+            <v-select
+              v-if="editingProfessional && auth.user?.role === 'OWNER'"
               v-model="form.role"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="PARTNER">Parceira</option>
-              <option value="OWNER">Proprietária</option>
-            </select>
-          </div>
+              :items="roleOptions"
+              label="Função"
+              variant="outlined"
+              density="compact"
+              class="mb-3"
+            />
 
-          <p v-if="saveError" class="text-red-500 text-sm mb-4">{{ saveError }}</p>
-
-          <div class="flex justify-end gap-3">
-            <button
-              type="button"
-              class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
-              @click="closeModal"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              :disabled="saving"
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50"
-            >
-              {{ saving ? 'Salvando...' : 'Salvar' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            <v-alert
+              v-if="saveError"
+              type="error"
+              variant="tonal"
+              :text="saveError"
+              class="mb-3"
+            />
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="closeModal">Cancelar</v-btn>
+          <v-btn
+            color="primary"
+            :loading="saving"
+            @click="handleSave"
+          >
+            Salvar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useQuery, useQueryClient } from "@tanstack/vue-query";
-import { useAuthStore } from "../../stores/auth";
-import { api } from "../../utils/api";
-import { maskPhone, normalizePhone, unmaskPhone } from "../../utils/phone";
-
 definePageMeta({
-  middleware: "auth" as any,
+  layout: "dashboard",
+  middleware: "auth",
 });
+
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
+import { useAuthStore } from "~/stores/auth";
+import { api } from "~/utils/api";
+import { maskPhone, normalizePhone, unmaskPhone } from "~/utils/phone";
 
 interface Professional {
   id: number;
@@ -207,8 +230,12 @@ interface Professional {
   workHoursEnd: string;
 }
 
+const roleOptions = [
+  { title: "Parceira", value: "PARTNER" },
+  { title: "Proprietária", value: "OWNER" },
+];
+
 const auth = useAuthStore();
-const router = useRouter();
 const queryClient = useQueryClient();
 
 const showModal = ref(false);
@@ -372,12 +399,5 @@ async function toggleActive(prof: Professional) {
   } catch (err: unknown) {
     console.error("Erro ao alternar status:", err);
   }
-}
-
-const isEditing = computed(() => !!editingProfessional.value);
-
-async function handleLogout() {
-  await auth.logout();
-  await router.push("/login");
 }
 </script>

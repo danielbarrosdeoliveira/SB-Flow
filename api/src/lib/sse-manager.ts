@@ -10,11 +10,7 @@ interface SSEClient {
 let clientIdCounter = 0;
 const clients: SSEClient[] = [];
 
-export function addClient(
-  reply: FastifyReply,
-  professionalId: number,
-  role: string,
-): SSEClient {
+export function addClient(reply: FastifyReply, professionalId: number, role: string): SSEClient {
   const client: SSEClient = {
     id: ++clientIdCounter,
     reply,
@@ -45,11 +41,7 @@ export function broadcast(event: string, data: unknown) {
   }
 }
 
-export function broadcastToProfessional(
-  professionalId: number,
-  event: string,
-  data: unknown,
-) {
+export function broadcastToProfessional(professionalId: number, event: string, data: unknown) {
   for (const client of [...clients]) {
     if (client.role === "OWNER" || client.professionalId === professionalId) {
       send(client, event, data);

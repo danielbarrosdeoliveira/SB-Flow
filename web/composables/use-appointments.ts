@@ -19,9 +19,7 @@ export function useAppointments(date: MaybeRefOrGetter<string>) {
   return useQuery({
     queryKey: ["appointments", d],
     queryFn: async (): Promise<Appointment[]> => {
-      const res = await api.get<Appointment[]>(
-        `/api/appointments?date=${d.value}`,
-      );
+      const res = await api.get<Appointment[]>(`/api/appointments?date=${d.value}`);
       return res;
     },
   });

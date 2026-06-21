@@ -165,7 +165,11 @@ export async function appointmentsRoutes(app: FastifyInstance) {
       if (!appointment) {
         return reply.status(404).send({ error: "Agendamento não encontrado", statusCode: 404 });
       }
-      broadcastToProfessional(appointment.professionalId, "appointment:status-changed", appointment);
+      broadcastToProfessional(
+        appointment.professionalId,
+        "appointment:status-changed",
+        appointment,
+      );
       return appointment;
     },
   );

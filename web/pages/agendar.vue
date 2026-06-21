@@ -243,19 +243,13 @@ function handlePhoneInput(e: Event) {
 }
 
 // Professionals
-const {
-  data: professionals,
-  status: profStatus,
-} = useQuery<Professional[]>({
+const { data: professionals, status: profStatus } = useQuery<Professional[]>({
   queryKey: ["booking-professionals"],
   queryFn: () => api.get<Professional[]>("/api/booking/professionals"),
 });
 
 // Services for selected professional
-const {
-  data: services,
-  status: servicesStatus,
-} = useQuery<Service[]>({
+const { data: services, status: servicesStatus } = useQuery<Service[]>({
   queryKey: ["booking-services", form.professionalId],
   queryFn: () => api.get<Service[]>(`/api/booking/professionals/${form.professionalId}/services`),
   enabled: computed(() => form.professionalId > 0),
@@ -268,7 +262,8 @@ const {
   refetch: refetchSlots,
 } = useQuery<Slot[]>({
   queryKey: ["booking-slots", form.professionalId, form.date],
-  queryFn: () => api.get<Slot[]>(`/api/booking/professionals/${form.professionalId}/slots?date=${form.date}`),
+  queryFn: () =>
+    api.get<Slot[]>(`/api/booking/professionals/${form.professionalId}/slots?date=${form.date}`),
   enabled: computed(() => form.professionalId > 0 && !!form.date),
 });
 

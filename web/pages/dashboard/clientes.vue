@@ -1,152 +1,182 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex items-center justify-between mb-8">
-        <h1 class="text-2xl font-bold">Clientes</h1>
-        <div class="flex items-center gap-4">
-          <span class="text-sm text-gray-600">{{ auth.user?.name }} ({{ auth.user?.role }})</span>
-          <button
-            v-if="auth.user?.role === 'OWNER'"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
-            @click="openCreateModal"
-          >
-            + Novo Cliente
-          </button>
-          <NuxtLink to="/dashboard/agenda" class="text-sm text-gray-600 hover:text-gray-800">
-            Agenda
-          </NuxtLink>
-          <NuxtLink to="/dashboard/servicos" class="text-sm text-gray-600 hover:text-gray-800">
-            Serviços
-          </NuxtLink>
-          <button class="text-sm text-red-600 hover:text-red-700" @click="handleLogout">Sair</button>
-        </div>
-      </div>
-
-      <!-- Search -->
-      <div class="mb-6">
-        <input
+  <div>
+    <v-row class="mb-4">
+      <v-col cols="12" sm="6">
+        <v-text-field
           v-model="searchQuery"
           placeholder="Buscar por nome ou telefone..."
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          prepend-inner-icon="mdi-magnify"
+          variant="outlined"
+          density="compact"
+          hide-details
           @input="onSearchInput"
         />
-      </div>
+      </v-col>
+      <v-col cols="12" sm="6" class="d-flex align-center justify-sm-end">
+        <v-btn
+          v-if="auth.user?.role === 'OWNER'"
+          color="primary"
+          prepend-icon="mdi-plus"
+          @click="openCreateModal"
+        >
+          Novo Cliente
+        </v-btn>
+      </v-col>
+    </v-row>
 
-      <div v-if="status === 'pending'" class="text-center py-8 text-gray-500">Carregando...</div>
+    <v-alert
+      v-if="status === 'pending'"
+      type="info"
+      variant="tonal"
+      text="Carregando..."
+    />
+    <v-alert
+      v-else-if="error"
+      type="error"
+      variant="tonal"
+      :text="String(error)"
+    />
+    <v-alert
+      v-else-if="clients.length === 0"
+      type="info"
+      variant="tonal"
+      :text="searchQuery ? 'Nenhum cliente encontrado.' : 'Nenhum cliente cadastrado.'"
+    />
 
-      <div v-else-if="error" class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
-        {{ error }}
-      </div>
-
-      <div v-else-if="clients.length === 0" class="text-center py-8 text-gray-500">
-        {{ searchQuery ? 'Nenhum cliente encontrado.' : 'Nenhum cliente cadastrado.' }}
-      </div>
-
-      <div v-else class="space-y-3">
-        <div
+    <v-card v-else variant="outlined">
+      <v-list lines="two">
+        <v-list-item
           v-for="client in clients"
           :key="client.id"
-          class="bg-white rounded-lg shadow-sm border p-4 flex items-center justify-between"
+          :title="client.name"
+          :subtitle="formatPhone(client.phone)"
         >
-          <div>
-            <div class="font-medium">{{ client.name }}</div>
-            <div class="text-sm text-gray-500">{{ formatPhone(client.phone) }}</div>
-          </div>
-          <div v-if="auth.user?.role === 'OWNER'" class="flex items-center gap-2">
-            <button class="text-sm text-blue-600 hover:text-blue-700" @click="openEditModal(client)">
-              Editar
-            </button>
-            <button class="text-sm text-gray-600 hover:text-gray-700" @click="viewHistory(client)">
-              Histórico
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+          <template #prepend>
+            <v-avatar color="primary" variant="tonal">
+              <span class="text-uppercase">{{ client.name.charAt(0) }}</span>
+            </v-avatar>
+          </template>
+          <template v-if="auth.user?.role === 'OWNER'" #append>
+            <v-btn
+              icon="mdi-pencil"
+              variant="text"
+              size="small"
+              color="primary"
+              @click="openEditModal(client)"
+            />
+            <v-btn
+              icon="mdi-history"
+              variant="text"
+              size="small"
+              @click="viewHistory(client)"
+            />
+          </template>
+        </v-list-item>
+      </v-list>
+    </v-card>
 
-    <!-- Create/Edit Modal -->
-    <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="closeModal">
-      <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-4">
-        <h2 class="text-lg font-bold mb-4">{{ editingClient ? 'Editar Cliente' : 'Novo Cliente' }}</h2>
-
-        <form @submit.prevent="handleSave">
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-            <input
+    <!-- Create/Edit Dialog -->
+    <v-dialog v-model="showModal" max-width="500">
+      <v-card>
+        <v-card-title>{{ editingClient ? 'Editar Cliente' : 'Novo Cliente' }}</v-card-title>
+        <v-card-text>
+          <v-form @submit.prevent="handleSave">
+            <v-text-field
               v-model="form.name"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              :class="{ 'border-red-500': formErrors.name }"
+              label="Nome"
+              variant="outlined"
+              density="compact"
+              class="mb-3"
+              :error="!!formErrors.name"
+              :error-messages="formErrors.name"
               required
             />
-          </div>
 
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
-            <input
+            <v-text-field
               v-model="formPhoneMasked"
-              type="tel"
+              label="Telefone"
               placeholder="(11) 98888-0015"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              :class="{ 'border-red-500': formErrors.phone }"
+              variant="outlined"
+              density="compact"
+              type="tel"
+              class="mb-3"
+              :error="!!formErrors.phone"
+              :error-messages="formErrors.phone"
               @input="handlePhoneInput"
             />
-          </div>
 
-          <p v-if="saveError" class="text-red-500 text-sm mb-4">{{ saveError }}</p>
-
-          <div class="flex justify-end gap-3">
-            <button type="button" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800" @click="closeModal">
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              :disabled="saving"
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50"
-            >
-              {{ saving ? 'Salvando...' : 'Salvar' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- History Modal -->
-    <div v-if="historyClient" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="historyClient = null">
-      <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-lg mx-4">
-        <h2 class="text-lg font-bold mb-4">Histórico — {{ historyClient.name }}</h2>
-        <div v-if="historyLoading" class="text-gray-500 text-sm">Carregando...</div>
-        <div v-else-if="historyAppointments.length === 0" class="text-gray-500 text-sm">
-          Nenhum atendimento registrado.
-        </div>
-        <div v-else class="space-y-2">
-          <div
-            v-for="apt in historyAppointments"
-            :key="apt.id"
-            class="text-sm border rounded-lg p-3"
+            <v-alert
+              v-if="saveError"
+              type="error"
+              variant="tonal"
+              :text="saveError"
+              class="mb-3"
+            />
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="closeModal">Cancelar</v-btn>
+          <v-btn
+            color="primary"
+            :loading="saving"
+            @click="handleSave"
           >
-            <div class="font-medium">{{ apt.serviceName }}</div>
-            <div class="text-gray-500">{{ new Date(apt.startTime).toLocaleString('pt-BR') }}</div>
-          </div>
-        </div>
-        <div class="flex justify-end mt-4">
-          <button class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800" @click="historyClient = null">
-            Fechar
-          </button>
-        </div>
-      </div>
-    </div>
+            Salvar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- History Dialog -->
+    <v-dialog v-model="showHistoryDialog" max-width="600">
+      <v-card>
+        <v-card-title>Histórico — {{ historyClient?.name }}</v-card-title>
+        <v-card-text>
+          <v-alert
+            v-if="historyLoading"
+            type="info"
+            variant="tonal"
+            text="Carregando..."
+          />
+          <v-alert
+            v-else-if="historyAppointments.length === 0"
+            type="info"
+            variant="tonal"
+            text="Nenhum atendimento registrado."
+          />
+          <v-list v-else lines="two">
+            <v-list-item
+              v-for="apt in historyAppointments"
+              :key="apt.id"
+              :title="apt.serviceName"
+              :subtitle="new Date(apt.startTime).toLocaleString('pt-BR')"
+            >
+              <template #prepend>
+                <v-icon>mdi-calendar-check</v-icon>
+              </template>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="historyClient = null">Fechar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useQuery, useQueryClient } from "@tanstack/vue-query";
-import { useAuthStore } from "../../stores/auth";
-import { api } from "../../utils/api";
-import { maskPhone, normalizePhone, unmaskPhone } from "../../utils/phone";
-
 definePageMeta({
-  middleware: "auth" as any,
+  layout: "dashboard",
+  middleware: "auth",
 });
+
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
+import { useAuthStore } from "~/stores/auth";
+import { api } from "~/utils/api";
+import { maskPhone, normalizePhone, unmaskPhone } from "~/utils/phone";
 
 interface Client {
   id: number;
@@ -161,7 +191,6 @@ interface Appointment {
 }
 
 const auth = useAuthStore();
-const router = useRouter();
 const queryClient = useQueryClient();
 
 const searchQuery = ref("");
@@ -173,6 +202,10 @@ const saveError = ref("");
 const historyClient = ref<Client | null>(null);
 const historyLoading = ref(false);
 const historyAppointments = ref<Appointment[]>([]);
+const showHistoryDialog = computed({
+  get: () => historyClient.value !== null,
+  set: (v) => { if (!v) historyClient.value = null; },
+});
 
 const form = reactive({
   name: "",
@@ -287,10 +320,5 @@ async function viewHistory(client: Client) {
 
 function formatPhone(phone: string): string {
   return maskPhone(phone);
-}
-
-async function handleLogout() {
-  await auth.logout();
-  await router.push("/login");
 }
 </script>

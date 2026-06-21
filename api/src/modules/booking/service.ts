@@ -1,10 +1,10 @@
 import { and, eq, gte, lte, sql } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { appointments } from "../../db/schema/appointments.js";
+import { blocks } from "../../db/schema/blocks.js";
 import { clients } from "../../db/schema/clients.js";
 import { professionals } from "../../db/schema/professionals.js";
 import { services } from "../../db/schema/services.js";
-import { blocks } from "../../db/schema/blocks.js";
 import { normalizePhone } from "../../lib/phone.js";
 import type { CreateBookingAppointmentInput } from "./schema.js";
 
@@ -28,9 +28,7 @@ export interface BookingService {
   description: string | null;
 }
 
-export async function listProfessionalServices(
-  professionalId: number,
-): Promise<BookingService[]> {
+export async function listProfessionalServices(professionalId: number): Promise<BookingService[]> {
   return db
     .select({
       id: services.id,
@@ -40,9 +38,7 @@ export async function listProfessionalServices(
       description: services.description,
     })
     .from(services)
-    .where(
-      and(eq(services.professionalId, professionalId), eq(services.isActive, true)),
-    );
+    .where(and(eq(services.professionalId, professionalId), eq(services.isActive, true)));
 }
 
 export interface TimeSlot {
@@ -50,10 +46,7 @@ export interface TimeSlot {
   available: boolean;
 }
 
-export async function getAvailableSlots(
-  professionalId: number,
-  date: string,
-): Promise<TimeSlot[]> {
+export async function getAvailableSlots(professionalId: number, date: string): Promise<TimeSlot[]> {
   const prof = await db
     .select({
       workHoursStart: professionals.workHoursStart,
@@ -128,9 +121,7 @@ export async function getAvailableSlots(
     const slotStart = new Date(`${date}T${slot.time}:00`);
     const slotEnd = new Date(slotStart.getTime() + 30 * 60000);
 
-    const isOccupied = occupied.some(
-      (o) => slotStart < o.end && slotEnd > o.start,
-    );
+    const isOccupied = occupied.some((o) => slotStart < o.end && slotEnd > o.start);
 
     return { ...slot, available: !isOccupied };
   });
@@ -248,9 +239,7 @@ export interface ClientAppointment {
   status: string;
 }
 
-export async function listClientAppointments(
-  phone: string,
-): Promise<ClientAppointment[]> {
+export async function listClientAppointments(phone: string): Promise<ClientAppointment[]> {
   const normalized = normalizePhone(phone);
   const client = await db
     .select({ id: clients.id })
@@ -272,12 +261,7 @@ export async function listClientAppointments(
     .from(appointments)
     .innerJoin(professionals, eq(appointments.professionalId, professionals.id))
     .innerJoin(services, eq(appointments.serviceId, services.id))
-    .where(
-      and(
-        eq(appointments.clientId, client[0].id),
-        gte(appointments.startTime, new Date()),
-      ),
-    )
+    .where(and(eq(appointments.clientId, client[0].id), gte(appointments.startTime, new Date())))
     .orderBy(appointments.startTime);
 }
 

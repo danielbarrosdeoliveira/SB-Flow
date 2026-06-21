@@ -16,13 +16,18 @@ export class ApiError extends Error {
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const baseUrl = getApiUrl();
+  const body = options.body;
+  const headers: Record<string, string> = {
+    ...(options.headers as Record<string, string> | undefined),
+  };
+  if (body) {
+    headers["Content-Type"] = "application/json";
+  }
   const res = await fetch(`${baseUrl}${path}`, {
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-    ...options,
+    headers,
+    method: options.method,
+    body,
   });
 
   if (res.status === 401) {

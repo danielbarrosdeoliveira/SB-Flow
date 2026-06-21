@@ -1,9 +1,6 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { broadcastToProfessional } from "../../lib/sse-manager.js";
-import {
-  cancelBookingAppointmentSchema,
-  createBookingAppointmentSchema,
-} from "./schema.js";
+import { cancelBookingAppointmentSchema, createBookingAppointmentSchema } from "./schema.js";
 import * as bookingService from "./service.js";
 
 export async function bookingRoutes(app: FastifyInstance) {
@@ -37,26 +34,20 @@ export async function bookingRoutes(app: FastifyInstance) {
     },
   );
 
-  app.post(
-    "/api/booking/appointments",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      const input = createBookingAppointmentSchema.parse(request.body);
-      const result = await bookingService.createBooking(input);
-      broadcastToProfessional(input.professionalId, "appointment:created", result);
-      return reply.status(201).send(result);
-    },
-  );
+  app.post("/api/booking/appointments", async (request: FastifyRequest, reply: FastifyReply) => {
+    const input = createBookingAppointmentSchema.parse(request.body);
+    const result = await bookingService.createBooking(input);
+    broadcastToProfessional(input.professionalId, "appointment:created", result);
+    return reply.status(201).send(result);
+  });
 
-  app.get(
-    "/api/booking/appointments",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      const query = request.query as { phone?: string };
-      if (!query.phone) {
-        return reply.status(400).send({ error: "Parâmetro phone é obrigatório", statusCode: 400 });
-      }
-      return bookingService.listClientAppointments(query.phone);
-    },
-  );
+  app.get("/api/booking/appointments", async (request: FastifyRequest, reply: FastifyReply) => {
+    const query = request.query as { phone?: string };
+    if (!query.phone) {
+      return reply.status(400).send({ error: "Parâmetro phone é obrigatório", statusCode: 400 });
+    }
+    return bookingService.listClientAppointments(query.phone);
+  });
 
   app.post(
     "/api/booking/appointments/:id/cancel",

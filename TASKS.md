@@ -1,7 +1,7 @@
 # Task Tracking
 
 > Rastreamento de execução do projeto SB-Flow.
-> Última atualização: 2026-06-20
+> Última atualização: 2026-06-21
 
 ---
 
@@ -16,7 +16,9 @@
 | Partner (frontend) | PARTNER-04 a 05 | 2/2 | 100% |
 | Services | SERVICES-01 a 03 | 3/3 | 100% |
 | Clients | CLIENTS-01 a 03 | 3/3 | 100% |
-| Booking | BOOKING-01 a 14 | 6/13 | 46% |
+| Booking | BOOKING-01 a 14 | 7/14 | 50% |
+| Dashboard UI | DASHBOARD-01 a 02 | 2/2 | 100% |
+| CSS Architecture | CSS-01 a 03 | 3/3 | 100% |
 
 ---
 
@@ -242,10 +244,58 @@
 - [x] Frontend: Confirmação sem verificação WhatsApp (AD-025)
 - [x] SSE broadcast ao criar agendamento público
 
-### BOOKING-08 a BOOKING-14 ⬜
-- [ ] Landing page (SSR)
-- [ ] Store de booking
-- [ ] Landing page (SSR)
+### BOOKING-08: Landing page (SSR) ✅
+- [x] Especificação completa (spec, design, tasks) em `.specs/features/landing-page/`
+- [x] Tailwind CSS configurado com tema Studio Blessed (paleta-cores.css)
+- [x] Fontes: Playfair Display, Inter, Dancing Script via Google Fonts
+- [x] 11 componentes de seção em `web/components/landing/`
+- [x] Rota `/` substituída com landing page completa (SSR + prerender)
+- [x] Conteúdo adaptado do legado React (Studio Blessed, Português)
+- [x] Seção de profissionais dinâmica via `GET /api/booking/professionals`
+- [x] Hero com legado textual na nova estrutura anatômica
+- [x] Build + typecheck passando
+
+### BOOKING-09 a BOOKING-14 ⬜
+
+---
+
+## Execução — Dashboard UI ✅
+
+### DASHBOARD-01: Migração dashboard para Vuetify ✅
+- [x] `vuetify-nuxt-module` instalado e configurado
+- [x] `layouts/dashboard.vue` com VNavigationDrawer + VAppBar + VMain
+- [x] Página agenda refatorada para Vuetify (VDialog, VCard, VList, VTextField)
+- [x] Página clientes refatorada com Vuetify (VDialog, VTextField com máscara)
+- [x] Página profissionais refatorada com Vuetify (VSelect, formulários)
+- [x] Página serviços refatorada com Vuetify (agrupamento por profissional)
+- [x] `pages/dashboard/index.vue` com redirect para `/dashboard/agenda`
+- [x] Build + typecheck passando
+
+### DASHBOARD-02: Correção middleware auth ✅
+- [x] `auth.global.ts` renomeado para `auth.ts`
+- [x] `plugins/auth-init.ts` removido
+- [x] `api.ts` condiciona Content-Type à existência de body
+- [x] Dashboard routes autenticadas corretamente
+
+---
+
+## Execução — CSS Architecture ✅
+
+### CSS-01: Desativar preflight Tailwind ✅
+- [x] `corePlugins: { preflight: false }` em `tailwind.config.ts`
+- [x] Reset manual escopado em `.page-landing` no layout da landing
+
+### CSS-02: Paleta centralizada via CSS Variables ✅
+- [x] `web/assets/css/tokens.css` com `:root` contendo `--color-*` e `--font-*`
+- [x] Tailwind cores sb-* apontam para `var(--color-*)`
+- [x] Vuetify theme usa mesmos valores hex
+- [x] CSS injetado globalmente via `nuxt.config.ts`
+
+### CSS-03: Layouts escopados ✅
+- [x] `layouts/landing.vue` com `.page-landing` + reset básico escopado
+- [x] `pages/index.vue` usa `definePageMeta({ layout: "landing" })`
+- [x] LNavbar e LFooter movidos para o layout
+- [x] Dashboard mantém `v-app` controlando escopo Vuetify
 - [ ] Store de booking
 - [ ] Fluxo autoatendimento (multi-step)
 - [ ] Meus agendamentos (cliente)
@@ -259,7 +309,12 @@
 | Ordem | Task | Depende de | Status |
 |-------|------|-----------|--------|
 | 1 | BOOKING-07: Listagens públicas booking + criação/cancelamento | BOOKING-05 | ✅ Concluído |
-| 2 | BOOKING-08: Landing page (SSR) | BOOKING-07 | Pendente |
+| 2 | BOOKING-08: Landing page (SSR) | BOOKING-07 | ✅ Concluído |
+| 3 | DASHBOARD-01: Migração dashboard para Vuetify | AUTH-06 | ✅ Concluído |
+| 4 | DASHBOARD-02: Correção middleware auth | AUTH-06 | ✅ Concluído |
+| 5 | CSS-01: Desativar preflight Tailwind | BOOKING-08 | ✅ Concluído |
+| 6 | CSS-02: Paleta centralizada via CSS Variables | CSS-01 | ✅ Concluído |
+| 7 | CSS-03: Layouts escopados | CSS-01, CSS-02 | ✅ Concluído |
 
 ---
 

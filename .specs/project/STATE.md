@@ -1,7 +1,7 @@
 # State
 
-**Last Updated:** 2026-06-20T00:00:00Z
-**Current Work:** BOOKING-07 — autoatendimento do cliente: backend público + frontend multi-step em /agendar
+**Last Updated:** 2026-06-21T00:00:00Z
+**Current Work:** BOOKING-08 — Landing page SSR + Dashboard Vuetify + Isolamento CSS híbrido
 
 ---
 
@@ -212,6 +212,74 @@
 ## Active Blockers
 
 *Nenhum bloqueador ativo.*
+
+---
+
+## Recent Decisions
+
+### AD-026: Landing page segue especificação anatômica com Tailwind CSS (2026-06-21)
+
+**Decision:** Landing page do Studio Blessed implementada com 11 seções baseadas na especificação anatômica fornecida, adaptada para português/Studio Blessed. Tailwind CSS adicionado como módulo Nuxt com tema personalizado (paleta-cores.css). Estrutura segue layout de template premium de salão, mas conteúdo textual é do legado React do Studio Blessed.
+
+**Changes:**
+- `@nuxtjs/tailwindcss` adicionado ao projeto
+- Tema Tailwind personalizado com cores sb-* da paleta
+- 11 componentes Vue em `web/components/landing/`
+- Rota `/` substituída (era placeholder "SB-Flow")
+- Seção de profissionais dinâmica via API
+- Seção de produtos substituída por depoimentos
+- Fontes: Playfair Display, Inter, Dancing Script via Google Fonts
+- Página prerrenderizada (SSR estático)
+
+**Reason:** Landing page profissional era necessária antes do deploy. A abordagem anatômica garantiu design consistente com referência visual aprovada.
+
+### AD-027: Auth middleware renomeado para correção de rota (2026-06-21)
+
+**Decision:** `web/middleware/auth.global.ts` renomeado para `web/middleware/auth.ts`. Plugin `web/plugins/auth-init.ts` removido.
+
+**Reason:** As páginas do dashboard usavam `definePageMeta({ middleware: "auth" })` que busca um arquivo `middleware/auth.ts`, não `middleware/auth.global.ts` (middleware global, executado em toda rota). O plugin `auth-init.ts` era redundante com o middleware e causava loop de refresh ao chamar `POST /api/auth/refresh` em toda página.
+
+**Changes:**
+- `auth.global.ts` → `auth.ts` (middleware nomeado, executado só onde declarado)
+- `auth-init.ts` removido (middleware já faz refresh nas rotas que precisam)
+- `api.ts` condiciona `Content-Type: application/json` à existência de body
+
+**Impact:** Dashboard routes autenticadas corretamente. Landing page e rotas públicas não disparam refresh. Erro 400 "Body cannot be empty" no refresh resolvido.
+
+### AD-028: Dashboard migrado de Tailwind CSS para Vuetify (2026-06-21)
+
+**Decision:** Todas as 4 páginas do dashboard (`agenda`, `clientes`, `profissionais`, `servicos`) refatoradas de Tailwind CSS para Vuetify 3. Layout compartilhado criado em `layouts/dashboard.vue`.
+
+**Reason:** AD-011 (Vuetify substitui ShadcnVue) não foi totalmente implementada — o dashboard ainda usava Tailwind. Vuetify oferece componentes maduros (VDataTable, VCalendar, VDialog, VForm) necessários para um dashboard administrativo robusto.
+
+**Changes:**
+- `vuetify-nuxt-module` instalado e configurado no `nuxt.config.ts`
+- `layouts/dashboard.vue` criado com `VNavigationDrawer` (rail), `VAppBar` (user info + logout), `VMain`
+- Páginas refatoradas: `VCard`/`VList` para listas, `VDialog` para modais, `VTextField`/`VSelect`/`VBtn` para formulários
+- `web/pages/dashboard/index.vue` criado com redirect para `/dashboard/agenda`
+- `definePageMeta({ layout: "dashboard", middleware: "auth" })` em todas as páginas
+
+**Impact:** Dashboard usa Vuetify exclusivamente (sem Tailwind). Landing page continua com Tailwind. Build + typecheck validados.
+
+### AD-029: Isolamento CSS híbrido Tailwind + Vuetify (2026-06-21)
+
+**Decision:** Implementada arquitetura híbrida de CSS com isolamento de escopo entre Tailwind (landing page) e Vuetify (dashboard):
+
+1. **Preflight desativado** globalmente no Tailwind (`corePlugins: { preflight: false }`) para não sobrescrever estilos do Vuetify.
+2. **Reset manual escopado** no layout da landing page (`.page-landing`): box-sizing, margins, padding, list-style, etc. — apenas dentro da landing page.
+3. **Paleta centralizada em CSS Variables** (`web/assets/css/tokens.css`): `--color-bg`, `--color-foreground`, `--color-primary`, etc. Tailwind cores sb-* apontam para `var(--color-*)`. Vuetify usa os mesmos valores hex.
+4. **Layouts nativos Nuxt**: `layouts/landing.vue` com classe `.page-landing` + `LNavbar`/`LFooter`; `layouts/dashboard.vue` com `v-app` controlando o escopo Vuetify.
+
+**Reason:** Tailwind Preflight aplica reset CSS global (margins, headings, list-style) que conflita com os estilos internos do Vuetify. Componentes como `v-btn`, `v-card`, `v-text-field` perdiam padding, cores e comportamentos nativos.
+
+**Changes:**
+- `web/assets/css/tokens.css` — CSS custom properties da paleta Studio Blessed
+- `tailwind.config.ts` — `preflight: false`, cores sb-* via `var(--color-*)`
+- `nuxt.config.ts` — importa `tokens.css`, Vuetify theme com valores hex correspondentes
+- `layouts/landing.vue` — reset básico escopado em `.page-landing`
+- `pages/index.vue` — usa `definePageMeta({ layout: "landing" })`
+
+**Impact:** Landing page com reset específico e Tailwind utilities isolados. Dashboard com Vuetify intacto. Paleta unificada via CSS variables para consistência futura.
 
 ---
 

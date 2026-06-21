@@ -17,7 +17,7 @@ export function useSSE() {
     if (eventSource?.readyState === EventSource.OPEN) return;
 
     const apiUrl = import.meta.server
-      ? process.env.NUXT_PUBLIC_API_URL ?? "http://localhost:3001"
+      ? (process.env.NUXT_PUBLIC_API_URL ?? "http://localhost:3001")
       : "http://localhost:3001";
 
     eventSource = new EventSource(`${apiUrl}/api/sse`, {

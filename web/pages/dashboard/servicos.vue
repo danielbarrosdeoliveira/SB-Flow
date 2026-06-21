@@ -1,190 +1,220 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex items-center justify-between mb-8">
-        <h1 class="text-2xl font-bold">Serviços</h1>
-        <div class="flex items-center gap-4">
-          <span class="text-sm text-gray-600">{{ auth.user?.name }} ({{ auth.user?.role }})</span>
-          <button
-            v-if="auth.user?.role === 'OWNER'"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
-            @click="openCreateModal"
+  <div>
+    <v-row class="mb-4">
+      <v-col cols="12" sm="6" class="d-flex align-center">
+        <span class="text-h6 font-weight-regular">Gerenciar Serviços</span>
+      </v-col>
+      <v-col cols="12" sm="6" class="d-flex align-center justify-sm-end">
+        <v-btn
+          v-if="auth.user?.role === 'OWNER'"
+          color="primary"
+          prepend-icon="mdi-plus"
+          @click="openCreateModal"
+        >
+          Novo Serviço
+        </v-btn>
+      </v-col>
+    </v-row>
+
+    <v-alert
+      v-if="status === 'pending'"
+      type="info"
+      variant="tonal"
+      text="Carregando..."
+    />
+    <v-alert
+      v-else-if="error"
+      type="error"
+      variant="tonal"
+      :text="String(error)"
+    />
+    <v-alert
+      v-else-if="(servicesData ?? []).length === 0"
+      type="info"
+      variant="tonal"
+      text="Nenhum serviço cadastrado."
+    />
+
+    <div v-else class="d-flex flex-column ga-4">
+      <v-card
+        v-for="group in groupedServices"
+        :key="group.professionalId"
+        variant="outlined"
+      >
+        <v-card-title class="bg-surface-light">
+          {{ group.professionalName }}
+        </v-card-title>
+
+        <v-list lines="three">
+          <v-list-item
+            v-for="svc in group.items"
+            :key="svc.id"
+            :title="svc.name"
           >
-            + Novo Serviço
-          </button>
-          <NuxtLink to="/dashboard/agenda" class="text-sm text-gray-600 hover:text-gray-800">
-            Agenda
-          </NuxtLink>
-          <button class="text-sm text-red-600 hover:text-red-700" @click="handleLogout">Sair</button>
-        </div>
-      </div>
+            <template #subtitle>
+              <span>{{ svc.durationMinutes }}min · R$ {{ svc.price }}</span>
+              <br v-if="svc.description" />
+              <span v-if="svc.description" class="text-caption">{{ svc.description }}</span>
+            </template>
 
-      <div v-if="status === 'pending'" class="text-center py-8 text-gray-500">Carregando...</div>
-
-      <div v-else-if="error" class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
-        {{ error }}
-      </div>
-
-      <div v-else-if="(servicesData ?? []).length === 0" class="text-center py-8 text-gray-500">
-        Nenhum serviço cadastrado.
-      </div>
-
-      <div v-else class="space-y-4">
-        <div v-for="group in groupedServices" :key="group.professionalId" class="bg-white rounded-lg shadow-sm border">
-          <div class="px-6 py-3 border-b bg-gray-50 font-medium text-sm text-gray-700">
-            {{ group.professionalName }}
-          </div>
-          <div class="divide-y">
-            <div v-for="svc in group.items" :key="svc.id" class="px-6 py-4 flex items-center justify-between">
-              <div class="flex-1">
-                <div class="font-medium">{{ svc.name }}</div>
-                <div class="text-sm text-gray-500">
-                  {{ svc.durationMinutes }}min · R$ {{ svc.price }}
-                </div>
-                <div v-if="svc.description" class="text-xs text-gray-400 mt-0.5">{{ svc.description }}</div>
-              </div>
-              <div v-if="!svc.isActive" class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded mr-3">
+            <template #append>
+              <v-chip
+                v-if="!svc.isActive"
+                size="x-small"
+                variant="tonal"
+                color="grey"
+                class="mr-2"
+              >
                 Inativo
-              </div>
-              <div class="flex items-center gap-2">
-                <button
-                  class="text-sm text-blue-600 hover:text-blue-700"
-                  @click="openEditModal(svc)"
-                >
-                  Editar
-                </button>
-                <button
-                  class="text-sm text-red-600 hover:text-red-700"
-                  @click="confirmDelete(svc)"
-                >
-                  Excluir
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+              </v-chip>
+              <v-btn
+                icon="mdi-pencil"
+                variant="text"
+                size="small"
+                color="primary"
+                @click="openEditModal(svc)"
+              />
+              <v-btn
+                icon="mdi-delete"
+                variant="text"
+                size="small"
+                color="error"
+                @click="confirmDelete(svc)"
+              />
+            </template>
+          </v-list-item>
+        </v-list>
+      </v-card>
     </div>
 
-    <!-- Create/Edit Modal -->
-    <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="closeModal">
-      <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-4">
-        <h2 class="text-lg font-bold mb-4">{{ editingService ? 'Editar Serviço' : 'Novo Serviço' }}</h2>
-
-        <form @submit.prevent="handleSave">
-          <div v-if="auth.user?.role === 'OWNER'" class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Profissional</label>
-            <select
+    <!-- Create/Edit Dialog -->
+    <v-dialog v-model="showModal" max-width="500">
+      <v-card>
+        <v-card-title>{{ editingService ? 'Editar Serviço' : 'Novo Serviço' }}</v-card-title>
+        <v-card-text>
+          <v-form @submit.prevent="handleSave">
+            <v-select
+              v-if="auth.user?.role === 'OWNER'"
               v-model="form.professionalId"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              :class="{ 'border-red-500': formErrors.professionalId }"
+              :items="professionalsData ?? []"
+              item-title="name"
+              item-value="id"
+              label="Profissional"
+              variant="outlined"
+              density="compact"
+              class="mb-3"
+              :error="!!formErrors.professionalId"
+              :error-messages="formErrors.professionalId"
               required
-            >
-              <option value="" disabled>Selecione...</option>
-              <option v-for="p in (professionalsData ?? [])" :key="p.id" :value="p.id">{{ p.name }}</option>
-            </select>
-          </div>
+            />
 
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-            <input
+            <v-text-field
               v-model="form.name"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              :class="{ 'border-red-500': formErrors.name }"
+              label="Nome"
+              variant="outlined"
+              density="compact"
+              class="mb-3"
+              :error="!!formErrors.name"
+              :error-messages="formErrors.name"
               required
             />
-          </div>
 
-          <div class="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Duração (min)</label>
-              <input
-                v-model.number="form.durationMinutes"
-                type="number"
-                min="5"
-                step="5"
-                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                :class="{ 'border-red-500': formErrors.durationMinutes }"
-                required
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
-              <input
-                v-model.number="form.price"
-                type="number"
-                min="0"
-                step="0.01"
-                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                :class="{ 'border-red-500': formErrors.price }"
-                required
-              />
-            </div>
-          </div>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field
+                  v-model.number="form.durationMinutes"
+                  label="Duração (min)"
+                  type="number"
+                  min="5"
+                  step="5"
+                  variant="outlined"
+                  density="compact"
+                  :error="!!formErrors.durationMinutes"
+                  :error-messages="formErrors.durationMinutes"
+                  required
+                />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model.number="form.price"
+                  label="Valor (R$)"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  variant="outlined"
+                  density="compact"
+                  prefix="R$"
+                  :error="!!formErrors.price"
+                  :error-messages="formErrors.price"
+                  required
+                />
+              </v-col>
+            </v-row>
 
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
-            <textarea
+            <v-textarea
               v-model="form.description"
+              label="Descrição"
+              variant="outlined"
+              density="compact"
               rows="2"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="mb-3"
             />
-          </div>
 
-          <p v-if="saveError" class="text-red-500 text-sm mb-4">{{ saveError }}</p>
-
-          <div class="flex justify-end gap-3">
-            <button
-              type="button"
-              class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
-              @click="closeModal"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              :disabled="saving"
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50"
-            >
-              {{ saving ? 'Salvando...' : 'Salvar' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            <v-alert
+              v-if="saveError"
+              type="error"
+              variant="tonal"
+              :text="saveError"
+              class="mb-3"
+            />
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="closeModal">Cancelar</v-btn>
+          <v-btn
+            color="primary"
+            :loading="saving"
+            @click="handleSave"
+          >
+            Salvar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <!-- Delete Confirmation -->
-    <div v-if="deletingService" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="deletingService = null">
-      <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm mx-4">
-        <h3 class="text-lg font-bold mb-2">Excluir Serviço</h3>
-        <p class="text-gray-600 text-sm mb-6">
-          Deseja excluir "{{ deletingService.name }}"? Se houver agendamentos vinculados, o serviço será desativado.
-        </p>
-        <div class="flex justify-end gap-3">
-          <button class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800" @click="deletingService = null">
-            Cancelar
-          </button>
-          <button
-            class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 disabled:opacity-50"
-            :disabled="deleting"
+    <v-dialog v-model="showDeleteDialog" max-width="400">
+      <v-card>
+        <v-card-title>Excluir Serviço</v-card-title>
+        <v-card-text>
+          Deseja excluir "{{ deletingService?.name }}"? Se houver agendamentos vinculados, o serviço será desativado.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="deletingService = null">Cancelar</v-btn>
+          <v-btn
+            color="error"
+            :loading="deleting"
             @click="handleDelete"
           >
-            {{ deleting ? 'Excluindo...' : 'Excluir' }}
-          </button>
-        </div>
-      </div>
-    </div>
+            Excluir
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useQuery, useQueryClient } from "@tanstack/vue-query";
-import { useAuthStore } from "../../stores/auth";
-import { api } from "../../utils/api";
-
 definePageMeta({
-  middleware: "auth" as any,
+  layout: "dashboard",
+  middleware: "auth",
 });
+
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
+import { useAuthStore } from "~/stores/auth";
+import { api } from "~/utils/api";
 
 interface Service {
   id: number;
@@ -208,7 +238,6 @@ interface ServiceGroup {
 }
 
 const auth = useAuthStore();
-const router = useRouter();
 const queryClient = useQueryClient();
 
 const showModal = ref(false);
@@ -217,6 +246,10 @@ const deletingService = ref<Service | null>(null);
 const saving = ref(false);
 const deleting = ref(false);
 const saveError = ref("");
+const showDeleteDialog = computed({
+  get: () => deletingService.value !== null,
+  set: (v) => { if (!v) deletingService.value = null; },
+});
 
 const form = reactive({
   professionalId: "",
@@ -354,10 +387,5 @@ async function handleDelete() {
   } finally {
     deleting.value = false;
   }
-}
-
-async function handleLogout() {
-  await auth.logout();
-  await router.push("/login");
 }
 </script>

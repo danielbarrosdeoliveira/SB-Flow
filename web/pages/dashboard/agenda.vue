@@ -1,224 +1,256 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex items-center justify-between mb-8">
-        <h1 class="text-2xl font-bold">Agenda</h1>
-        <div class="flex items-center gap-4">
-          <span class="text-sm text-gray-600">
-            {{ auth.user?.name }} ({{ auth.user?.role }})
-          </span>
-          <NuxtLink to="/dashboard/profissionais" class="text-sm text-gray-600 hover:text-gray-800">
-            Profissionais
-          </NuxtLink>
-          <NuxtLink to="/dashboard/clientes" class="text-sm text-gray-600 hover:text-gray-800">
-            Clientes
-          </NuxtLink>
-          <NuxtLink to="/dashboard/servicos" class="text-sm text-gray-600 hover:text-gray-800">
-            Serviços
-          </NuxtLink>
-          <button class="text-sm text-red-600 hover:text-red-700" @click="handleLogout">Sair</button>
-        </div>
-      </div>
-
-      <!-- Date selector -->
-      <div class="flex items-center gap-4 mb-6">
-        <input
+  <div>
+    <v-row class="mb-4">
+      <v-col cols="auto">
+        <v-text-field
           v-model="selectedDate"
           type="date"
-          class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          variant="outlined"
+          density="compact"
+          hide-details
+          class="w-[240px]"
         />
-        <span class="text-sm text-gray-500">{{ formatDate(selectedDate) }}</span>
-      </div>
+      </v-col>
+      <v-col cols="auto" class="d-flex align-center">
+        <span class="text-body-2 text-medium-emphasis">
+          {{ formatDate(selectedDate) }}
+        </span>
+      </v-col>
+    </v-row>
 
-      <!-- Appointments -->
-      <h2 class="text-lg font-semibold mb-3">Agendamentos</h2>
-      <div v-if="aptStatus === 'pending'" class="text-center py-4 text-gray-500">Carregando...</div>
-      <div v-else-if="aptError" class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg mb-4">
-        {{ aptError }}
-      </div>
-      <div v-else-if="(appointments ?? []).length === 0" class="text-center py-4 text-gray-500 mb-6">
-        Nenhum agendamento para esta data.
-      </div>
-      <div v-else class="space-y-3 mb-8">
-        <div
-          v-for="apt in appointments"
-          :key="apt.id"
-          class="bg-white rounded-lg shadow-sm border p-4"
-        >
-          <div class="font-medium">{{ apt.clientName }}</div>
-          <div class="text-sm text-gray-600">{{ apt.serviceName }}</div>
-          <div class="text-xs text-gray-400">
-            {{ formatTime(apt.startTime) }} — {{ formatTime(apt.endTime) }}
-          </div>
-        </div>
-      </div>
+    <v-card class="mb-6">
+      <v-card-title class="d-flex align-center">
+        <v-icon start>mdi-calendar-check</v-icon>
+        Agendamentos
+      </v-card-title>
 
-      <!-- Blocks -->
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-lg font-semibold">Bloqueios</h2>
-        <button
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+      <v-card-text>
+        <v-alert
+          v-if="aptStatus === 'pending'"
+          type="info"
+          variant="tonal"
+          text="Carregando..."
+        />
+        <v-alert
+          v-else-if="aptError"
+          type="error"
+          variant="tonal"
+          :text="String(aptError)"
+        />
+        <v-alert
+          v-else-if="(appointments ?? []).length === 0"
+          type="info"
+          variant="tonal"
+          text="Nenhum agendamento para esta data."
+        />
+        <v-list v-else lines="one">
+          <v-list-item
+            v-for="apt in appointments"
+            :key="apt.id"
+            :title="apt.clientName"
+            :subtitle="apt.serviceName"
+          >
+            <template #append>
+              <span class="text-caption text-medium-emphasis">
+                {{ formatTime(apt.startTime) }} — {{ formatTime(apt.endTime) }}
+              </span>
+            </template>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+    </v-card>
+
+    <v-card>
+      <v-card-title class="d-flex align-center">
+        <v-icon start>mdi-lock</v-icon>
+        Bloqueios
+        <v-spacer />
+        <v-btn
+          color="primary"
+          size="small"
+          prepend-icon="mdi-plus"
           @click="openCreateBlockModal"
         >
-          + Novo Bloqueio
-        </button>
-      </div>
-      <div v-if="blocksStatus === 'pending'" class="text-center py-4 text-gray-500">Carregando...</div>
-      <div v-else-if="blocksError" class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg mb-4">
-        {{ blocksError }}
-      </div>
-      <div v-else-if="(blocks ?? []).length === 0" class="text-center py-4 text-gray-500 mb-6">
-        Nenhum bloqueio para esta data.
-      </div>
-      <div v-else class="space-y-3 mb-8">
-        <div
-          v-for="block in blocks"
-          :key="block.id"
-          class="bg-white rounded-lg shadow-sm border-l-4 border-l-red-400 border p-4 flex items-center justify-between"
-        >
-          <div>
-            <div class="font-medium">{{ block.reason || 'Sem motivo' }}</div>
-            <div class="text-xs text-gray-400">
-              {{ formatTime(block.startTime) }} — {{ formatTime(block.endTime) }}
-            </div>
-          </div>
-          <button
-            class="text-sm text-red-600 hover:text-red-700"
-            @click="confirmDeleteBlock(block)"
+          Novo Bloqueio
+        </v-btn>
+      </v-card-title>
+
+      <v-card-text>
+        <v-alert
+          v-if="blocksStatus === 'pending'"
+          type="info"
+          variant="tonal"
+          text="Carregando..."
+        />
+        <v-alert
+          v-else-if="blocksError"
+          type="error"
+          variant="tonal"
+          :text="String(blocksError)"
+        />
+        <v-alert
+          v-else-if="(blocks ?? []).length === 0"
+          type="info"
+          variant="tonal"
+          text="Nenhum bloqueio para esta data."
+        />
+        <v-list v-else lines="two">
+          <v-list-item
+            v-for="block in blocks"
+            :key="block.id"
+            :title="block.reason || 'Sem motivo'"
+            :subtitle="`${formatTime(block.startTime)} — ${formatTime(block.endTime)}`"
           >
-            Remover
-          </button>
-        </div>
-      </div>
-    </div>
+            <template #prepend>
+              <v-icon color="error">mdi-lock</v-icon>
+            </template>
+            <template #append>
+              <v-btn
+                icon="mdi-delete"
+                variant="text"
+                color="error"
+                size="small"
+                @click="confirmDeleteBlock(block)"
+              />
+            </template>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+    </v-card>
 
-    <!-- Create Block Modal -->
-    <div v-if="showBlockModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="closeBlockModal">
-      <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-4">
-        <h2 class="text-lg font-bold mb-4">Novo Bloqueio</h2>
-
-        <form @submit.prevent="handleCreateBlock">
-          <div v-if="auth.user?.role === 'OWNER'" class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Profissional</label>
-            <select
+    <!-- Create Block Dialog -->
+    <v-dialog v-model="showBlockModal" max-width="500">
+      <v-card>
+        <v-card-title>Novo Bloqueio</v-card-title>
+        <v-card-text>
+          <v-form @submit.prevent="handleCreateBlock">
+            <v-select
+              v-if="auth.user?.role === 'OWNER'"
               v-model="blockForm.professionalId"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              :items="professionals ?? []"
+              item-title="name"
+              item-value="id"
+              label="Profissional"
+              variant="outlined"
+              density="compact"
+              class="mb-3"
               required
-            >
-              <option value="" disabled>Selecione...</option>
-              <option v-for="p in (professionals ?? [])" :key="p.id" :value="p.id">
-                {{ p.name }}
-              </option>
-            </select>
-          </div>
+            />
 
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Data</label>
-            <input
+            <v-text-field
               v-model="blockForm.date"
               type="date"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              label="Data"
+              variant="outlined"
+              density="compact"
+              class="mb-3"
               required
             />
-          </div>
 
-          <div class="flex items-center gap-3 mb-4">
-            <input v-model="blockForm.allDay" type="checkbox" id="allDay" />
-            <label for="allDay" class="text-sm text-gray-700">Dia inteiro</label>
-          </div>
-
-          <div v-if="!blockForm.allDay" class="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Início</label>
-              <input
-                v-model="blockForm.startTime"
-                type="time"
-                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Fim</label>
-              <input
-                v-model="blockForm.endTime"
-                type="time"
-                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Motivo</label>
-            <input
-              v-model="blockForm.reason"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              maxlength="500"
+            <v-switch
+              v-model="blockForm.allDay"
+              label="Dia inteiro"
+              color="primary"
+              hide-details
+              class="mb-3"
             />
-          </div>
 
-          <p v-if="blockSaveError" class="text-red-500 text-sm mb-4">{{ blockSaveError }}</p>
-          <p v-if="blockWarning" class="text-yellow-600 text-sm mb-4 bg-yellow-50 border border-yellow-200 rounded p-2">
-            {{ blockWarning }}
-          </p>
+            <v-row v-if="!blockForm.allDay">
+              <v-col cols="6">
+                <v-text-field
+                  v-model="blockForm.startTime"
+                  type="time"
+                  label="Início"
+                  variant="outlined"
+                  density="compact"
+                  required
+                />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="blockForm.endTime"
+                  type="time"
+                  label="Fim"
+                  variant="outlined"
+                  density="compact"
+                  required
+                />
+              </v-col>
+            </v-row>
 
-          <div class="flex justify-end gap-3">
-            <button
-              type="button"
-              class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
-              @click="closeBlockModal"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              :disabled="blockSaving"
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50"
-            >
-              {{ blockSaving ? 'Salvando...' : 'Salvar' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            <v-text-field
+              v-model="blockForm.reason"
+              label="Motivo"
+              variant="outlined"
+              density="compact"
+              maxlength="500"
+              class="mb-3"
+            />
+
+            <v-alert
+              v-if="blockSaveError"
+              type="error"
+              variant="tonal"
+              :text="blockSaveError"
+              class="mb-3"
+            />
+            <v-alert
+              v-if="blockWarning"
+              type="warning"
+              variant="tonal"
+              :text="blockWarning"
+              class="mb-3"
+            />
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="closeBlockModal">Cancelar</v-btn>
+          <v-btn
+            color="primary"
+            :loading="blockSaving"
+            @click="handleCreateBlock"
+          >
+            Salvar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <!-- Delete Block Confirmation -->
-    <div v-if="deletingBlock" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="deletingBlock = null">
-      <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm mx-4">
-        <h3 class="text-lg font-bold mb-2">Remover Bloqueio</h3>
-        <p class="text-gray-600 text-sm mb-6">
-          Deseja remover este bloqueio{{ deletingBlock.reason ? `: "${deletingBlock.reason}"` : '' }}?
-        </p>
-        <div class="flex justify-end gap-3">
-          <button
-            class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
-            @click="deletingBlock = null"
-          >
-            Cancelar
-          </button>
-          <button
-            class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 disabled:opacity-50"
-            :disabled="blockDeleting"
+    <v-dialog v-model="showDeleteDialog" max-width="400">
+      <v-card>
+        <v-card-title>Remover Bloqueio</v-card-title>
+        <v-card-text>
+          Deseja remover este bloqueio{{ deletingBlock?.reason ? `: "${deletingBlock.reason}"` : '' }}?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="deletingBlock = null">Cancelar</v-btn>
+          <v-btn
+            color="error"
+            :loading="blockDeleting"
             @click="handleDeleteBlock"
           >
-            {{ blockDeleting ? 'Removendo...' : 'Remover' }}
-          </button>
-        </div>
-      </div>
-    </div>
+            Remover
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useQueryClient, useQuery } from "@tanstack/vue-query";
-import { api } from "../../utils/api";
-import { useAuthStore } from "../../stores/auth";
-import { useSSE } from "../../composables/use-sse";
-import type { Appointment } from "../../composables/use-appointments";
-
 definePageMeta({
-  middleware: "auth" as any,
+  layout: "dashboard",
+  middleware: "auth",
 });
+
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
+import type { Appointment } from "~/composables/use-appointments";
+import { useSSE } from "~/composables/use-sse";
+import { useAuthStore } from "~/stores/auth";
+import { api } from "~/utils/api";
 
 interface Block {
   id: number;
@@ -234,7 +266,6 @@ interface Professional {
 }
 
 const auth = useAuthStore();
-const router = useRouter();
 const queryClient = useQueryClient();
 
 const todayStr = computed(() => {
@@ -265,7 +296,10 @@ const {
   error: blocksError,
 } = useQuery<Block[]>({
   queryKey: ["blocks", selectedDate],
-  queryFn: () => api.get<Block[]>(`/api/blocks?start=${selectedDate.value}T00:00:00&end=${selectedDate.value}T23:59:59`),
+  queryFn: () =>
+    api.get<Block[]>(
+      `/api/blocks?start=${selectedDate.value}T00:00:00&end=${selectedDate.value}T23:59:59`,
+    ),
 });
 const blocks = computed(() => blocksData.value ?? []);
 
@@ -353,6 +387,10 @@ async function handleCreateBlock() {
 // Delete block
 const deletingBlock = ref<Block | null>(null);
 const blockDeleting = ref(false);
+const showDeleteDialog = computed({
+  get: () => deletingBlock.value !== null,
+  set: (v) => { if (!v) deletingBlock.value = null; },
+});
 
 function confirmDeleteBlock(block: Block) {
   deletingBlock.value = block;
@@ -387,10 +425,5 @@ function formatDate(iso: string) {
     day: "numeric",
     month: "long",
   });
-}
-
-async function handleLogout() {
-  await auth.logout();
-  await router.push("/login");
 }
 </script>

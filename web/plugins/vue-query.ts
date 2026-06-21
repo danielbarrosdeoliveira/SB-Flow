@@ -1,9 +1,4 @@
-import {
-  QueryClient,
-  VueQueryPlugin,
-  dehydrate,
-  hydrate,
-} from "@tanstack/vue-query";
+import { QueryClient, VueQueryPlugin, dehydrate, hydrate } from "@tanstack/vue-query";
 import type { DehydratedState } from "@tanstack/vue-query";
 
 export default defineNuxtPlugin({
@@ -30,9 +25,7 @@ export default defineNuxtPlugin({
 
     if (import.meta.client) {
       nuxtApp.hooks.hook("app:created", () => {
-        const state = nuxtApp.payload.vueQuery as
-          | DehydratedState
-          | undefined;
+        const state = nuxtApp.payload.vueQuery as DehydratedState | undefined;
         if (state) {
           hydrate(queryClient, state);
         }
