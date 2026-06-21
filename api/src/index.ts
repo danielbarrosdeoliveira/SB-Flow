@@ -6,6 +6,7 @@ import { env } from "./lib/env.js";
 import { jwtPlugin } from "./lib/plugins/auth.js";
 import { appointmentsRoutes } from "./modules/appointments/routes.js";
 import { authRoutes } from "./modules/auth/routes.js";
+import { bookingRoutes } from "./modules/booking/routes.js";
 import { clientsRoutes } from "./modules/clients/routes.js";
 import { blocksRoutes } from "./modules/partner/blocks/routes.js";
 import { partnerRoutes } from "./modules/partner/routes.js";
@@ -58,6 +59,7 @@ await app.register(partnerRoutes);
 await app.register(blocksRoutes);
 await app.register(servicesRoutes);
 await app.register(clientsRoutes);
+await app.register(bookingRoutes);
 await app.register(appointmentsRoutes);
 await app.register(sseRoutes);
 
