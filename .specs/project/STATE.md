@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-06-20T00:00:00Z
-**Current Work:** TASKS.md reconciliado com progresso real — SERVICES, CLIENTS e BOOKING-01 a 04 marcados como concluídos
+**Current Work:** PARTNER-05 — bloqueios de agenda integrados na página /dashboard/agenda
 
 ---
 

@@ -11,9 +11,9 @@
 |---------|-------|-----------|---|
 | Fundação | FOUNDATION-01 a 05 | 5/5 | 100% |
 | Auth | AUTH-01 a 06 | 6/6 | 100% |
-| TanStack Query | TANSTACK-01 a 04 | 3/4 | 75% |
+| TanStack Query | TANSTACK-01 a 04 | 4/4 | 100% |
 | Partner (backend) | PARTNER-01 a 03 | 3/3 | 100% |
-| Partner (frontend) | PARTNER-04 a 05 | 1/2 | 50% |
+| Partner (frontend) | PARTNER-04 a 05 | 2/2 | 100% |
 | Services | SERVICES-01 a 03 | 3/3 | 100% |
 | Clients | CLIENTS-01 a 03 | 3/3 | 100% |
 | Booking | BOOKING-01 a 14 | 4/14 | 29% |
@@ -114,8 +114,8 @@
 ### TANSTACK-02: Composables de domínio ✅
 - [x] `web/composables/use-appointments.ts`
 - [x] `web/composables/use-user-profile.ts`
-- [ ] `web/composables/use-services.ts` — *pendente*
-- [ ] `web/composables/use-clients.ts` — *pendente*
+- [x] `web/composables/use-services.ts`
+- [x] `web/composables/use-clients.ts`
 
 ### TANSTACK-03: Integração com Pinia auth store ✅
 - [x] `logout()` chama `queryClient.clear()`
@@ -165,9 +165,12 @@
 - [x] Modal de edição
 - [x] Botão ativar/desativar
 
-### PARTNER-05: Bloqueios de agenda ⬜
-- [ ] Formulário `BlockForm` (data, hora, "dia inteiro", razão)
-- [ ] Integrar no calendário do dashboard (Booking)
+### PARTNER-05: Bloqueios de agenda ✅
+- [x] Formulário de bloqueio (data, hora, "dia inteiro", razão) na agenda
+- [x] Seletor de profissional (OWNER) ou auto-associação (PARTNER)
+- [x] Listagem de bloqueios por data com indicação visual (borda vermelha)
+- [x] Remoção de bloqueio com confirmação
+- [x] Overlapping warning conforme EDGE-02
 
 ---
 
@@ -233,8 +236,8 @@
 
 | Ordem | Task | Depende de | Status |
 |-------|------|-----------|--------|
-| 1 | TANSTACK-02: `use-services.ts` + `use-clients.ts` | — | Pendente |
-| 2 | PARTNER-05: Frontend bloqueios | PARTNER-03 | Pendente |
+| 1 | TANSTACK-02: `use-services.ts` + `use-clients.ts` | — | ✅ Concluído |
+| 2 | PARTNER-05: Frontend bloqueios | PARTNER-03 | ✅ Concluído |
 | 3 | BOOKING-05: SSE (tempo real) | BOOKING-04 | Pendente |
 
 ---
