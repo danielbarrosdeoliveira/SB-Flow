@@ -366,7 +366,7 @@ No Studio Blessed, a proprietária e uma autônoma parceira que aluga espaço di
 ## Technical Notes
 
 - **RBAC**: CASL.js para gerenciamento de permissões (roles: OWNER, PARTNER, CLIENT)
-- **UI Framework**: Nuxt 3 com TailwindCSS (landing page) e Vuetify (dashboard + agendamento). `routeRules` define SSR/SPA por rota.
+- **UI Framework**: Nuxt 3 com TailwindCSS (landing page + autoatendimento) e Vuetify (dashboard). `routeRules` define SSR/SPA por rota.
 - **Autenticação profissionais**: Telefone + senha. Cadastro com Nome Completo, CPF, Telefone, Senha.
 - **Autenticação clientes**: Telefone + código WhatsApp (EvolutionAPI).
 - **Normalização de telefone**: Armazenar apenas dígitos (DDD + número, 10-11 chars) sem prefixo 55. Backend adiciona +55 para EvolutionAPI. Zod transform limpa input. Frontend usa máscara só para exibição.
@@ -376,7 +376,7 @@ No Studio Blessed, a proprietária e uma autônoma parceira que aluga espaço di
 - **Autenticação**: Duplo cookie HTTP-Only — `access_token` (15 min) + `refresh_token` (30 dias). SSE autentica via cookie (EventSource não envia headers). Nuxt com interceptor global de refresh.
 - **Infraestrutura**: Docker Compose (dev). Deploy em Oracle Cloud apenas após validação com a proprietária.
 - **Database**: PostgreSQL nativo via container. `prepare: true` no postgres.js (prepared statements ativos).
-- **Arquitetura**: Nuxt 3 — `/` SSR (Tailwind), `/dashboard/**` SPA (Vuetify), `/agendar/**` SPA (Vuetify)
+- **Arquitetura**: Nuxt 3 — `/` SSR (Tailwind), `/dashboard/**` SPA (Vuetify), `/agendar/**` SPA (Tailwind)
 - **Pastas**: Monorepo com `api/` (Fastify) e `web/` (Nuxt 3)
 - **Seed**: Script de migração inicial que cria conta OWNER (admin). A proprietária cadastra parceiras e serviços depois.
 
@@ -385,9 +385,9 @@ No Studio Blessed, a proprietária e uma autônoma parceira que aluga espaço di
 export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss', 'vuetify-nuxt-module'],
   routeRules: {
-    '/': { ssr: true },
-    '/dashboard/**': { ssr: false },
-    '/agendar/**': { ssr: false },
+    '/': { ssr: true },               // Landing — Tailwind CSS
+    '/dashboard/**': { ssr: false },  // Dashboard — Vuetify
+    '/agendar/**': { ssr: false },    // Booking — Tailwind CSS
   },
 })
 ```

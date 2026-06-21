@@ -1,7 +1,7 @@
 # State
 
-**Last Updated:** 2026-06-19T00:00:00Z
-**Current Work:** Revisão de especificação — fase de Specify concluída
+**Last Updated:** 2026-06-20T00:00:00Z
+**Current Work:** Docs commit — AD-024 registrado, seguindo para TANSTACK-02 (use-services + use-clients composables)
 
 ---
 
@@ -76,19 +76,19 @@
 **Trade-off:** CPF adiciona complexidade de validação (formato, dígitos verificadores) e é dado sensível (LGPD).
 **Impact:** Validar CPF no frontend e backend. Armazenar de forma segura (hash não é possível pois CPF é identificador, mas pode ser criptografado em repouso).
 
-### AD-011: Vuetify substitui ShadcnVue + TailwindCSS + Schedule-X (2026-06-19)
+### AD-011: Vuetify substitui ShadcnVue + TailwindCSS + Schedule-X (2026-06-19) — 🔄 PARTIALLY SUPERSEDED by AD-024
 
 **Decision:** UI migrada para Vuetify (Material Design 3). Remove ShadcnVue e Schedule-X.
 **Reason:** Vuetify tem calendário nativo Vue 3 que reage naturalmente a dados reativos, eliminando risco de integração com Schedule-X. Menos dependências, stack mais coesa.
 **Trade-off:** Bundle maior (Vuetify é mais pesado que componentes isolados). Design Material Design em vez de custom.
-**Impact:** Remove Schedule-X, ShadcnVue do package.json. Adiciona Vuetify. TailwindCSS mantido apenas na landing page.
+**Impact:** Remove Schedule-X, ShadcnVue do package.json. Adiciona Vuetify. TailwindCSS mantido na landing page e área do cliente (/agendar).
 
-### AD-012: Nuxt 3 com routeRules substitui Vite multi-entry (2026-06-19)
+### AD-012: Nuxt 3 com routeRules substitui Vite multi-entry (2026-06-19) — 🔄 PARTIALLY SUPERSEDED by AD-024
 
 **Decision:** Stack frontend migra para Nuxt 3 com `routeRules`: `/` → SSR (Tailwind), `/dashboard/**` → SPA (Vuetify), `/agendar/**` → SPA (Vuetify).
 **Reason:** Nuxt lida nativamente com SSR + SPA híbrido via routeRules. Elimina configuração manual de multi-entry no Vite. Módulos oficiais `@nuxtjs/tailwindcss` e `vuetify-nuxt-module` integram sem atrito.
 **Trade-off:** Nuxt é mais opinionado que Vite puro. Dependência extra do `nitro` como servidor Node (pode conviver com Fastify via `server/` directory ou separação total).
-**Impact:** `web/` vira um projeto Nuxt 3. Fastify continua separado em `api/`. Comunicação via HTTP (REST). Config do Nuxt com `routeRules` e modules declarados.
+**Impact:** `web/` vira um projeto Nuxt 3. Fastify continua separado em `api/`. Comunicação via HTTP (REST). Config do Nuxt com `routeRules` e modules declarados. Rota `/agendar/**` muda de Vuetify para Tailwind conforme AD-024.
 
 ### AD-014: Normalização de telefone (2026-06-19)
 
@@ -155,6 +155,22 @@
 **Reason:** MVP já está carregado (agenda, autoatendimento, SSE). Relatórios não são críticos para o funcionamento diário do salão.
 **Trade-off:** Proprietária não terá relatórios formatados no lançamento. Dashboard com dados brutos por enquanto.
 **Impact:** Removido de PROJECT.md v1 scope e ROADMAP Milestone 3. Move para v3 no roadmap.
+
+### AD-024: Booking (/agendar) migra de Vuetify para Tailwind CSS (2026-06-20)
+
+**Decision:** A área de autoatendimento do cliente (`/agendar/**`) usará Tailwind CSS em vez de Vuetify.
+**Reason:**
+  - Área do cliente deve ser leve e rápida, sem o peso do bundle Vuetify
+  - Tailwind CSS é suficiente para páginas de formulário multi-step (seleção de profissional, serviço, horário)
+  - Consistência visual com a landing page (também Tailwind)
+  - Reduz o bundle carregado pelo cliente (não precisa baixar Vuetify)
+**Trade-off:** Duas abordagens de UI no mesmo projeto (Vuetify no dashboard, Tailwind no booking/landing). Componentes UI não são reutilizáveis entre dashboard e booking.
+**Impact:**
+  - `/agendar/**` continua como SPA (`ssr: false`) mas usa Tailwind CSS em vez de Vuetify
+  - Landing page e booking compartilham design system Tailwind
+  - Dashboard (/dashboard/**) continua com Vuetify
+  - Páginas em `/agendar/` não importam componentes Vuetify
+  - AD-011 e AD-012 parcialmente substituídos: Vuetify restrito ao dashboard
 
 ### AD-023: TanStack Query (Vue Query) para Server State (2026-06-20)
 

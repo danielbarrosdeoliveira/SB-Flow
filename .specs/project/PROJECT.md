@@ -90,7 +90,7 @@ PostgreSQL nativo via container Docker. Sem limitações serverless. Conexão di
 Nuxt 3 com `routeRules`:
 - `/` → SSR (landing page com TailwindCSS, indexação SEO)
 - `/dashboard/**` → SPA (Vuetify, dashboard profissional)
-- `/agendar/**` → SPA (Vuetify, autoatendimento cliente)
+- `/agendar/**` → SPA (Tailwind, autoatendimento cliente)
 
 ### Normalização de Telefone
 
