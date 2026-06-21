@@ -1,5 +1,6 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { requireAuth, requireRole } from "../../../lib/plugins/auth.js";
+import { requireAuth } from "../../../lib/plugins/auth.js";
+import { broadcastToProfessional } from "../../../lib/sse-manager.js";
 import { createBlockSchema } from "./schema.js";
 import * as blocksService from "./service.js";
 
@@ -51,6 +52,7 @@ export async function blocksRoutes(app: FastifyInstance) {
       }
 
       const result = await blocksService.create({ ...input, professionalId });
+      broadcastToProfessional(professionalId, "block:created", result.block);
       return reply.status(201).send(result);
     },
   );
@@ -76,6 +78,7 @@ export async function blocksRoutes(app: FastifyInstance) {
         return reply.status(404).send({ error: "Bloqueio não encontrado", statusCode: 404 });
       }
 
+      broadcastToProfessional(user.professionalId, "block:deleted", { id });
       return { ok: true };
     },
   );

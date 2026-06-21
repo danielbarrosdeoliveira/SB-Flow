@@ -1,6 +1,7 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { createAbility } from "../../lib/ability.js";
 import { requireAuth } from "../../lib/plugins/auth.js";
+import { broadcastToProfessional } from "../../lib/sse-manager.js";
 import {
   cancelAppointmentSchema,
   createAppointmentSchema,
@@ -57,6 +58,7 @@ export async function appointmentsRoutes(app: FastifyInstance) {
       }
 
       const appointment = await appointmentsService.create(input);
+      broadcastToProfessional(appointment.professionalId, "appointment:created", appointment);
       return reply.status(201).send(appointment);
     },
   );
@@ -92,6 +94,7 @@ export async function appointmentsRoutes(app: FastifyInstance) {
       if (!appointment) {
         return reply.status(404).send({ error: "Agendamento não encontrado", statusCode: 404 });
       }
+      broadcastToProfessional(appointment.professionalId, "appointment:updated", appointment);
       return appointment;
     },
   );
@@ -123,6 +126,10 @@ export async function appointmentsRoutes(app: FastifyInstance) {
       }
 
       const appointment = await appointmentsService.cancel(id, user.professionalId);
+      if (!appointment) {
+        return reply.status(404).send({ error: "Agendamento não encontrado", statusCode: 404 });
+      }
+      broadcastToProfessional(appointment.professionalId, "appointment:cancelled", appointment);
       return appointment;
     },
   );
@@ -158,6 +165,7 @@ export async function appointmentsRoutes(app: FastifyInstance) {
       if (!appointment) {
         return reply.status(404).send({ error: "Agendamento não encontrado", statusCode: 404 });
       }
+      broadcastToProfessional(appointment.professionalId, "appointment:status-changed", appointment);
       return appointment;
     },
   );
