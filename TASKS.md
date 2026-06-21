@@ -13,10 +13,10 @@
 | Auth | AUTH-01 a 06 | 6/6 | 100% |
 | TanStack Query | TANSTACK-01 a 04 | 3/4 | 75% |
 | Partner (backend) | PARTNER-01 a 03 | 3/3 | 100% |
-| Partner (frontend) | PARTNER-04 a 05 | 0/2 | 0% |
-| Services | SERVICES-01 a 03 | 0/3 | 0% |
-| Clients | CLIENTS-01 a 03 | 0/3 | 0% |
-| Booking | BOOKING-01 a 14 | 0/14 | 0% |
+| Partner (frontend) | PARTNER-04 a 05 | 1/2 | 50% |
+| Services | SERVICES-01 a 03 | 3/3 | 100% |
+| Clients | CLIENTS-01 a 03 | 3/3 | 100% |
+| Booking | BOOKING-01 a 14 | 4/14 | 29% |
 
 ---
 
@@ -158,12 +158,12 @@
 
 ## Execução — Fase 5 (Partner Frontend) ⬜
 
-### PARTNER-04: Tela de gestão de profissionais ⬜
-- [ ] Criar página `/dashboard/profissionais` (OWNER only)
-- [ ] Listar profissionais com status (ativo/inativo)
-- [ ] Modal de criação
-- [ ] Modal de edição
-- [ ] Botão ativar/desativar
+### PARTNER-04: Tela de gestão de profissionais ✅
+- [x] Criar página `/dashboard/profissionais` (OWNER only)
+- [x] Listar profissionais com status (ativo/inativo)
+- [x] Modal de criação
+- [x] Modal de edição
+- [x] Botão ativar/desativar
 
 ### PARTNER-05: Bloqueios de agenda ⬜
 - [ ] Formulário `BlockForm` (data, hora, "dia inteiro", razão)
@@ -171,39 +171,51 @@
 
 ---
 
-## Execução — Fase 6 (Services) ⬜
+## Execução — Fase 6 (Services) ✅
 
-### SERVICES-01: Schema de services ⬜
-- [ ] Criar tabela `services` no Drizzle
+### SERVICES-01: Schema de services ✅
+- [x] Criar tabela `services` no Drizzle
 
-### SERVICES-02: CRUD de serviços ⬜
-- [ ] Módulo `api/src/modules/services/` (routes + service + schema)
-- [ ] `GET /api/services`, `POST`, `PUT`, `DELETE`
+### SERVICES-02: CRUD de serviços ✅
+- [x] Módulo `api/src/modules/services/` (routes + service + schema)
+- [x] `GET /api/services`, `POST`, `PUT`, `DELETE`
 
-### SERVICES-03: Frontend ⬜
-- [ ] Página `/dashboard/servicos`
-
----
-
-## Execução — Fase 6 (Clients) ⬜
-
-### CLIENTS-01: Schema de clients ⬜
-- [ ] Criar tabela `clients` no Drizzle
-
-### CLIENTS-02: CRUD de clientes ⬜
-- [ ] Módulo `api/src/modules/clients/` (routes + service + schema)
-
-### CLIENTS-03: Frontend ⬜
-- [ ] Página `/dashboard/clientes`
+### SERVICES-03: Frontend ✅
+- [x] Página `/dashboard/servicos`
 
 ---
 
-## Execução — Fase 7 (Booking) ⬜
+## Execução — Fase 7 (Clients) ✅
 
-### BOOKING-01 a BOOKING-14 ⬜
-- [ ] Schema appointments + CRUD
-- [ ] Transação com checagem de conflito
-- [ ] Cancelar e alterar status
+### CLIENTS-01: Schema de clients ✅
+- [x] Criar tabela `clients` no Drizzle
+
+### CLIENTS-02: CRUD de clientes ✅
+- [x] Módulo `api/src/modules/clients/` (routes + service + schema)
+
+### CLIENTS-03: Frontend ✅
+- [x] Página `/dashboard/clientes`
+
+---
+
+## Execução — Fase 8 (Booking) 🟡
+
+### BOOKING-01: Schema appointments + CRUD ✅
+- [x] Tabela `appointments` no Drizzle
+- [x] CRUD completo (GET / POST / PUT / DELETE)
+
+### BOOKING-02: Transação com checagem de conflito ✅
+- [x] `db.transaction()` com SELECT de verificação antes do INSERT
+- [x] 409 Conflict se horário já ocupado
+
+### BOOKING-03: Cancelar e alterar status ✅
+- [x] Rota PATCH `/api/appointments/:id/status`
+- [x] Validação de transições de status
+
+### BOOKING-04: Agendamentos listados no dashboard ✅
+- [x] Página `/dashboard/agenda` com appointments do dia
+
+### BOOKING-05 a BOOKING-14 ⬜
 - [ ] SSE (tempo real)
 - [ ] Envio/verificação código WhatsApp
 - [ ] Listagens públicas booking
@@ -222,10 +234,8 @@
 | Ordem | Task | Depende de | Status |
 |-------|------|-----------|--------|
 | 1 | TANSTACK-02: `use-services.ts` + `use-clients.ts` | — | Pendente |
-| 2 | SERVICES-01: Schema services | AUTH-04 | Pendente |
-| 3 | CLIENTS-01: Schema clients | AUTH-04 | Pendente |
-| 4 | PARTNER-04: Frontend profissionais | AUTH-06 | Pendente |
-| 5 | PARTNER-05: Frontend bloqueios | PARTNER-03 | Pendente |
+| 2 | PARTNER-05: Frontend bloqueios | PARTNER-03 | Pendente |
+| 3 | BOOKING-05: SSE (tempo real) | BOOKING-04 | Pendente |
 
 ---
 

@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-06-20T00:00:00Z
-**Current Work:** Docs commit — AD-024 registrado, seguindo para TANSTACK-02 (use-services + use-clients composables)
+**Current Work:** TASKS.md reconciliado com progresso real — SERVICES, CLIENTS e BOOKING-01 a 04 marcados como concluídos
 
 ---
 
