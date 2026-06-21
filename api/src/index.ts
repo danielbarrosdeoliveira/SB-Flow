@@ -10,6 +10,7 @@ import { clientsRoutes } from "./modules/clients/routes.js";
 import { blocksRoutes } from "./modules/partner/blocks/routes.js";
 import { partnerRoutes } from "./modules/partner/routes.js";
 import { servicesRoutes } from "./modules/services/routes.js";
+import { sseRoutes } from "./modules/sse/routes.js";
 
 const app = Fastify({
   logger: {
@@ -58,6 +59,7 @@ await app.register(blocksRoutes);
 await app.register(servicesRoutes);
 await app.register(clientsRoutes);
 await app.register(appointmentsRoutes);
+await app.register(sseRoutes);
 
 try {
   await app.listen({ port: env.API_PORT, host: "0.0.0.0" });
