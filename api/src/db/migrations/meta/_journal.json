@@ -15,6 +15,13 @@
       "when": 1782007234374,
       "tag": "0001_add_blocks_table",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782009914660,
+      "tag": "0002_gorgeous_morlocks",
+      "breakpoints": true
     }
   ]
 }

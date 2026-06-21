@@ -5,8 +5,10 @@ import { ZodError } from "zod";
 import { env } from "./lib/env.js";
 import { jwtPlugin } from "./lib/plugins/auth.js";
 import { authRoutes } from "./modules/auth/routes.js";
+import { clientsRoutes } from "./modules/clients/routes.js";
 import { blocksRoutes } from "./modules/partner/blocks/routes.js";
 import { partnerRoutes } from "./modules/partner/routes.js";
+import { servicesRoutes } from "./modules/services/routes.js";
 
 const app = Fastify({
   logger: {
@@ -52,6 +54,8 @@ app.get("/api/health", async () => {
 await app.register(authRoutes);
 await app.register(partnerRoutes);
 await app.register(blocksRoutes);
+await app.register(servicesRoutes);
+await app.register(clientsRoutes);
 
 try {
   await app.listen({ port: env.API_PORT, host: "0.0.0.0" });
