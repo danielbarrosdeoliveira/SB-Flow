@@ -1,7 +1,7 @@
-import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { loginSchema, refreshSchema } from "./schema.js";
-import { login, refresh, AuthError } from "./service.js";
+import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { env } from "../../lib/env.js";
+import { loginSchema, refreshSchema } from "./schema.js";
+import { AuthError, login, refresh } from "./service.js";
 
 const cookieOpts = (maxAge: number) => ({
   path: "/",

@@ -1,7 +1,7 @@
-import { z } from "zod";
 import bcrypt from "bcrypt";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
+import { z } from "zod";
 import { env } from "../lib/env.js";
 import { professionals } from "./schema/index.js";
 
