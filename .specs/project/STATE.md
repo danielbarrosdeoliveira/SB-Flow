@@ -283,6 +283,26 @@
 
 ---
 
+### AD-030: Landing page polish — local assets, nuxt-icon, static team, SVG logos (2026-06-22)
+
+**Decision:** Refinar a landing page com assets locais, icon library, logos SVG e equipe estática.
+
+**Changes:**
+- `nuxt-icon` module adicionado, inline SVGs substituídos por `<Icon>` em todos os componentes
+- Unsplash URLs substituídas por imagens/vídeos locais em `web/public/`
+- Logo textual substituído por SVG nas versões colorida e branca
+- Seção de equipe migrada de API dinâmica para dados estáticos (Caroline, Daniel, Thalita)
+- Reset CSS simplificado com seletores `:where()` no layout da landing
+- Favicons adicionados (ico, png, apple-touch-icon)
+- `dev:web` exposto na rede via `--host`
+
+**Commits:**
+- `8dc61ee` — build(web): add nuxt-icon module and favicon assets
+- `d09e281` — feat(landing): add local static assets and replace remote URLs
+- `d4a8f76` — feat(landing): polish components — icons, logos, team, layout
+
+---
+
 ## Preferences
 
 **Model Guidance Shown:** never
