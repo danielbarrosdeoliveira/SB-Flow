@@ -14,11 +14,12 @@
       <div class="relative max-w-5xl mx-auto">
         <div class="overflow-hidden">
           <div
-            class="flex transition-transform duration-500 ease-in-out"
+            class="flex"
+            :class="{ 'transition-transform duration-500 ease-in-out': transitionEnabled }"
             :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
           >
             <div
-              v-for="(depo, i) in depoimentos"
+              v-for="(depo, i) in displayItems"
               :key="i"
               class="min-w-full md:min-w-[50%] px-3"
             >
@@ -62,6 +63,7 @@
 
 <script lang="ts" setup>
 const currentIndex = ref(0);
+const transitionEnabled = ref(true);
 
 const depoimentos = [
   {
@@ -86,11 +88,14 @@ const depoimentos = [
   },
 ];
 
+const displayItems = [...depoimentos, ...depoimentos, ...depoimentos];
+
 function next() {
   if (currentIndex.value < depoimentos.length - 1) {
     currentIndex.value++;
   } else {
-    currentIndex.value = 0;
+    currentIndex.value = depoimentos.length;
+    setTimeout(() => snapTo(0), 500);
   }
 }
 
@@ -98,7 +103,17 @@ function prev() {
   if (currentIndex.value > 0) {
     currentIndex.value--;
   } else {
-    currentIndex.value = depoimentos.length - 1;
+    snapTo(depoimentos.length - 1);
   }
+}
+
+function snapTo(index: number) {
+  transitionEnabled.value = false;
+  currentIndex.value = index;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      transitionEnabled.value = true;
+    });
+  });
 }
 </script>
