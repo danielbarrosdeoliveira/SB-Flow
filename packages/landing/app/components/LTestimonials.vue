@@ -13,23 +13,19 @@
 
       <div class="relative max-w-5xl mx-auto">
         <div class="overflow-hidden">
-          <div
-            class="flex"
-            :class="{ 'transition-transform duration-500 ease-in-out': transitionEnabled }"
-            :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
-          >
-            <div
-              v-for="(depo, i) in displayItems"
-              :key="i"
-              class="min-w-full md:min-w-[50%] px-3"
-            >
-              <div class="bg-white border border-sb-sand/30 rounded-xl p-8 h-full shadow-sm">
+          <div class="flex" :class="{ 'transition-transform duration-500 ease-in-out': transitionEnabled }"
+            :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
+            <div v-for="(depo, i) in displayItems" :key="i" class="min-w-full md:min-w-[50%] px-3">
+              <div class="bg-white border border-sb-sand/30 rounded-xl p-8 h-full shadow-sm flex flex-col">
                 <Icon icon="lucide:quote" class="w-8 h-8 text-sb-primary/20 mb-4" />
                 <p class="font-sans text-sb-warm italic leading-relaxed mb-6">
                   "{{ depo.text }}"
                 </p>
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-full bg-sb-sand/30 flex items-center justify-center font-serif font-bold text-sb-primary">
+                <div class="flex items-center gap-3 mt-auto">
+                  <img v-if="depo.photo" :src="depo.photo" :alt="depo.name"
+                    class="w-10 h-10 rounded-full object-cover" />
+                  <div v-else
+                    class="w-10 h-10 rounded-full bg-sb-sand/30 flex items-center justify-center font-serif font-bold text-sb-primary">
                     {{ depo.name.charAt(0) }}
                   </div>
                   <div>
@@ -46,14 +42,12 @@
 
         <button
           class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-10 h-10 rounded-full bg-white border border-sb-sand/50 shadow-md flex items-center justify-center text-sb-dark hover:text-sb-primary transition-all duration-300"
-          @click="prev"
-        >
+          @click="prev">
           <Icon icon="lucide:chevron-left" class="w-5 h-5" />
         </button>
         <button
           class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-10 h-10 rounded-full bg-white border border-sb-sand/50 shadow-md flex items-center justify-center text-sb-dark hover:text-sb-primary transition-all duration-300"
-          @click="next"
-        >
+          @click="next">
           <Icon icon="lucide:chevron-right" class="w-5 h-5" />
         </button>
       </div>
@@ -62,30 +56,45 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
+
 const currentIndex = ref(0);
 const transitionEnabled = ref(true);
 
 const depoimentos = [
   {
-    name: "Ana Silva",
+    name: "Maria Fátima de Brito Silva",
     rating: 5,
-    text: "Simplesmente amei o resultado da extensão de cílios! A Caroline é super cuidadosa e o ambiente é acolhedor. Saí me sentindo renovada.",
+    text: "Atendimento excelente, Studio lindo! Amo vim cuidar das minhas sobrancelhas aqui.",
   },
   {
-    name: "Marina Costa",
+    name: "Josiane Andriolli",
     rating: 5,
-    text: "Faço limpeza de pele regularmente aqui e é o único lugar que realmente resolveu minha acne. Profissionais super dedicadas!",
+    photo: "/testimonials/josiane-andriolli.png",
+    text: "Incríveis! Parabéns pelo atendimento!",
   },
   {
-    name: "Juliana Oliveira",
+    name: "Tamiris Ignacio",
     rating: 5,
-    text: "O Lash Lifting ficou incrível! E dura muito tempo. Super recomendo o Studio Blessed para quem quer praticidade no dia a dia.",
+    text: "A Carol é maravilhosa, uma super profissional, detalhista, perfeccionista, se coloca no lugar da cliente sempre! O ambiente (espaço) é acolhedor, descontraído, com bons assuntos quando está cheio rsrs.. aaaamo! De 0 a 10, nota 1000!",
   },
   {
-    name: "Patrícia Santos",
+    name: "Barbara Lucio",
     rating: 4,
-    text: "Vim por indicação e não me arrependo. A equipe é muito profissional e o espaço é lindo. Virei cliente fiel!",
+    photo: "/testimonials/barbara-lucio.png",
+    text: "Atendimento maravilhoso, lugar limpo, organizado e aconchegante! Recomendo muito",
   },
+  {
+    name: "Stephani Oliveira",
+    rating: 5,
+    photo: "/testimonials/stephani-oliveira.png",
+    text: "Todas a vezes em que fui atendida desde 2022, o trabalho sempre foi feito com muito amor e dedicação, sempre trazendo o melhor para nós clientes, avaliação do seu trabalho seria pouco para o tamanho da profissional que você é Cá, que Deus te abençoe e você voe cada vez mais alto 🙏🏽❤️"
+  },
+  {
+    name: "Ianny Sousa",
+    rating: 5,
+    text: "Atendimento incrível ✨❤️",
+  }
 ];
 
 const displayItems = [...depoimentos, ...depoimentos, ...depoimentos];
