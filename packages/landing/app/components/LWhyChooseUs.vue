@@ -3,7 +3,8 @@
     <div class="max-w-[1400px] mx-auto px-8 lg:px-12">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         <div class="space-y-8">
-          <span class="font-sans text-xs uppercase tracking-[0.2em] text-sb-primary font-semibold">05 / Diferenciais</span>
+          <span class="font-sans text-xs uppercase tracking-[0.2em] text-sb-primary font-semibold">05 /
+            Diferenciais</span>
           <h2 class="font-serif text-4xl md:text-5xl text-sb-dark leading-tight">
             Por que escolher<br>o Studio Blessed?
           </h2>
@@ -13,14 +14,15 @@
               <p class="font-sans text-sb-warm text-sm mt-1">Clientes satisfeitas</p>
             </div>
             <div>
-              <p class="font-serif text-5xl md:text-6xl text-sb-primary font-bold">5+</p>
+              <p class="font-serif text-5xl md:text-6xl text-sb-primary font-bold">4+</p>
               <p class="font-sans text-sb-warm text-sm mt-1">Anos de experiência</p>
             </div>
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-5">
-          <div v-for="item in diferenciais" :key="item.title" class="bg-white rounded-xl p-5 shadow-sm border border-sb-sand/20 space-y-2">
+          <div v-for="item in diferenciais" :key="item.title"
+            class="bg-white rounded-xl p-5 shadow-sm border border-sb-sand/20 space-y-2">
             <div class="w-10 h-10 rounded-full bg-sb-primary/10 flex items-center justify-center">
               <Icon :icon="item.icon" class="w-5 h-5 text-sb-primary" />
             </div>
