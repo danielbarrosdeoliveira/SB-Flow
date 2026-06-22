@@ -16,7 +16,7 @@
           v-for="(img, i) in imagens"
           :key="i"
           class="group overflow-hidden rounded-lg"
-          :class="{ 'col-span-2 row-span-2': i === 0 }"
+          :class="i === 0 ? 'col-span-2 row-span-2 aspect-square' : 'aspect-[4/5]'"
         >
           <img
             :src="img"

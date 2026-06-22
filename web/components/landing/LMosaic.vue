@@ -6,7 +6,7 @@
           <div class="relative grid grid-cols-5 gap-4">
             <div class="col-span-3">
               <img
-                src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80"
+                src="/images/ceo-caroline-silva.jpg"
                 alt="Studio Blessed"
                 class="w-full h-[400px] object-cover rounded-lg shadow-xl"
                 loading="lazy"
@@ -14,7 +14,7 @@
             </div>
             <div class="col-span-2 mt-12">
               <img
-                src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=400&q=80"
+                src="/images/about-2.jpeg"
                 alt="Cuidados capilares"
                 class="w-full h-[300px] object-cover rounded-lg shadow-xl"
                 loading="lazy"

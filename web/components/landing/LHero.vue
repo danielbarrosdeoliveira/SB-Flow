@@ -1,11 +1,13 @@
 <template>
   <section id="hero" class="relative min-h-[80vh] flex items-center overflow-hidden bg-sb-dark">
     <div class="absolute inset-0">
-      <img
-        src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1600&q=80"
-        alt="Studio Blessed"
+      <video
+        src="/videos/adicionando-cilios.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
         class="w-full h-full object-cover"
-        loading="eager"
       />
       <div class="absolute inset-0 bg-black/50" />
     </div>
