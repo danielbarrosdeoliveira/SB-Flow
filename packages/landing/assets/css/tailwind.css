@@ -1,5 +1,5 @@
-.tw-scope {
-  @tailwind base;
-}
+@import "./tokens.css";
+
+@tailwind base;
 @tailwind components;
 @tailwind utilities;

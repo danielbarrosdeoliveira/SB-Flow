@@ -1,18 +1,11 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
-  modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "vuetify-nuxt-module", "nuxt-icon"],
-  tailwindcss: {
-    cssPath: "~/assets/css/tailwind.css",
-  },
-  css: ["~/assets/css/tokens.css"],
-  components: [
-    { path: "~/components", pathPrefix: false },
-  ],
+  modules: ["@nuxtjs/tailwindcss", "nuxt-icon"],
+  css: ["~/assets/css/tailwind.css"],
   routeRules: {
     "/": { prerender: true },
-    "/agendar/**": { ssr: false },
-    "/dashboard/**": { ssr: false },
+    "/agendar": { ssr: false },
   },
   runtimeConfig: {
     public: {
@@ -48,21 +41,4 @@ export default defineNuxtConfig({
       ],
     },
   },
-  vuetify: {
-    moduleOptions: {},
-    vuetifyOptions: {
-      theme: {
-        defaultTheme: "light",
-        themes: {
-          light: {
-            colors: {
-              primary: "#A78B58",
-              secondary: "#4F4B40",
-              accent: "#D9C49E",
-            },
-          },
-        },
-      },
-    },
-  },
-});
+})

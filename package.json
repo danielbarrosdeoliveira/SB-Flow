@@ -5,16 +5,19 @@
   "scripts": {
     "dev:api": "npm run dev -w api",
     "dev:api:seed": "npm run db:seed -w api",
-    "dev:web": "npm run dev -w web -- --host",
+    "dev:landing": "npm run dev -w packages/landing -- --host",
+    "dev:dashboard": "npm run dev -w packages/dashboard -- --host",
     "build:api": "npm run build -w api",
-    "build:web": "npm run build -w web",
+    "build:landing": "npm run build -w packages/landing",
+    "build:dashboard": "npm run build -w packages/dashboard",
+    "generate:landing": "npm run generate -w packages/landing",
     "lint": "biome check .",
     "lint:fix": "biome check --apply .",
     "format": "biome format .",
     "format:fix": "biome format --write .",
-    "typecheck": "npm run typecheck -w api && npm run typecheck -w web"
+    "typecheck": "npm run typecheck -w api"
   },
-  "workspaces": ["api", "web"],
+  "workspaces": ["api", "packages/landing", "packages/dashboard"],
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "typescript": "^5.7.2"
