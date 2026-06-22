@@ -2,6 +2,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
   modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "vuetify-nuxt-module", "nuxt-icon"],
+  tailwindcss: {
+    cssPath: "~/assets/css/tailwind.css",
+  },
   css: ["~/assets/css/tokens.css"],
   components: [
     { path: "~/components", pathPrefix: false },
