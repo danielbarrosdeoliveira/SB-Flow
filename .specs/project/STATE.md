@@ -301,6 +301,24 @@
 - `d09e281` — feat(landing): add local static assets and replace remote URLs
 - `d4a8f76` — feat(landing): polish components — icons, logos, team, layout
 
+### AD-031: Escopo CSS — Tailwind Preflight isolado em .tw-scope (2026-06-22)
+
+**Decision:** Tailwind Preflight reativado e escopado à classe `.tw-scope`. Dashboard usa reset nativo do Vuetify sem interferência do Tailwind.
+
+**Problem:** `preflight: false` global quebrava componentes Vuetify no Dashboard porque o reset manual `.page-landing` era insuficiente. Reativar Preflight globalmente quebrava o Dashboard.
+
+**Solution:**
+- `web/assets/css/tailwind.css` criado com `.tw-scope { @tailwind base; }` — Preflight só gera seletores prefixados com `.tw-scope`
+- `@tailwind components; @tailwind utilities;` permanecem globais (não causam conflito)
+- Landing page envolta em `<div class="tw-scope ...">` no layout
+- Dashboard permanece fora do escopo, usa `<v-app>` com reset Vuetify nativo
+- `preflight: false` removido do tailwind.config.ts
+
+**Verification:** Build output confirma seletores `.tw-scope html`, `.tw-scope body`, etc. Dashboard sem classes Tw.
+
+**Commit:**
+- `7516186` — fix(dashboard): scope Tailwind Preflight to .tw-scope to avoid Vuetify conflict
+
 ---
 
 ## Preferences
