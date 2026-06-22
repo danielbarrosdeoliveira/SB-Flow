@@ -5,7 +5,7 @@
   "scripts": {
     "dev:api": "npm run dev -w api",
     "dev:api:seed": "npm run db:seed -w api",
-    "dev:web": "npm run dev -w web",
+    "dev:web": "npm run dev -w web -- --host",
     "build:api": "npm run build -w api",
     "build:web": "npm run build -w web",
     "lint": "biome check .",
