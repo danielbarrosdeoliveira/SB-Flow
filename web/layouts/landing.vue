@@ -7,96 +7,65 @@
 </template>
 
 <style>
-.page-landing {
-  box-sizing: border-box;
+html {
+  scroll-behavior: smooth;
 }
 
-.page-landing *,
-.page-landing *::before,
-.page-landing *::after {
-  box-sizing: border-box;
+:where(.page-landing) {
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
 }
 
-.page-landing html,
-.page-landing body,
-.page-landing div,
-.page-landing span,
-.page-landing h1,
-.page-landing h2,
-.page-landing h3,
-.page-landing h4,
-.page-landing h5,
-.page-landing h6,
-.page-landing p,
-.page-landing blockquote,
-.page-landing figure,
-.page-landing figcaption,
-.page-landing dl,
-.page-landing dd,
-.page-landing ol,
-.page-landing ul,
-.page-landing li,
-.page-landing fieldset,
-.page-landing form,
-.page-landing label,
-.page-landing legend,
-.page-landing table,
-.page-landing caption,
-.page-landing tbody,
-.page-landing tfoot,
-.page-landing thead,
-.page-landing tr,
-.page-landing th,
-.page-landing td {
+:where(.page-landing) *,
+:where(.page-landing) *::before,
+:where(.page-landing) *::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   margin: 0;
   padding: 0;
 }
 
-.page-landing h1,
-.page-landing h2,
-.page-landing h3,
-.page-landing h4,
-.page-landing h5,
-.page-landing h6 {
-  font-size: inherit;
+:where(.page-landing) h1,
+:where(.page-landing) h2,
+:where(.page-landing) h3,
+:where(.page-landing) h4,
+:where(.page-landing) h5,
+:where(.page-landing) h6 {
   font-weight: inherit;
 }
 
-.page-landing a {
+:where(.page-landing) a {
   color: inherit;
   text-decoration: none;
 }
 
-.page-landing img,
-.page-landing picture,
-.page-landing video,
-.page-landing canvas,
-.page-landing svg {
+:where(.page-landing) img,
+:where(.page-landing) picture,
+:where(.page-landing) video,
+:where(.page-landing) canvas,
+:where(.page-landing) svg {
   display: block;
   max-width: 100%;
+  height: auto;
 }
 
-.page-landing button,
-.page-landing input,
-.page-landing select,
-.page-landing textarea {
+:where(.page-landing) button,
+:where(.page-landing) input,
+:where(.page-landing) select,
+:where(.page-landing) textarea {
   font: inherit;
   color: inherit;
 }
 
-.page-landing button {
+:where(.page-landing) button {
   cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
 }
 
-.page-landing ol,
-.page-landing ul {
+:where(.page-landing) ol,
+:where(.page-landing) ul {
   list-style: none;
-}
-
-html {
-  scroll-behavior: smooth;
 }
 </style>

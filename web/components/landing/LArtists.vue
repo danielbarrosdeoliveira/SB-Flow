@@ -13,35 +13,35 @@
         </div>
       </div>
 
-      <div v-if="pending" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div v-for="i in 3" :key="i" class="animate-pulse">
-          <div class="bg-sb-sand/30 rounded-lg h-[350px] mb-4" />
-          <div class="h-4 bg-sb-sand/30 rounded w-2/3 mb-2" />
-          <div class="h-3 bg-sb-sand/20 rounded w-1/3" />
-        </div>
-      </div>
-
-      <div v-else-if="error" class="text-center py-12">
-        <p class="font-sans text-sb-warm">Conheça nossas profissionais em breve</p>
-      </div>
-
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         <div
-          v-for="prof in professionals"
-          :key="prof.id"
+          v-for="member in team"
+          :key="member.name"
           class="group"
         >
-          <div class="relative overflow-hidden rounded-lg bg-sb-sand/20 mb-4">
-            <div class="aspect-[3/4] flex items-center justify-center">
-              <div class="w-full h-full bg-gradient-to-br from-sb-primary/20 to-sb-sand/30 flex items-center justify-center">
-                <span class="font-serif text-6xl text-sb-primary/40">{{ prof.name?.charAt(0) || '?' }}</span>
-              </div>
-            </div>
+          <div class="overflow-hidden rounded-lg bg-sb-sand/20 mb-5">
+            <img
+              :src="member.image"
+              :alt="member.name"
+              class="w-full aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-700"
+            />
           </div>
           <h3 class="font-sans text-sm uppercase tracking-[0.15em] text-sb-dark font-bold">
-            {{ prof.name }}
+            {{ member.role }}
           </h3>
-          <p class="font-sans text-xs text-sb-warm mt-1">Profissional</p>
+          <p class="font-serif text-xl text-sb-dark mt-1">
+            <template v-if="member.link">
+              <a :href="member.link" target="_blank" rel="noopener noreferrer" class="hover:text-sb-primary transition-colors">
+                {{ member.name }}
+              </a>
+            </template>
+            <template v-else>
+              {{ member.name }}
+            </template>
+          </p>
+          <p class="font-sans text-sm text-sb-warm mt-3 leading-relaxed">
+            {{ member.description }}
+          </p>
         </div>
       </div>
     </div>
@@ -49,20 +49,36 @@
 </template>
 
 <script lang="ts" setup>
-interface Professional {
-  id: number;
-  name: string;
+interface TeamMember {
+  name: string
+  role: string
+  image: string
+  description: string
+  link?: string
 }
 
-const config = useRuntimeConfig();
-
-const {
-  data: professionals,
-  pending,
-  error,
-} = useFetch<Professional[]>(`${config.public.apiUrl}/api/booking/professionals`, {
-  server: false,
-  lazy: true,
-  credentials: "include",
-});
+const team: TeamMember[] = [
+  {
+    name: "Caroline Silva",
+    role: "CEO & Lash Designer",
+    image: "/images/ceo-caroline-silva.jpg",
+    description:
+      "Fundadora, CEO e Lash Designer do Studio Blessed, Caroline Silva carrega uma verdadeira paixão pelo cuidado e pelo embelezamento do olhar. Através de sua dupla visão, como gestora e especialista técnica, ela transformou o estúdio em um ambiente único e focado no bem-estar, onde cada cliente é recebida com acolhimento, respeito e os procedimentos mais modernos e seguros do mercado.",
+  },
+  {
+    name: "Daniel Oliveira",
+    role: "CTO & CMO",
+    image: "/images/cto-cmo-daniel-oliveira.jpg",
+    link: "https://www.linkedin.com.br/in/danielbarrosdeoliveira",
+    description:
+      "Sócio, CTO e CMO do Studio Blessed, Daniel Oliveira lidera a transformação tecnológica e o marketing estratégico da marca. Atuando ao lado de sua esposa e CEO, Caroline Silva, Daniel combina visão de futuro e inovação para acelerar o crescimento do negócio. Fora dos bastidores do estúdio, sua maior dedicação é como pai do Felipe.",
+  },
+  {
+    name: "Thalita Brito",
+    role: "Nail Designer",
+    image: "/images/parceira-thalita-brito.jpg",
+    description:
+      "Referência em versatilidade e cuidado, Thalita Brito é a nova Nail Designer do Studio Blessed. Especialista em embelezamento de mãos e pés, ela oferece desde os serviços tradicionais de manicure e pedicure até procedimentos avançados de extensão em fibra de vidro, gel e esmaltação em gel. Alinhada ao padrão de excelência do estúdio, Thalita entrega resultados sofisticados que aliam beleza, técnica e durabilidade.",
+  },
+]
 </script>

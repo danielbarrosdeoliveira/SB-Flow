@@ -22,7 +22,7 @@
         <div class="grid grid-cols-2 gap-5">
           <div v-for="item in diferenciais" :key="item.title" class="bg-white rounded-xl p-5 shadow-sm border border-sb-sand/20 space-y-2">
             <div class="w-10 h-10 rounded-full bg-sb-primary/10 flex items-center justify-center">
-              <span v-html="item.icon" class="w-5 h-5 text-sb-primary" />
+              <Icon :name="item.icon" class="w-5 h-5 text-sb-primary" />
             </div>
             <h4 class="font-sans text-sm font-bold text-sb-dark uppercase tracking-wider">{{ item.title }}</h4>
             <p class="font-sans text-xs text-sb-warm leading-relaxed">{{ item.description }}</p>
@@ -36,22 +36,22 @@
 <script lang="ts" setup>
 const diferenciais = [
   {
-    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>',
+    icon: "lucide:monitor",
     title: "Agendamento Online",
     description: "Agende seu horário pelo site, sem precisar ligar ou enviar WhatsApp.",
   },
   {
-    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>',
+    icon: "lucide:map-pin",
     title: "Localização Premium",
     description: "Espaço aconchegante no Parque Viana, Barueri, pensado para seu conforto.",
   },
   {
-    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+    icon: "lucide:heart",
     title: "Atendimento Premium",
     description: "Produtos de alta qualidade e técnicas especializadas para o melhor resultado.",
   },
   {
-    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',
+    icon: "lucide:smile",
     title: "Resultados Garantidos",
     description: "Profissionais experientes que entregam resultados que superam expectativas.",
   },

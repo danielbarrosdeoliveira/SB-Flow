@@ -23,9 +23,7 @@
               class="min-w-full md:min-w-[50%] px-3"
             >
               <div class="bg-white border border-sb-sand/30 rounded-xl p-8 h-full shadow-sm">
-                <svg class="w-8 h-8 text-sb-primary/20 mb-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z"/>
-                </svg>
+                <Icon name="lucide:quote" class="w-8 h-8 text-sb-primary/20 mb-4" />
                 <p class="font-sans text-sb-warm italic leading-relaxed mb-6">
                   "{{ depo.text }}"
                 </p>
@@ -49,13 +47,13 @@
           class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-10 h-10 rounded-full bg-white border border-sb-sand/50 shadow-md flex items-center justify-center text-sb-dark hover:text-sb-primary transition-all duration-300"
           @click="prev"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          <Icon name="lucide:chevron-left" class="w-5 h-5" />
         </button>
         <button
           class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-10 h-10 rounded-full bg-white border border-sb-sand/50 shadow-md flex items-center justify-center text-sb-dark hover:text-sb-primary transition-all duration-300"
           @click="next"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          <Icon name="lucide:chevron-right" class="w-5 h-5" />
         </button>
       </div>
     </div>
