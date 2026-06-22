@@ -327,7 +327,7 @@ const LandingPage = () => {
                   <Phone className="w-4 h-4 text-sb-primary" /> (11) 98888-0015
                 </p>
                 <p className="flex items-center gap-3">
-                  <Instagram className="w-4 h-4 text-sb-primary" /> @studioblessed
+                  <Instagram className="w-4 h-4 text-sb-primary" /> @studio.bles
                 </p>
                 <div className="flex items-start gap-3 italic">
                   <MapPin className="w-4 h-4 text-sb-primary shrink-0 mt-1" />

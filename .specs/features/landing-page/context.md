@@ -41,7 +41,7 @@ Landing page pública do Studio Blessed (rota `/`, SSR) apresentando o salão, s
 
 ### Footer
 
-- Contato: Telefone (11) 98888-0015, Instagram @studioblessed
+- Contato: Telefone (11) 98888-0015, Instagram @studio.bles
 - Endereço: R. Imbauva, 20 - Pq. Viana, Sala 3, Barueri-SP
 - Horários: Seg-Sex 08h-18h, Sáb 08h-15h, Dom Fechado
 - Atendimento somente com agendamento prévio

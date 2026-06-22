@@ -1,24 +1,21 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  ssr: true,
+  ssr: false,
   modules: ["@nuxtjs/tailwindcss"],
   css: ["~/assets/css/tailwind.css"],
-  routeRules: {
-    "/": { prerender: true },
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || "http://localhost:3001",
+    },
   },
   app: {
     head: {
-      title: "Studio Blessed — Beleza e Cuidados Femininos em Barueri",
+      title: "Studio Blessed — Agende seu Horário",
       meta: [
         {
           name: "description",
           content:
-            "Studio Blessed — Extensão de Cílios, Lash Lifting, Sobrancelha, Hidra Gloss, Epilação, Limpeza de Pele e mais. Agende seu horário em Barueri-SP.",
-        },
-        {
-          name: "keywords",
-          content:
-            "salão de beleza, Studio Blessed, extensão de cílios, lash lifting, sobrancelha, Barueri",
+            "Agende seu horário no Studio Blessed. Escolha o serviço, profissional e o melhor horário para você.",
         },
       ],
       link: [
