@@ -320,7 +320,7 @@
 - [x] Corrigir ícones quebrados
 
 ### LANDING-02: Monorepo split ✅
-- [x] Separar `packages/landing`, `packages/dashboard`, `packages/agenda`
+- [x] Separar `packages/landing`, `packages/dashboard`, `packages/booking`
 - [x] Configurar scripts dev independentes
 - [x] Migrar de `web/` para estrutura de pacotes
 

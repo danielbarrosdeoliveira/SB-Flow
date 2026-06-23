@@ -7,19 +7,23 @@ Elimina conflitos de agendamento entre proprietária e autônomas parceiras que 
 ## Stack
 
 ```
-api/   → Fastify 5 + DrizzleORM + PostgreSQL + postgres.js
-web/   → Nuxt 3 + Pinia + @tanstack/vue-query + Vuetify + TailwindCSS
-infra  → Docker Compose (dev) → Oracle Cloud (prod)
+api/                 → Fastify 5 + DrizzleORM + PostgreSQL + postgres.js
+packages/landing     → Nuxt 4 + Tailwind CSS (SSR)
+packages/dashboard   → Nuxt 4 + Nuxt UI + Pinia + @tanstack/vue-query (SPA)
+packages/booking     → Nuxt 4 + Tailwind CSS (SPA)
+infra                → Docker Compose (dev) → Oracle Cloud (prod)
 ```
 
 ## Arquitetura
 
-| Camada | Tecnologia | Responsabilidade |
-|--------|-----------|-----------------|
-| API | Fastify + DrizzleORM | REST, JWT (cookies HttpOnly), SSE, CASL RBAC |
-| Frontend | Nuxt 3 + routeRules | SSR (landing) + SPA (dashboard) |
-| Server State | `@tanstack/vue-query` | Cache, fetching, SSR dehydrate/hydrate |
-| Client State | Pinia | Auth (user, role), UI flags |
+| Camada | Pacote | Framework | Renderização | Domínio |
+|--------|--------|-----------|-------------|---------|
+| API | `api/` | Fastify + DrizzleORM | REST + SSE | `api.blessedstudio.com.br` |
+| Landing | `packages/landing` | Nuxt 4 + Tailwind CSS | SSR | `blessedstudio.com.br` |
+| Dashboard | `packages/dashboard` | Nuxt 4 + Nuxt UI | SPA | `dashboard.blessedstudio.com.br` |
+| Booking | `packages/booking` | Nuxt 4 + Tailwind CSS | SPA | `booking.blessedstudio.com.br` |
+| Server State | `@tanstack/vue-query` | Cache, fetching, mutations, invalidação |
+| Client State | Pinia | Auth (user, role), UI flags, preferências |
 | Database | PostgreSQL + Docker | Dados relacionais, prepared statements |
 | Auth | JWT + cookies HttpOnly | access_token (15min) + refresh_token (30d) |
 
@@ -27,12 +31,10 @@ infra  → Docker Compose (dev) → Oracle Cloud (prod)
 
 ```bash
 # 1. Clone e configure
-cp .env.example .env    # edite as variáveis sensíveis
+cp .env.example .env
 
 # 2. Instale dependências
 npm install
-cd api && npm install && cd ..
-cd web && npm install && cd ..
 
 # 3. Suba o banco
 docker compose up -d db
@@ -42,17 +44,21 @@ npm run db:generate -w api
 npm run db:migrate -w api
 npm run db:seed -w api
 
-# 5. Inicie em dev
-npm run dev:api    # terminal 1 — http://localhost:3001
-npm run dev:web    # terminal 2 — http://localhost:3000
+# 5. Inicie em dev (cada um em um terminal)
+npm run dev:api        # terminal 1 — http://localhost:3001
+npm run dev:dashboard  # terminal 2 — http://localhost:3000
+npm run dev:landing    # terminal 3 — http://localhost:3000 (use -p se ocupada)
+npm run dev:booking    # terminal 4 — http://localhost:3000 (use -p se ocupada)
 ```
 
 ## Scripts
 
 | Comando | Descrição |
-|---------|-----------|
-| `npm run dev:api` | Inicia Fastify em dev (tsx watch) |
-| `npm run dev:web` | Inicia Nuxt em dev |
+|---------|----------|
+| `npm run dev:api` | Inicia API Fastify em dev (tsx watch) — porta 3001 |
+| `npm run dev:dashboard` | Inicia dashboard Nuxt — porta 3000 |
+| `npm run dev:landing` | Inicia landing page Nuxt — porta 3000 (use `-p 3002` se ocupada) |
+| `npm run dev:booking` | Inicia booking Nuxt — porta 3000 (use `-p 3003` se ocupada) |
 | `npm run typecheck` | TypeCheck api + web |
 | `npm run lint` | Biome lint + format |
 | `npm run db:generate -w api` | Gera migrations Drizzle |
@@ -61,12 +67,15 @@ npm run dev:web    # terminal 2 — http://localhost:3000
 
 ## Documentação
 
-- [Spec]`.specs/features/agenda-compartilhada/spec.md` — requisitos funcionais
-- [Design]`.specs/features/agenda-compartilhada/design.md` — arquitetura, MER, diagramas
-- [Tasks]`.specs/features/agenda-compartilhada/tasks.md` — backlog por domínio
-- [ADRs]`.specs/project/STATE.md` — arquiteturais registradas
-- [Roadmap]`.specs/project/ROADMAP.md` — milestones
-- [Tracking]`TASKS.md` — rastreamento de execução
+- [Conventions](.specs/codebase/CONVENTIONS.md) — regras de estado, Pinia vs TanStack Query
+- [Spec](.specs/features/agenda-compartilhada/spec.md) — requisitos funcionais
+- [Design](.specs/features/agenda-compartilhada/design.md) — arquitetura, MER, diagramas
+- [Tasks (booking)](.specs/features/agenda-compartilhada/tasks.md) — backlog agenda compartilhada
+- [Tasks (dashboard)](.specs/features/dashboard/tasks.md) — backlog dashboard
+- [ADRs](.specs/project/STATE.md) — decisões arquiteturais registradas
+- [Architecture](.specs/project/ARCHITECTURE.md) — rotas, deploys, stack
+- [Roadmap](.specs/project/ROADMAP.md) — milestones
+- [Tracking](TASKS.md) — rastreamento de execução
 
 ## Projeto
 

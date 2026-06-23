@@ -455,9 +455,12 @@ Coração do sistema: agendamentos, tempo real SSE, calendário do dashboard, la
 
 ### BOOKING-10: Frontend — Store de booking
 
+> ⚠️ **ATUALIZADO (AD-038):** Seguir separação estrita Pinia vs TanStack Query. A store Pinia guarda apenas estado de UI do fluxo multi-step. Dados de API (profissionais, serviços, slots) vão para composables TanStack Query.
+
 **Subtarefas:**
-- [ ] Criar store Pinia `booking` (step, phone, verified, selectedProfessional, selectedService, selectedSlot, appointments)
-- [ ] Actions: sendCode, verifyCode, fetchProfessionals, fetchServices, fetchSlots, confirmAppointment, lookupAppointments, cancelAppointment
+- [ ] Criar store Pinia `booking` (step, phone, verified, selectedProfessional, selectedService, selectedSlot) — apenas UI flow state
+- [ ] Criar composable `useBookingData` com TanStack Query para dados de API: `fetchProfessionals`, `fetchServices`, `fetchSlots`, `lookupAppointments`
+- [ ] Actions: sendCode, verifyCode, confirmAppointment, cancelAppointment (via TanStack useMutation)
 
 ---
 
@@ -488,16 +491,19 @@ Coração do sistema: agendamentos, tempo real SSE, calendário do dashboard, la
 
 ### BOOKING-13: Frontend — Calendário do dashboard
 
+> ⚠️ **ATUALIZADO (AD-038):** Seguir separação estrita Pinia vs TanStack Query. `currentWeekStart` e `professionalFilter` são UI state (Pinia). `appointments`, `blocks` e `fetchWeek` são server data (TanStack Query).
+
 **Subtarefas:**
-- [ ] Criar componente `WeeklyCalendar` (Vuetify v-calendar, slots 15min, eventos coloridos por profissional)
-- [ ] Criar store Pinia `calendar` (currentWeekStart, appointments, blocks, professionalFilter, fetchWeek, navigateWeek)
-- [ ] Criar composable `useSSE` (EventSource, dispatch para stores, reconnect com backoff)
-- [ ] Criar `NotificationBadge` (sino com contagem via SSE)
+- [ ] Criar componente `WeeklyCalendar` (Nuxt UI, slots 15min, eventos coloridos por profissional)
+- [ ] Criar store Pinia `calendar` (currentWeekStart, professionalFilter, navigateWeek, setFilter) — apenas UI state
+- [ ] Criar composable `useCalendarData` com TanStack Query para dados de agenda: `useQuery(["appointments", weekStart, professionalId])`
+- [ ] Criar composable `useSSE` (EventSource, invalida queries do TanStack Query, reconnect com backoff)
+- [ ] Criar `NotificationBadge` (sino com contagem via SSE → query invalidation)
 - [ ] Criar modal `AppointmentForm` (cliente search + serviço dropdown + data/hora)
   - OWNER: pode selecionar qualquer profissional
   - PARTNER: fixo na própria
-- [ ] Click em slot → criar; click em evento → editar/cancelar
-- [ ] SSE atualiza calendário em tempo real
+- [ ] Click em slot → criar (useMutation); click em evento → editar/cancelar
+- [ ] SSE invalida queries → calendário atualiza em tempo real
 
 ---
 

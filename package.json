@@ -6,11 +6,11 @@
     "dev:api": "npm run dev -w api",
     "dev:api:seed": "npm run db:seed -w api",
     "dev:landing": "npm run dev -w packages/landing -- --host",
-    "dev:agenda": "npm run dev -w packages/agenda -- --host",
+    "dev:booking": "npm run dev -w packages/booking -- --host",
     "dev:dashboard": "npm run dev -w packages/dashboard -- --host",
     "build:api": "npm run build -w api",
     "build:landing": "npm run build -w packages/landing",
-    "build:agenda": "npm run build -w packages/agenda",
+    "build:booking": "npm run build -w packages/booking",
     "build:dashboard": "npm run build -w packages/dashboard",
     "generate:landing": "npm run generate -w packages/landing",
     "lint": "biome check .",
@@ -19,7 +19,7 @@
     "format:fix": "biome format --write .",
     "typecheck": "npm run typecheck -w api"
   },
-  "workspaces": ["api", "packages/landing", "packages/agenda", "packages/dashboard"],
+  "workspaces": ["api", "packages/landing", "packages/booking", "packages/dashboard"],
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "typescript": "^5.7.2"

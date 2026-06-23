@@ -1,7 +1,7 @@
 # State
 
-**Last Updated:** 2026-06-22T23:00:00Z
-**Current Work:** Stack migration — Vuetify removido, Nuxt UI v4 adotado no dashboard
+**Last Updated:** 2026-06-23T01:00:00Z
+**Current Work:** State management conventions — Pinia vs TanStack Query strict separation
 
 ---
 
@@ -323,12 +323,12 @@
 
 ### AD-032: Monorepo split — `packages/landing` e `packages/dashboard` (2026-06-22)
 
-**Decision:** Monorepo foi reestruturado: código do frontend movido de `web/` para `packages/` com dois pacotes independentes — `packages/landing` (landing page + agenda do cliente, Tailwind) e `packages/dashboard` (dashboard administrativo, Vuetify). `packages/agenda` também foi criado como extração do booking.
+**Decision:** Monorepo foi reestruturado: código do frontend movido de `web/` para `packages/` com dois pacotes independentes — `packages/landing` (landing page + agenda do cliente, Tailwind) e `packages/dashboard` (dashboard administrativo, Vuetify). `packages/booking` também foi criado como extracted from the booking domain.
 
 **Reason:** Separação física entre landing (Tailwind) e dashboard (Vuetify) evita conflitos de CSS e permite builds independentes. Cada pacote tem seu próprio `nuxt.config.ts` e dependências.
 
 **Changes:**
-- `web/` → `packages/landing/` + `packages/dashboard/` + `packages/agenda/`
+- `web/` → `packages/landing/` + `packages/dashboard/` + `packages/booking/`
 - Cada pacote com `nuxt.config.ts`, `package.json`, `app/` directory próprio
 - Scripts dev no root: `npm run dev:landing`, `npm run dev:dashboard`, `npm run dev:api`
 - `docker-compose.yml` desatualizado — serviço `frontend` removido em AD-036
@@ -391,7 +391,7 @@
 **Reason:** O diretório `web/` continha apenas cache de build residual (sem `package.json`, código fonte ou Dockerfile). O serviço `frontend` no docker-compose referenciava `./web` como build context, mas não havia Dockerfile — estava quebrado. Os frontends reais estão em `packages/` e não têm Dockerfile no momento.
 
 **Impact:**
-- `packages/landing/`, `packages/dashboard/`, `packages/agenda/` executados localmente via `npm run dev:*`
+- `packages/landing/`, `packages/dashboard/`, `packages/booking/` executados localmente via `npm run dev:*`
 - `docker-compose.yml` contém apenas `db` e `backend`
 - Dockerfiles para os frontends serão criados quando necessário para deploy
 
@@ -423,3 +423,27 @@
 - Login page usa `UCard` do Nuxt UI para validar o build
 - AD-011, AD-028, AD-029 totalmente supersedidas — Vuetify não faz mais parte do projeto
 - Conflitos de CSS entre Tailwind e Vuetify não existem mais (dashboard agora usa Tailwind puro via Nuxt UI)
+
+### AD-038: Separação estrita Pinia vs TanStack Query — refatoração de stores legado (2026-06-23)
+
+**Decision:** Reforçar a separação estrita de responsabilidades entre Pinia (UI/sessão) e TanStack Query (servidor). Toda store Pinia existente que armazena dados de API deve ser refatorada para usar TanStack Query. Nenhuma resposta de API deve ser armazenada em Pinia.
+
+**Context:** AD-023 já definia essa separação, mas algumas tasks e designs antigos ainda referenciavam stores Pinia para dados de servidor (ex: `booking` store, `calendar` store em `agenda-compartilhada/design.md` e `tasks.md`).
+
+**Regras reforçadas:**
+1. **Pinia** → apenas estado de UI e sessão: sidebar, auth (`user`, `role`, `isAuthenticated`), preferências de layout
+2. **TanStack Query** → todo dado de servidor: agendamentos, clientes, profissionais, serviços. Via `useQuery`/`useMutation` em composables por domínio.
+3. **Nada de fetch solto** — nenhum `$fetch` ou `api.get()` em componentes. Tudo passa por composables TanStack Query.
+4. **localStorage encapsulado** — componentes nunca acessam `localStorage` diretamente. Usam `useLocalStorage` dentro de stores Pinia (`useLayoutStore`).
+
+**Impacto:**
+- `booking` store removida (dados de agendamento vão para `useAppointments` composable TanStack)
+- `calendar` store removida (estado de calendário vira TanStack Query)
+- `stores/layout.ts` criada com `isSidebarOpen` e `toggleSidebar()` usando `useLocalStorage` internamente
+- `.specs/codebase/CONVENTIONS.md` criado documentando todas as regras
+- Serviços e clientes já seguem o padrão correto (TanStack Query) — apenas booking/calendar precisam de refatoração
+
+**Arquivos alterados:**
+- `.specs/codebase/CONVENTIONS.md` — documentação completa da separação
+- `.specs/features/agenda-compartilhada/design.md` — stores Pinia substituídas por TanStack Query composables
+- `.specs/features/agenda-compartilhada/tasks.md` — tasks BOOKING-10 e BOOKING-13 marcadas como desatualizadas

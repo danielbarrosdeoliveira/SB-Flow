@@ -7,7 +7,9 @@
 
 ## Architecture Overview
 
-Monorepo com `api/` (Fastify) e `web/` (Nuxt 3). Comunicação via REST + SSE. Banco PostgreSQL em container Docker.
+Monorepo com `api/` (Fastify) e frontends em `packages/` (Nuxt 4). Comunicação via REST + SSE. Banco PostgreSQL em container Docker.
+
+> **Nota sobre estado:** Este design segue a convenção documentada em `.specs/codebase/CONVENTIONS.md` — Pinia para estado de UI/sessão, TanStack Query para todo dado de servidor.
 
 ```mermaid
 graph TB
@@ -188,8 +190,8 @@ sequenceDiagram
         A-->>DB: COMMIT
         A-->>W: 201 { appointment }
         A->>S: Emit event appointment.created { professionalId, appointment }
-        S-->>W: SSE event → Pinia calendar store atualiza
-        W-->>P: Confirmação visual + calendário atualizado
+        S-->>W: SSE event → queryClient.invalidateQueries(["appointments"])
+        W-->>P: Confirmação visual + calendário atualizado (TanStack Query refetch)
     end
 ```
 
@@ -576,7 +578,7 @@ Cada módulo segue o padrão: `routes.ts` + `service.ts` + `schema.ts` (Zod).
 
 #### NotificationBadge
 - **Purpose**: Badge no dashboard indicando novos eventos SSE
-- **Data**: Consome `notifications` Pinia store populada por SSE
+- **Data**: SSE invalida queries do TanStack Query → `useQuery` refetch → badge count via query data
 
 #### ConfirmDialog
 - **Purpose**: Diálogo de confirmação reutilizável

@@ -89,7 +89,7 @@ PostgreSQL nativo via container Docker. Sem limitações serverless. Conexão di
 |--------|-------|-----------|-----|
 | `packages/landing` | `/` (landing), `/agendar` (booking) | Nuxt 4 + Tailwind CSS | SSR (/) / SPA (/agendar) |
 | `packages/dashboard` | `/login`, `/dashboard/*` | Nuxt 4 + Nuxt UI | SPA |
-| `packages/agenda` | (reservado para futuro) | Nuxt 4 + Tailwind CSS | SPA |
+| `packages/booking` | `/` (booking) | Nuxt 4 + Tailwind CSS | SPA |
 
 ### Normalização de Telefone
 
