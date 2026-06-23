@@ -7,6 +7,10 @@ export default defineNuxtConfig({
     ui: {
       colors: {
         primary: "sb-primary",
+        success: "success",
+        error: "error",
+        warning: "warning",
+        info: "info",
       },
     },
   },
