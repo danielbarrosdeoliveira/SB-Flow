@@ -88,7 +88,7 @@ async function handleLogin() {
   try {
     const normalizedPhone = normalizePhone(form.phone)
     await auth.login(normalizedPhone, form.password)
-    await router.push("/dashboard/agenda")
+    await router.push("/dashboard/")
   } catch (err: unknown) {
     loginError.value = err instanceof Error ? err.message : "Credenciais inválidas"
   } finally {
