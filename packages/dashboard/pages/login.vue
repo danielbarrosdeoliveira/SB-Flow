@@ -1,9 +1,9 @@
 <template>
-  <div class="flex min-h-screen items-center justify-center">
+  <div class="flex min-h-screen items-center justify-center bg-sb-dark">
     <UCard class="w-full max-w-sm">
       <div class="mb-6 text-center">
-        <h1 class="text-xl font-semibold text-gray-900 dark:text-white">SB-Flow</h1>
-        <p class="mt-1 text-sm text-gray-500">Studio Blessed — Dashboard</p>
+        <h1 class="text-xl font-semibold text-sb-dark">SB-Flow</h1>
+        <p class="mt-1 text-sm text-sb-warm">Studio Blessed — Dashboard</p>
       </div>
 
       <UForm :schema="schema" :state="form" @submit="handleLogin">

@@ -3,6 +3,13 @@ export default defineNuxtConfig({
   ssr: false,
   modules: ["@pinia/nuxt", "@nuxt/ui"],
   css: ["~/assets/css/main.css"],
+  appConfig: {
+    ui: {
+      colors: {
+        primary: "sb-primary",
+      },
+    },
+  },
   components: [
     { path: "~/components", pathPrefix: false },
   ],

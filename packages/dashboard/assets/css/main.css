@@ -1,2 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap');
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+@theme {
+  --color-sb-dark: #130F0E;
+  --color-sb-primary: #A78B58;
+  --color-sb-primary-light: #D9C49E;
+  --color-sb-primary-dark: #735826;
+  --color-sb-warm: #4F4B40;
+  --color-sb-sand: #DACDB6;
+
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-cursive: "Dancing Script", cursive;
+}
+
+:root {
+  --color-sb-primary-50: #F6F1E9;
+  --color-sb-primary-100: #EDE3D3;
+  --color-sb-primary-200: #D9C49E;
+  --color-sb-primary-300: #C5A66E;
+  --color-sb-primary-400: #B69760;
+  --color-sb-primary-500: #A78B58;
+  --color-sb-primary-600: #8A7040;
+  --color-sb-primary-700: #735826;
+  --color-sb-primary-800: #5C461E;
+  --color-sb-primary-900: #463515;
+  --color-sb-primary-950: #2F2310;
+}
