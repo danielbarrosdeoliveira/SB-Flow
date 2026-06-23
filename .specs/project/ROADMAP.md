@@ -1,44 +1,47 @@
 # SB-Flow — Roadmap
 
-**Última atualização:** 2026-06-19
+**Última atualização:** 2026-06-22
 
 ---
 
 ## Fase 1: Desenvolvimento Local (Docker Compose)
 
-### Milestone 1: Fundação — Setup do Projeto (Semana 1)
+### Milestone 1: Fundação — Setup do Projeto ✅
 
-- [ ] Inicializar monorepo (raiz com `api/` e `web/`)
-- [ ] Configurar TypeScript, Biome, tooling compartilhado
-- [ ] Configurar Docker Compose (db + backend + frontend)
-- [ ] Configurar Fastify + DrizzleORM + PostgreSQL (container `db`)
-- [ ] Configurar Nuxt 3 + TailwindCSS + Vuetify + routeRules
-- [ ] Configurar autenticação (JWT)
-- [ ] Script de seed (OWNER admin)
-- [ ] Schema inicial do banco de dados
-- [ ] Validar pipeline local completo
+- [x] Inicializar monorepo (raiz com `api/` e `packages/`)
+- [x] Configurar TypeScript, Biome, tooling compartilhado
+- [x] Configurar Docker Compose (db + backend)
+- [x] Configurar Fastify + DrizzleORM + PostgreSQL (container `db`)
+- [x] Configurar Nuxt 4 + TailwindCSS + Vuetify + routeRules
+- [x] Configurar autenticação (JWT)
+- [x] Script de seed (OWNER admin)
+- [x] Schema inicial do banco de dados
+- [x] Validar pipeline local completo
 
-### Milestone 2: Agenda Compartilhada + Autoatendimento (Semanas 2-5)
+### Milestone 2: Agenda Compartilhada + Autoatendimento ✅
 
-**Prioridade máxima.**
+**Prioridade máxima. Concluído.**
 
-- [ ] Cadastro de Profissionais (autônomas parceiras)
-- [ ] Cadastro de Serviços (P1, por profissional, com valores + duração)
-- [ ] Cadastro de Clientes
-- [ ] CRUD Agendamentos (proprietária gerencia todas; parceira gerencia só a própria)
-- [ ] Visualização de agenda compartilhada (todos veem horários ocupados sem ver valores)
-- [ ] Bloqueio de agenda individual
-- [ ] Dashboard individual (agenda do dia, clientes, valores próprios)
-- [ ] **Autoatendimento do cliente** — link público, informa telefone, escolhe profissional/serviço/horário
-- [ ] **Cliente ver/cancelar próprios agendamentos**
-- [ ] Tempo real (SSE) para atualizações
+- [x] Cadastro de Profissionais (autônomas parceiras)
+- [x] Cadastro de Serviços (por profissional, com valores + duração)
+- [x] Cadastro de Clientes
+- [x] CRUD Agendamentos (proprietária gerencia todas; parceira gerencia só a própria)
+- [x] Visualização de agenda compartilhada (todos veem horários ocupados sem ver valores)
+- [x] Bloqueio de agenda individual
+- [x] Dashboard individual (agenda do dia, clientes, valores próprios)
+- [x] **Autoatendimento do cliente** — link público, informa telefone, escolhe profissional/serviço/horário
+- [x] Tempo real (SSE) para atualizações
 
-### Milestone 3: Dashboards (Semanas 6-7)
+### Milestone 3: Dashboards 🟡 (em andamento)
 
 - [ ] Dashboard da proprietária (visão financeira geral)
 - [ ] Movimentação financeira por profissional
 - [ ] Polimento UI/UX
-- [ ] Landing page do salão (SSR)
+- [x] Landing page do salão (SSR)
+- [x] Depoimentos com fotos e autor alinhado
+- [x] Carrossel infinito
+- [ ] Página "Meus Agendamentos" para clientes
+- [x] Stack visual migrada: Vuetify → Nuxt UI v4 + Tailwind CSS
 
 ---
 

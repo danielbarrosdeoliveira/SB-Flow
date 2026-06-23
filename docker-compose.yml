@@ -35,17 +35,5 @@ services:
       db:
         condition: service_healthy
 
-  frontend:
-    build:
-      context: ./web
-      target: runner
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      NUXT_PUBLIC_API_URL: ${API_URL:-http://localhost:3001}
-    depends_on:
-      - backend
-
 volumes:
   pgdata:

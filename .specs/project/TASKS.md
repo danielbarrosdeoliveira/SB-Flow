@@ -1,7 +1,7 @@
 # Task Tracking
 
 > Rastreamento de execução do projeto SB-Flow.
-> Última atualização: 2026-06-21
+> Última atualização: 2026-06-22
 
 ---
 
@@ -16,16 +16,18 @@
 | Partner (frontend) | PARTNER-04 a 05 | 2/2 | 100% |
 | Services | SERVICES-01 a 03 | 3/3 | 100% |
 | Clients | CLIENTS-01 a 03 | 3/3 | 100% |
-| Booking | BOOKING-01 a 14 | 7/14 | 50% |
+| Booking | BOOKING-01 a 14 | 9/14 | 64% |
 | Dashboard UI | DASHBOARD-01 a 02 | 2/2 | 100% |
 | CSS Architecture | CSS-01 a 03 | 3/3 | 100% |
+| Landing Page | LANDING-01 a 07 | 7/7 | 100% |
+| Landing Polish | LPOLISH-01 a 03 | 3/3 | 100% |
 
 ---
 
 ## Execução — Fase 1 (Fundação) ✅
 
 ### FOUNDATION-01: Inicializar monorepo ✅
-- [x] Criar estrutura `api/` + `web/` na raiz
+- [x] Criar estrutura `api/` + `packages/` na raiz
 - [x] Configurar `package.json` raiz com scripts compartilhados
 - [x] Configurar `tsconfig.json` raiz com paths
 - [x] Configurar `.gitignore`, `.env.example`
@@ -33,11 +35,10 @@
 - [x] Validar compilação em ambos subprojetos
 
 ### FOUNDATION-02: Configurar Docker Compose ✅
-- [x] Criar `docker-compose.yml` com 4 serviços
+- [x] Criar `docker-compose.yml` com 3 serviços (db, backend, frontend)
 - [x] Criar `Dockerfile` para `api/`
-- [x] Criar `Dockerfile` para `web/`
+- [x] Serviço `frontend` removido posteriormente (AD-036) — frontends rodam localmente via `npm run dev:*`
 - [x] Configurar redes, volumes e variáveis de ambiente
-- [x] Validar `docker-compose up` sobe todos os containers
 
 ### FOUNDATION-03: Esqueleto Fastify ✅
 - [x] Inicializar `api/package.json` com dependências
@@ -48,7 +49,7 @@
 - [x] Configurar variáveis de ambiente com Zod
 
 ### FOUNDATION-04: Esqueleto Nuxt ✅
-- [x] Inicializar `web/package.json`
+- [x] Inicializar `packages/landing/package.json`
 - [x] Configurar Nuxt 3 com SSR + routeRules
 - [x] Configurar runtimeConfig (API URL)
 
@@ -122,7 +123,7 @@
 ### TANSTACK-03: Integração com Pinia auth store ✅
 - [x] `logout()` chama `queryClient.clear()`
 - [x] API wrapper com refresh automático em 401
-- [ ] SSE events invalidam queries — *pendente implementação SSE*
+- [x] SSE events invalidam queries (BOOKING-05)
 
 ### TANSTACK-04: SSR prefetch pattern ✅
 - [x] `useAsyncData` + `queryClient.prefetchQuery` em `dashboard/agenda.vue`
@@ -248,7 +249,7 @@
 - [x] Especificação completa (spec, design, tasks) em `.specs/features/landing-page/`
 - [x] Tailwind CSS configurado com tema Studio Blessed (paleta-cores.css)
 - [x] Fontes: Playfair Display, Inter, Dancing Script via Google Fonts
-- [x] 11 componentes de seção em `web/components/landing/`
+- [x] 12 componentes de seção em `packages/landing/app/components/`
 - [x] Rota `/` substituída com landing page completa (SSR + prerender)
 - [x] Conteúdo adaptado do legado React (Studio Blessed, Português)
 - [x] Seção de profissionais dinâmica via `GET /api/booking/professionals`
@@ -256,6 +257,12 @@
 - [x] Build + typecheck passando
 
 ### BOOKING-09 a BOOKING-14 ⬜
+- **BOOKING-09:** Notificações internas (owner sobre novos agendamentos)
+- **BOOKING-10:** Histórico de agendamentos
+- **BOOKING-11:** Status de agendamento avançado (confirmado, em andamento, concluído)
+- **BOOKING-12:** Cliente ver/cancelar próprios agendamentos (página meus agendamentos)
+- **BOOKING-13:** Relatório de agendamentos por período
+- **BOOKING-14:** Calendário visual completo no dashboard
 
 ---
 
@@ -286,13 +293,13 @@
 - [x] Reset manual escopado em `.page-landing` no layout da landing
 
 ### CSS-02: Paleta centralizada via CSS Variables ✅
-- [x] `web/assets/css/tokens.css` com `:root` contendo `--color-*` e `--font-*`
+- [x] `packages/landing/app/assets/css/tokens.css` com `:root` contendo `--color-*` e `--font-*`
 - [x] Tailwind cores sb-* apontam para `var(--color-*)`
 - [x] Vuetify theme usa mesmos valores hex
 - [x] CSS injetado globalmente via `nuxt.config.ts`
 
 ### CSS-03: Layouts escopados ✅
-- [x] `layouts/landing.vue` com `.page-landing` + reset básico escopado
+- [x] `layouts/landing.vue` em `/packages/landing/app/layouts/` com `.page-landing` + reset básico escopado
 - [x] `pages/index.vue` usa `definePageMeta({ layout: "landing" })`
 - [x] LNavbar e LFooter movidos para o layout
 - [x] Dashboard mantém `v-app` controlando escopo Vuetify
@@ -301,6 +308,47 @@
 - [ ] Meus agendamentos (cliente)
 - [ ] Calendário do dashboard
 - [ ] Páginas do dashboard
+
+---
+
+## Execução — Landing Page Refinements 🟡
+
+### LANDING-01: Nuxt 4 app directory + novos serviços ✅
+- [x] Migrar estrutura para `app/` directory
+- [x] Adicionar serviços: Brow Lamination, Alongamento de Fios
+- [x] Refatorar footer e localização
+- [x] Corrigir ícones quebrados
+
+### LANDING-02: Monorepo split ✅
+- [x] Separar `packages/landing`, `packages/dashboard`, `packages/agenda`
+- [x] Configurar scripts dev independentes
+- [x] Migrar de `web/` para estrutura de pacotes
+
+### LANDING-03: Carrossel infinito de depoimentos ✅
+- [x] Array triplicado para navegação infinita
+- [x] Transição sem animação no snap de volta
+- [x] Sem slides em branco no final
+
+### LANDING-04: Social proof stats atualizados ✅
+- [x] Atualizar contadores da seção Why Choose Us
+- [x] Lint formatting
+
+### LANDING-05: Autor do depoimento alinhado + fotos ✅
+- [x] Card usa `flex flex-col` com `mt-auto` no autor
+- [x] Fotos adicionadas para Josiane, Barbara, Stephani
+- [x] Fallback para inicial do nome quando sem foto
+- [x] Imagens em `packages/landing/public/testimonials/`
+
+### LANDING-06: Deps update ✅
+- [x] Nuxt atualizado para ^4.4.8
+- [x] vue-router para v5
+- [x] vue-tsc para v3
+- [x] Deduplicar @iconify/vue
+
+### LANDING-07: Docker cleanup ✅
+- [x] Remover pasta `web/` (cache residual)
+- [x] Remover serviço `frontend` do docker-compose.yml
+- [x] docker-compose.yml agora contém apenas db + backend
 
 ---
 
@@ -315,16 +363,55 @@
 | 5 | CSS-01: Desativar preflight Tailwind | BOOKING-08 | ✅ Concluído |
 | 6 | CSS-02: Paleta centralizada via CSS Variables | CSS-01 | ✅ Concluído |
 | 7 | CSS-03: Layouts escopados | CSS-01, CSS-02 | ✅ Concluído |
+| 8 | LANDING-01 a 07: Landing page refinements | BOOKING-08 | ✅ Concluído |
+| 9 | BOOKING-12: Cliente ver/cancelar próprios agendamentos | BOOKING-07, LANDING-01 | ⬜ Pendente |
+| 10 | BOOKING-09: Notificações internas | BOOKING-05 | ⬜ Pendente |
+| 11 | BOOKING-10: Histórico de agendamentos | BOOKING-05 | ⬜ Pendente |
+| 12 | BOOKING-11: Status avançado de agendamento | BOOKING-05 | ⬜ Pendente |
+| 13 | BOOKING-13: Relatório de agendamentos por período | BOOKING-05 | ⬜ Pendente |
+| 14 | BOOKING-14: Calendário visual completo | DASHBOARD-01 | ⬜ Pendente |
 
 ---
 
 ## Commits
 
 ```
-61c58ba 🔋 feat: TanStack Query — plugin SSR, composables, auth store integrado
-36e4d4e 🔒 feat: auth completo — backend login JWT + CASL RBAC, frontend login + Pinia + middleware
-a3f9d6b 🐛 fix: env vars seed opcionais e --env-file no dev
-a8e01b1 🔧 chore: .env.example com seed vars seguras
-f44843e 🎉 feat: fundação — monorepo, docker, fastify, nuxt, drizzle + seed
-ea22ddd 📝 docs: spec, design, tasks e ADRs do projeto
+963c398 alinhar autor ao final do card e adicionar fotos aos depoimentos
+11110a4 fix(landing): update social proof stats and lint formatting
+c09c374 fix(landing): infinite testimonials carousel, no blank slides
+87a73b2 chore(deps): update nuxt to ^4.4.8, vue-router to v5, vue-tsc to v3, dedupe @iconify/vue
+b5d73d3 feat(landing): migrate to Nuxt 4 app dir, add brow lamination & alongamento services, fix icons, refactor footer & location
+373d119 refactor: split monorepo into packages/landing and packages/dashboard
+ef318a1 docs: record AD-031 Tailwind scoping fix in STATE.md
+7516186 fix(dashboard): scope Tailwind Preflight to .tw-scope to avoid Vuetify conflict
+3288335 docs: record AD-030 landing page polish in STATE.md
+d4a8f76 feat(landing): polish components — icons, logos, team, layout
+d09e281 feat(landing): add local static assets and replace remote URLs
+8dc61ee build(web): add nuxt-icon module and favicon assets
+b892d63 feat: landing page, dashboard Vuetify, isolamento CSS híbrido
+e86039f docs: BOOKING-07 registrado como concluído
+ac3af19 feat: BOOKING-07 — frontend multi-step de autoatendimento (/agendar)
+549b14a feat: BOOKING-07 — backend API pública de booking
+304d3fa feat: BOOKING-05 — SSE broadcasts em appointments e blocks
+728da31 feat: BOOKING-05 — SSE backend: gerenciador de conexões + endpoint
+870d021 docs: TASKS.md e STATE.md atualizados — PARTNER-04/05 e TANSTACK-02
+45e3b99 feat: PARTNER-05 — bloqueios de agenda integrados
+c499ecf feat: PARTNER-04 — tela de gestão de profissionais
+46bc6be feat: TANSTACK-02 — composables use-services e use-clients
+db56b98 docs: TASKS.md reconciliado — SERVICES, CLIENTS, BOOKING-01-04
+d63f84d docs: AD-024 registrado — booking migra de Vuetify para Tailwind
+a45f1a2 feat: BOOKING-01/02/03/04 — schema appointments + CRUD + conflito
+ffe5963 feat: SERVICES-03 + CLIENTS-03 — frontend páginas
+7b8f6ae feat: SERVICES-01/02 + CLIENTS-01/02 — schemas, CRUD e migrations
+f513887 docs: TASKS.md atualizado — Partner backend completo
+a68fb12 chore: biome import sorting em seed e auth
+6d46b28 feat: PARTNER-03 CRUD bloqueios de agenda
+ef7e777 feat: PARTNER-02 CRUD profissionais + ZodError handler + JWT fix
+5681969 docs: AD-023 TanStack Query, README, TASKS.md
+61c58ba feat: TanStack Query — plugin SSR, composables, auth store
+36e4d4e feat: auth completo — backend login JWT + CASL RBAC, frontend
+a3f9d6b fix: env vars seed opcionais e --env-file no dev
+a8e01b1 chore: .env.example com seed vars seguras
+f44843e feat: fundação — monorepo, docker, fastify, nuxt, drizzle + seed
+ea22ddd docs: spec, design, tasks e ADRs do projeto
 ```

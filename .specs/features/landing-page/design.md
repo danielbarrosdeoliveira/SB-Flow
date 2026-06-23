@@ -25,8 +25,27 @@ pages/index.vue
 ```
 index.vue (useAsyncData)
   ├── LArtists → GET /api/booking/professionals (useFetch SSR)
-  └── Demais componentes → conteúdo estático / props
+  └── Demais componentes → conteúdo estático / props (depoimentos com fotos em /testimonials/)
 ```
+
+---
+
+## Implementation Notes (pós-implementação)
+
+### LTestimonials
+- **Data:** Array estático de 6 depoimentos, com campo `photo` opcional
+- **Interaction:** Carrossel com setas de navegação + navegação infinita (array triplicado)
+- **Author alignment:** Card usa `flex flex-col` + `mt-auto` no autor para alinhamento ao fundo
+- **Photos:** 3 depoimentos com fotos em `packages/landing/public/testimonials/`
+- **Fallback:** Inicial do nome em avatar circular quando `photo` não existe
+
+### Paths atualizados
+- Componentes em `packages/landing/app/components/`
+- Páginas em `packages/landing/app/pages/`
+- Assets em `packages/landing/app/assets/`
+- Público em `packages/landing/public/`
+
+---
 
 ### Route Rules
 

@@ -6,10 +6,10 @@ O Studio Blessed não possui uma presença web profissional. A página inicial a
 
 ## Goals
 
-- [ ] Apresentar o Studio Blessed com identidade visual profissional (paleta de cores, tipografia, fotografia)
-- [ ] Exibir serviços, profissionais, depoimentos e informações de contato
-- [ ] Direcionar visitantes para o fluxo de agendamento (`/agendar`)
-- [ ] SSR para indexação SEO
+- [x] Apresentar o Studio Blessed com identidade visual profissional (paleta de cores, tipografia, fotografia)
+- [x] Exibir serviços, profissionais, depoimentos e informações de contato
+- [x] Direcionar visitantes para o fluxo de agendamento (`/agendar`)
+- [x] SSR para indexação SEO
 
 ## Out of Scope
 
@@ -184,36 +184,36 @@ O Studio Blessed não possui uma presença web profissional. A página inicial a
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| LP-NAV-01 | P1: Navbar | Spec | Pending |
-| LP-NAV-02 | P1: Navbar | Spec | Pending |
-| LP-NAV-03 | P1: Navbar | Spec | Pending |
-| LP-HERO-01 | P1: Hero | Spec | Pending |
-| LP-HERO-02 | P1: Hero | Spec | Pending |
-| LP-HERO-03 | P1: Hero | Spec | Pending |
-| LP-SERV-01 | P1: Serviços | Spec | Pending |
-| LP-SERV-02 | P1: Serviços | Spec | Pending |
-| LP-PROF-01 | P1: Profissionais | Spec | Pending |
-| LP-PROF-02 | P1: Profissionais | Spec | Pending |
-| LP-PROF-03 | P1: Profissionais | Spec | Pending |
-| LP-FOOT-01 | P1: Footer | Spec | Pending |
-| LP-FOOT-02 | P1: Footer | Spec | Pending |
-| LP-FOOT-03 | P1: Footer | Spec | Pending |
-| LP-QUEM-01 | P2: Quem Somos | Spec | Pending |
-| LP-DEPO-01 | P2: Depoimentos | Spec | Pending |
-| LP-LOC-01 | P2: Localização | Spec | Pending |
-| LP-PIL-01 | P3: Pilares | Spec | Pending |
-| LP-CTA-01 | P3: CTA Banner | Spec | Pending |
-| LP-WHY-01 | P3: Why Choose Us | Spec | Pending |
-| LP-EDGE-01 | Edge Cases | - | Pending |
+| LP-NAV-01 | P1: Navbar | Spec | ✅ Done |
+| LP-NAV-02 | P1: Navbar | Spec | ✅ Done |
+| LP-NAV-03 | P1: Navbar | Spec | ✅ Done |
+| LP-HERO-01 | P1: Hero | Spec | ✅ Done |
+| LP-HERO-02 | P1: Hero | Spec | ✅ Done |
+| LP-HERO-03 | P1: Hero | Spec | ✅ Done |
+| LP-SERV-01 | P1: Serviços | Spec | ✅ Done |
+| LP-SERV-02 | P1: Serviços | Spec | ✅ Done |
+| LP-PROF-01 | P1: Profissionais | Spec | ✅ Done |
+| LP-PROF-02 | P1: Profissionais | Spec | ✅ Done |
+| LP-PROF-03 | P1: Profissionais | Spec | ✅ Done |
+| LP-FOOT-01 | P1: Footer | Spec | ✅ Done |
+| LP-FOOT-02 | P1: Footer | Spec | ✅ Done |
+| LP-FOOT-03 | P1: Footer | Spec | ✅ Done |
+| LP-QUEM-01 | P2: Quem Somos | Spec | ✅ Done |
+| LP-DEPO-01 | P2: Depoimentos | Spec | ✅ Done |
+| LP-LOC-01 | P2: Localização | Spec | ✅ Done |
+| LP-PIL-01 | P3: Pilares | Spec | ✅ Done |
+| LP-CTA-01 | P3: CTA Banner | Spec | ✅ Done |
+| LP-WHY-01 | P3: Why Choose Us | Spec | ✅ Done |
+| LP-EDGE-01 | Edge Cases | - | ✅ Done |
 
-**Coverage:** 21 total, 0 mapped to tasks, 21 unmapped
+**Coverage:** 21 total, 21 mapped to tasks, 0 unmapped
 
 ---
 
 ## Success Criteria
 
-- [ ] Landing page carrega em < 3s em conexão 4G
-- [ ] Visitante consegue encontrar serviços e agendar em < 2 cliques
-- [ ] 100% das seções renderizam sem erro no SSR
-- [ ] Navegação por âncoras funciona com e sem JS
-- [ ] Nota Lighthouse > 80 em Performance, > 90 em Accessibility e SEO
+- [x] Landing page carrega em < 3s em conexão 4G
+- [x] Visitante consegue encontrar serviços e agendar em < 2 cliques
+- [x] 100% das seções renderizam sem erro no SSR
+- [x] Navegação por âncoras funciona com e sem JS
+- [x] Nota Lighthouse > 80 em Performance, > 90 em Accessibility e SEO

@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
-  modules: ["@pinia/nuxt", "vuetify-nuxt-module"],
+  modules: ["@pinia/nuxt", "@nuxt/ui"],
   components: [
     { path: "~/components", pathPrefix: false },
   ],
@@ -19,23 +19,6 @@ export default defineNuxtConfig({
         { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon/favicon-16x16.png" },
         { rel: "apple-touch-icon", sizes: "180x180", href: "/favicon/apple-touch-icon.png" },
       ],
-    },
-  },
-  vuetify: {
-    moduleOptions: {},
-    vuetifyOptions: {
-      theme: {
-        defaultTheme: "light",
-        themes: {
-          light: {
-            colors: {
-              primary: "#A78B58",
-              secondary: "#4F4B40",
-              accent: "#D9C49E",
-            },
-          },
-        },
-      },
     },
   },
 })

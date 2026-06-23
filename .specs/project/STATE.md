@@ -1,7 +1,7 @@
 # State
 
-**Last Updated:** 2026-06-21T00:00:00Z
-**Current Work:** BOOKING-08 — Landing page SSR + Dashboard Vuetify + Isolamento CSS híbrido
+**Last Updated:** 2026-06-22T23:00:00Z
+**Current Work:** Stack migration — Vuetify removido, Nuxt UI v4 adotado no dashboard
 
 ---
 
@@ -74,7 +74,7 @@
 **Trade-off:** CPF adiciona complexidade de validação (formato, dígitos verificadores) e é dado sensível (LGPD).
 **Impact:** Validar CPF no frontend e backend. Armazenar de forma segura (hash não é possível pois CPF é identificador, mas pode ser criptografado em repouso).
 
-### AD-011: Vuetify substitui ShadcnVue + TailwindCSS + Schedule-X (2026-06-19) — 🔄 PARTIALLY SUPERSEDED by AD-024
+### AD-011: Vuetify substitui ShadcnVue + TailwindCSS + Schedule-X (2026-06-19) — 🔄 SUPERSEDED by AD-037
 
 **Decision:** UI migrada para Vuetify (Material Design 3). Remove ShadcnVue e Schedule-X.
 **Reason:** Vuetify tem calendário nativo Vue 3 que reage naturalmente a dados reativos, eliminando risco de integração com Schedule-X. Menos dependências, stack mais coesa.
@@ -246,7 +246,7 @@
 
 **Impact:** Dashboard routes autenticadas corretamente. Landing page e rotas públicas não disparam refresh. Erro 400 "Body cannot be empty" no refresh resolvido.
 
-### AD-028: Dashboard migrado de Tailwind CSS para Vuetify (2026-06-21)
+### AD-028: Dashboard migrado de Tailwind CSS para Vuetify (2026-06-21) — 🔄 SUPERSEDED by AD-037
 
 **Decision:** Todas as 4 páginas do dashboard (`agenda`, `clientes`, `profissionais`, `servicos`) refatoradas de Tailwind CSS para Vuetify 3. Layout compartilhado criado em `layouts/dashboard.vue`.
 
@@ -261,19 +261,19 @@
 
 **Impact:** Dashboard usa Vuetify exclusivamente (sem Tailwind). Landing page continua com Tailwind. Build + typecheck validados.
 
-### AD-029: Isolamento CSS híbrido Tailwind + Vuetify (2026-06-21)
+### AD-029: Isolamento CSS híbrido Tailwind + Vuetify (2026-06-21) — 🔄 SUPERSEDED by AD-037
 
 **Decision:** Implementada arquitetura híbrida de CSS com isolamento de escopo entre Tailwind (landing page) e Vuetify (dashboard):
 
 1. **Preflight desativado** globalmente no Tailwind (`corePlugins: { preflight: false }`) para não sobrescrever estilos do Vuetify.
 2. **Reset manual escopado** no layout da landing page (`.page-landing`): box-sizing, margins, padding, list-style, etc. — apenas dentro da landing page.
-3. **Paleta centralizada em CSS Variables** (`web/assets/css/tokens.css`): `--color-bg`, `--color-foreground`, `--color-primary`, etc. Tailwind cores sb-* apontam para `var(--color-*)`. Vuetify usa os mesmos valores hex.
+3. **Paleta centralizada em CSS Variables** (`packages/landing/app/assets/css/tokens.css`): `--color-bg`, `--color-foreground`, `--color-primary`, etc. Tailwind cores sb-* apontam para `var(--color-*)`. Vuetify usa os mesmos valores hex.
 4. **Layouts nativos Nuxt**: `layouts/landing.vue` com classe `.page-landing` + `LNavbar`/`LFooter`; `layouts/dashboard.vue` com `v-app` controlando o escopo Vuetify.
 
 **Reason:** Tailwind Preflight aplica reset CSS global (margins, headings, list-style) que conflita com os estilos internos do Vuetify. Componentes como `v-btn`, `v-card`, `v-text-field` perdiam padding, cores e comportamentos nativos.
 
 **Changes:**
-- `web/assets/css/tokens.css` — CSS custom properties da paleta Studio Blessed
+- `packages/landing/app/assets/css/tokens.css` — CSS custom properties da paleta Studio Blessed
 - `tailwind.config.ts` — `preflight: false`, cores sb-* via `var(--color-*)`
 - `nuxt.config.ts` — importa `tokens.css`, Vuetify theme com valores hex correspondentes
 - `layouts/landing.vue` — reset básico escopado em `.page-landing`
@@ -289,12 +289,12 @@
 
 **Changes:**
 - `nuxt-icon` module adicionado, inline SVGs substituídos por `<Icon>` em todos os componentes
-- Unsplash URLs substituídas por imagens/vídeos locais em `web/public/`
+- Unsplash URLs substituídas por imagens/vídeos locais em `packages/landing/public/`
 - Logo textual substituído por SVG nas versões colorida e branca
 - Seção de equipe migrada de API dinâmica para dados estáticos (Caroline, Daniel, Thalita)
 - Reset CSS simplificado com seletores `:where()` no layout da landing
 - Favicons adicionados (ico, png, apple-touch-icon)
-- `dev:web` exposto na rede via `--host`
+- `dev:landing` exposto na rede via `--host`
 
 **Commits:**
 - `8dc61ee` — build(web): add nuxt-icon module and favicon assets
@@ -308,7 +308,7 @@
 **Problem:** `preflight: false` global quebrava componentes Vuetify no Dashboard porque o reset manual `.page-landing` era insuficiente. Reativar Preflight globalmente quebrava o Dashboard.
 
 **Solution:**
-- `web/assets/css/tailwind.css` criado com `.tw-scope { @tailwind base; }` — Preflight só gera seletores prefixados com `.tw-scope`
+- `packages/landing/app/assets/css/tailwind.css` criado com `.tw-scope { @tailwind base; }` — Preflight só gera seletores prefixados com `.tw-scope`
 - `@tailwind components; @tailwind utilities;` permanecem globais (não causam conflito)
 - Landing page envolta em `<div class="tw-scope ...">` no layout
 - Dashboard permanece fora do escopo, usa `<v-app>` com reset Vuetify nativo
@@ -321,6 +321,105 @@
 
 ---
 
-## Preferences
+### AD-032: Monorepo split — `packages/landing` e `packages/dashboard` (2026-06-22)
 
-**Model Guidance Shown:** never
+**Decision:** Monorepo foi reestruturado: código do frontend movido de `web/` para `packages/` com dois pacotes independentes — `packages/landing` (landing page + agenda do cliente, Tailwind) e `packages/dashboard` (dashboard administrativo, Vuetify). `packages/agenda` também foi criado como extração do booking.
+
+**Reason:** Separação física entre landing (Tailwind) e dashboard (Vuetify) evita conflitos de CSS e permite builds independentes. Cada pacote tem seu próprio `nuxt.config.ts` e dependências.
+
+**Changes:**
+- `web/` → `packages/landing/` + `packages/dashboard/` + `packages/agenda/`
+- Cada pacote com `nuxt.config.ts`, `package.json`, `app/` directory próprio
+- Scripts dev no root: `npm run dev:landing`, `npm run dev:dashboard`, `npm run dev:api`
+- `docker-compose.yml` desatualizado — serviço `frontend` removido em AD-036
+
+**Commit:**
+- `373d119` — refactor: split monorepo into packages/landing and packages/dashboard
+
+---
+
+### AD-033: Migração para Nuxt 4 app directory (2026-06-22)
+
+**Decision:** Landing page migrada para estrutura Nuxt 4 (`app/` directory). Componentes movidos para `packages/landing/app/components/`, páginas para `packages/landing/app/pages/`.
+
+**Reason:** Nuxt 4 é a versão mais recente e `app/` directory é a estrutura recomendada. Também corrigiu ícones quebrados e adicionou novos serviços (brow lamination, alongamento).
+
+**Changes:**
+- Estrutura migrada de `web/` para `packages/landing/app/`
+- Novos serviços adicionados: Brow Lamination, Alongamento de Fios
+- Footer e localização refatorados
+- Ícones corrigidos
+- `packages/landing/nuxt.config.ts` com `future: { compatibilityVersion: 4 }`
+
+**Commit:**
+- `b5d73d3` — feat(landing): migrate to Nuxt 4 app dir, add brow lamination & alongamento services, fix icons, refactor footer & location
+
+---
+
+### AD-034: Carrossel de depoimentos infinito (2026-06-22)
+
+**Decision:** Carrossel de depoimentos (`LTestimonials.vue`) corrigido para navegação infinita sem slides em branco no final.
+
+**Problem:** Ao chegar no último depoimento, o carrossel avançava além do array real exibindo slots vazios.
+
+**Solution:** Array triplicado (`displayItems = [...depoimentos, ...depoimentos, ...depoimentos]`) com transição de volta instantânea (sem animação) ao atingir o limite, criando rolagem infinita.
+
+**Commit:**
+- `c09c374` — fix(landing): infinite testimonials carousel, no blank slides
+
+---
+
+### AD-035: Depoimentos — autor alinhado ao final do card + fotos (2026-06-22)
+
+**Decision:** Autor do depoimento sempre alinhado ao final do card (mesmo com textos de tamanhos diferentes) e 3 depoimentos com fotos exibidas no lugar das iniciais.
+
+**Changes:**
+- Card mudou para `flex flex-col` com `mt-auto` no container do autor, garantindo alinhamento inferior
+- Fotos adicionadas em `packages/landing/public/testimonials/`
+- Campo `photo` adicionado aos dados de Josiane Andriolli, Barbara Lucio e Stephani Oliveira
+- Template renderiza `<img>` quando `photo` existe, fallback para inicial com `v-else`
+
+**Commits:**
+- `963c398` — alinhar autor ao final do card e adicionar fotos aos depoimentos
+
+---
+
+### AD-036: Docker cleanup — remoção do frontend + pasta web/ (2026-06-22)
+
+**Decision:** Pasta `web/` (contendo apenas `node_modules/.cache/`) deletada e serviço `frontend` removido do `docker-compose.yml`. O `docker-compose.yml` atualmente serve apenas backend + db.
+
+**Reason:** O diretório `web/` continha apenas cache de build residual (sem `package.json`, código fonte ou Dockerfile). O serviço `frontend` no docker-compose referenciava `./web` como build context, mas não havia Dockerfile — estava quebrado. Os frontends reais estão em `packages/` e não têm Dockerfile no momento.
+
+**Impact:**
+- `packages/landing/`, `packages/dashboard/`, `packages/agenda/` executados localmente via `npm run dev:*`
+- `docker-compose.yml` contém apenas `db` e `backend`
+- Dockerfiles para os frontends serão criados quando necessário para deploy
+
+**Commits:**
+- `963c398` — parte da limpeza (web/ deletada + docker-compose.yml atualizado)
+
+---
+
+### AD-037: Dashboard migra de Vuetify + v-calendar para Nuxt UI v4 (2026-06-22)
+
+**Decision:** O pacote `packages/dashboard` foi descontinuado do Vuetify e do v-calendar. A stack visual foi unificada em Nuxt UI v4 (`@nuxt/ui`) com Tailwind CSS, eliminando toda dependência de bibliotecas de componente terceiras sem manutenção ativa.
+
+**Reason:**
+- **Vuetify**: O módulo `vuetify-nuxt-module` e o próprio Vuetify apresentam riscos de sustentabilidade a longo prazo. A biblioteca perdeu tração no ecossistema Vue/Nuxt, com manutenção cada vez mais lenta e incerteza sobre compatibilidade futura com Nuxt 4+.
+- **v-calendar**: Descontinuado desde 2023 (último release v3.1.2 em Outubro/2023). Sem manutenção há quase 3 anos, representa risco de segurança e incompatibilidade com versões futuras de Vue/Nuxt.
+- **Nuxt UI v4**: Biblioteca de componentes oficial do ecossistema Nuxt, desenvolvida e mantida pela Nuxt Labs. Tem garantia de compatibilidade com Nuxt 4+, roadmap público e suporte ativo da comunidade. Usa Tailwind CSS nativamente, eliminando a necessidade de múltiplos frameworks de UI.
+- **Unificação**: Remove a arquitetura híbrida Tailwind + Vuetify que exigia isolamento CSS complexo (Preflight escopado, `.tw-scope`, resets manuais). Todo o dashboard agora compartilha a mesma base Tailwind CSS do landing e booking, simplificando temas e design system.
+
+**Trade-off:** Perde-se o ecossistema de componentes Vuetify (VDataTable, VCalendar, VForm complexo) que eram maduros. Nuxt UI v4 é mais recente e alguns componentes avançados podem precisar de implementação customizada com radix-vue (reka-ui) que já vem como dependência do `@nuxt/ui`.
+
+**Impact:**
+- `vuetify-nuxt-module` removido do `package.json` e `nuxt.config.ts`
+- `v-calendar` removido do `package.json` (evitado antes de qualquer implementação)
+- `@nuxt/ui` `^4.9.0` adicionado como módulo no `nuxt.config.ts`
+- `@nuxtjs/tailwindcss` e `tailwind.config.ts` removidos (Nuxt UI gerencia Tailwind internamente)
+- `packages/dashboard/assets/css/main.css` removido (Nuxt UI tem CSS próprio)
+- Dependências Shadcn Vue removidas (`radix-vue`, `clsx`, `tailwind-merge`, `class-variance-authority`, `@lucide/vue`)
+- Páginas do dashboard substituídas por placeholders temporários (serão reconstruídas com Nuxt UI)
+- Login page usa `UCard` do Nuxt UI para validar o build
+- AD-011, AD-028, AD-029 totalmente supersedidas — Vuetify não faz mais parte do projeto
+- Conflitos de CSS entre Tailwind e Vuetify não existem mais (dashboard agora usa Tailwind puro via Nuxt UI)

@@ -17,23 +17,22 @@
 ## Tech Stack
 
 **Core:**
-- Frontend: Nuxt 3 + TailwindCSS + Vuetify
+- Frontend: Nuxt 4 + TailwindCSS + Nuxt UI
 - Backend: Fastify
 - Database: PostgreSQL (Docker)
 - ORM: DrizzleORM
 
 **Key dependencies:**
 - TypeScript (todo o projeto)
-- Nuxt 3 (framework fullstack, gerencia SSR + SPA via routeRules)
+- Nuxt 4 (framework fullstack, gerencia SSR + SPA via routeRules)
+- @nuxt/ui (biblioteca de componentes oficial do ecossistema Nuxt)
 - @nuxtjs/tailwindcss (landing page)
-- vuetify-nuxt-module (dashboard + agendamento)
 - Pinia (Client State — auth, UI flags)
 - @tanstack/vue-query (Server State — appointments, professionals, services, clients)
 - Zod (validação compartilhada)
 - Biome (lint/format)
 - Day.js (manipulação de datas para agenda)
 - CASL.js (RBAC)
-- @tanstack/vue-query (Server State management)
 - postgres.js (driver de banco, `prepare: true`)
 - SSE (tempo real no dashboard)
 - @fastify/cookie (cookies HTTP-Only para auth + SSE)
@@ -65,19 +64,18 @@
 
 ### Fases
 
-**Fase 1 — Desenvolvimento Local:** MVP construído e testado inteiramente em ambiente local com Docker Compose. Sem dependências de nuvem durante o desenvolvimento.
+**Fase 1 — Desenvolvimento Local:** MVP construído e testado inteiramente em ambiente local com Docker Compose (db + backend) e servidores dev Nuxt para os frontends. Sem dependências de nuvem durante o desenvolvimento.
 
-**Fase 2 — Produção:** Deploy em VPS Oracle Cloud (Always Free — VM Arm Ampere A1). Mesma stack de containers. Deploy automatizado via GitHub Actions.
+**Fase 2 — Produção:** Deploy em VPS Oracle Cloud (Always Free — VM Arm Ampere A1). Mesma stack de containers. Deploy automatizado via GitHub Actions (planejado).
 
 ### Arquitetura de Containers
 
-3 containers na mesma rede Docker:
+2 containers na mesma rede Docker (frontends rodam localmente via `npm run dev:*`):
 
 | Container        | Função                          | Expõe porta |
 | ---------------- | ------------------------------- | ----------- |
 | `db`             | PostgreSQL nativo                | 5432        |
 | `backend`        | Fastify API + regras de negócio  | 3001        |
-| `frontend`       | Nuxt 3 (SSR landing + SPA dash) | 3000        |
 
 ### Database
 
@@ -85,10 +83,13 @@ PostgreSQL nativo via container Docker. Sem limitações serverless. Conexão di
 
 ### Frontend
 
-Nuxt 3 com `routeRules`:
-- `/` → SSR (landing page com TailwindCSS, indexação SEO)
-- `/dashboard/**` → SPA (Vuetify, dashboard profissional)
-- `/agendar/**` → SPA (Tailwind, autoatendimento cliente)
+3 pacotes Nuxt 4 com `routeRules`:
+
+| Pacote | Rotas | Framework | SSR |
+|--------|-------|-----------|-----|
+| `packages/landing` | `/` (landing), `/agendar` (booking) | Nuxt 4 + Tailwind CSS | SSR (/) / SPA (/agendar) |
+| `packages/dashboard` | `/login`, `/dashboard/*` | Nuxt 4 + Nuxt UI | SPA |
+| `packages/agenda` | (reservado para futuro) | Nuxt 4 + Tailwind CSS | SPA |
 
 ### Normalização de Telefone
 

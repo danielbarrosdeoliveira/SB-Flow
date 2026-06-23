@@ -3,10 +3,10 @@
 ## Domínios (Produção)
 
 | Domínio | Pacote | Framework | SSR | Finalidade |
-|---|---|---|---|---|
-| `studioblessed.com.br` | `packages/landing` | Nuxt 3 + Tailwind CSS | ✅ SSR | Landing Page institucional |
-| `agenda.studioblessed.com.br` | `packages/landing` | Nuxt 3 + Tailwind CSS | ❌ SPA | Área de Agendamento do Cliente |
-| `app.studioblessed.com.br` | `packages/dashboard` | Nuxt 3 + Vuetify | ❌ SPA | Dashboard administrativo |
+|---|---|---|---|---|---|
+| `studioblessed.com.br` | `packages/landing` | Nuxt 4 + Tailwind CSS | ✅ SSR | Landing Page institucional |
+| `agenda.studioblessed.com.br` | `packages/landing` | Nuxt 4 + Tailwind CSS | ❌ SPA | Área de Agendamento do Cliente |
+| `app.studioblessed.com.br` | `packages/dashboard` | Nuxt 4 + Nuxt UI | ❌ SPA | Dashboard administrativo |
 
 ## Landing Package — Rotas
 
@@ -25,7 +25,7 @@
 
 | Caminho | Subdomínio | Descrição |
 |---|---|---|
-| `/login` | `app.studioblessed.com.br` | Login (Vuetify) |
+| `/login` | `app.studioblessed.com.br` | Login (Nuxt UI) |
 | `/dashboard/agenda` | `app.studioblessed.com.br` | Agenda do dia |
 | `/dashboard/clientes` | `app.studioblessed.com.br` | CRUD de clientes |
 | `/dashboard/profissionais` | `app.studioblessed.com.br` | CRUD de profissionais |
@@ -33,15 +33,16 @@
 
 ## Stack
 
-- **API**: `api/` — Express + Drizzle + SQLite (separado, fora dos pacotes Nuxt)
-- **Landing**: Nuxt 3 + `@nuxtjs/tailwindcss` + `nuxt-icon` + `@tanstack/vue-query`
-- **Dashboard**: Nuxt 3 + `vuetify-nuxt-module` + `@pinia/nuxt` + `@tanstack/vue-query` + `zod`
+- **API**: `api/` — Fastify + Drizzle + PostgreSQL
+- **Landing**: Nuxt 4 + `@nuxtjs/tailwindcss` + `nuxt-icon`
+- **Dashboard**: Nuxt 4 + `@nuxt/ui` + `@pinia/nuxt` + `@tanstack/vue-query` + `zod`
+- **Agenda (booking)**: Nuxt 4 + Tailwind CSS (SPA no mesmo build do landing)
 
 ## Separação de Estilos
 
 - Landing usa **Tailwind CSS** com cores customizadas `sb-*` (gold/warm) definidas no `tailwind.config.ts` e tokens em `assets/css/tokens.css`
-- Dashboard usa **Vuetify** com tema customizado (cores sb-* mapeadas no tema Vuetify)
-- Nenhum pacote importa o CSS do outro — estilos isolados desde o build
+- Dashboard usa **Nuxt UI** (Tailwind CSS nativo), com tema herdado do módulo `@nuxt/ui`
+- Ambos os pacotes compartilham a mesma base Tailwind CSS, mas têm temas independentes — não há conflito de estilos entre landing e dashboard
 
 ## Scripts
 
@@ -53,7 +54,7 @@ npm run dev:api        # API
 
 ## Próximos Passos
 
-- [ ] Implementar autenticação na landing (para cliente consultar agendamentos)
 - [ ] Adicionar página "Meus Agendamentos" no landing
 - [ ] Configurar subdomínios no provider (Vercel/Cloudflare)
 - [ ] CI/CD para deploy separado dos pacotes
+- [ ] BOOKING-09 a 14: notificações, histórico, status, relatórios, calendário

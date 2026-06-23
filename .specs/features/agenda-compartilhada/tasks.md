@@ -2,7 +2,7 @@
 
 **Design**: `.specs/features/agenda-compartilhada/design.md`
 **Spec**: `.specs/features/agenda-compartilhada/spec.md`
-**Status**: Draft
+**Status:** ✅ Concluído (MVP)
 
 ---
 
@@ -193,15 +193,15 @@ Configuração do TanStack Query no frontend para gerenciar estado do servidor, 
 **Subtarefas:**
 - [x] Criar `web/composables/use-appointments.ts` — `useAppointments(date)`, `useAppointmentsByProfessional(date, professionalId)`
 - [x] Criar `web/composables/use-user-profile.ts` — `useUserProfile(userId)`
-- [ ] Criar `web/composables/use-services.ts` — *pendente*
-- [ ] Criar `web/composables/use-clients.ts` — *pendente*
+- [x] Criar `web/composables/use-services.ts`
+- [x] Criar `web/composables/use-clients.ts`
 
 ### TANSTACK-03: Frontend — Integração com Pinia auth store
 
 **Subtarefas:**
 - [x] `useAuthStore.logout()` chama `queryClient.clear()` para limpar cache
 - [x] API wrapper (`web/utils/api.ts`) faz refresh automático em 401
-- [ ] SSE events invalidam queries do TanStack Query — *pendente implementação SSE*
+- [x] SSE events invalidam queries do TanStack Query (via BOOKING-05)
 
 ### TANSTACK-04: Frontend — SSR prefetch pattern
 
