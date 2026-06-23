@@ -25,7 +25,16 @@
 }
 
 :root {
-  /* Brand */
+  /* Brand (unprefixed - matches landing page naming) */
+  --color-bg: #F1F1F1;
+  --color-foreground: #130F0E;
+  --color-primary: #A78B58;
+  --color-primary-light: #D9C49E;
+  --color-primary-dark: #735826;
+  --color-warm: #4F4B40;
+  --color-sand: #DACDB6;
+
+  /* Brand (sb- prefixed aliases) */
   --color-sb-dark: #130F0E;
   --color-sb-primary: #A78B58;
   --color-sb-primary-light: #D9C49E;
