@@ -79,8 +79,8 @@ async function handleLogin() {
   const result = schema.safeParse(form)
   if (!result.success) {
     const field = result.error.flatten().fieldErrors
-    if (field.phone) errors.phone = field.phone[0]
-    if (field.password) errors.password = field.password[0]
+    if (field.phone) errors.phone = field.phone[0] ?? ""
+    if (field.password) errors.password = field.password[0] ?? ""
     return
   }
 
