@@ -2,6 +2,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
   modules: ["@pinia/nuxt", "@nuxt/ui"],
+  css: ["~/assets/css/main.css"],
   components: [
     { path: "~/components", pathPrefix: false },
   ],
