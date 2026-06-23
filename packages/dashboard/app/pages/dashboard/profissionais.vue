@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="p-6 text-[#4F4B40]">Agenda - Em construção</div>
+    <div class="p-6 text-warm-950">Profissionais - Em construção</div>
   </div>
 </template>
 
@@ -8,5 +8,5 @@
 definePageMeta({
   layout: "dashboard",
   middleware: "auth",
-})
+});
 </script>

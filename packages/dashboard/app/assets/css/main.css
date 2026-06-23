@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+  --font-sans: "DM Sans", sans-serif;
+
+  /* Brand palette - warm beige tones */
+  --color-warm-50: #faf8f5;
+  --color-warm-100: #f5f0e8;
+  --color-warm-200: #ebe3d5;
+  --color-warm-300: #ddd0bc;
+  --color-warm-400: #c9b99d;
+  --color-warm-500: #b8a486;
+  --color-warm-600: #a69172;
+  --color-warm-700: #8a7960;
+  --color-warm-800: #71624f;
+  --color-warm-900: #5d5042;
+  --color-warm-950: #4f4b40;
+
+  /* Semantic aliases */
+  --color-sand: var(--color-warm-600);
+  --color-normal: var(--color-warm-800);
+  --color-dark: var(--color-warm-900);
+
+  /* Semantic mappings for CSS variables */
+  --color-foreground: var(--color-warm-950);
+  --color-bg: var(--color-warm-50);
+  --color-primary-light: var(--color-orange-300);
+}

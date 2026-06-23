@@ -3,23 +3,20 @@ export default defineNuxtConfig({
   ssr: false,
   modules: ["@pinia/nuxt", "@nuxt/ui"],
   css: ["~/assets/css/main.css"],
-  appConfig: {
-    ui: {
-      colors: {
-        primary: "sb-primary",
-        success: "success",
-        error: "error",
-        warning: "warning",
-        info: "info",
-      },
-    },
-  },
   components: [
     { path: "~/components", pathPrefix: false },
   ],
   runtimeConfig: {
     public: {
       apiUrl: process.env.NUXT_PUBLIC_API_URL || "http://localhost:3001",
+    },
+  },
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@vueuse/core',
+        'zod',
+      ],
     },
   },
   app: {

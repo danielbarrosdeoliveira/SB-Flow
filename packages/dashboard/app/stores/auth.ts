@@ -16,6 +16,7 @@ export const useAuthStore = defineStore("auth", () => {
   const user = ref<User | null>(null);
   const isAuthenticated = computed(() => user.value !== null);
   const role = computed(() => user.value?.role ?? null);
+  const userName = computed(() => user.value?.name ?? "Usuário");
 
   async function login(phone: string, password: string) {
     const data = await api.post<LoginResponse>("/api/auth/login", {
@@ -47,5 +48,5 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  return { user, isAuthenticated, role, login, refreshToken, logout };
+  return { user, isAuthenticated, role, userName, login, refreshToken, logout };
 });
