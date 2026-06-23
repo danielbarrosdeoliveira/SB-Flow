@@ -1,57 +1,47 @@
 <template>
-  <v-app>
-    <v-main class="d-flex align-center justify-center bg-grey-lighten-3">
-      <v-card class="mx-4" width="400">
-        <v-card-title class="text-center pt-6">
-          <span class="text-h5 font-weight-bold">SB-Flow</span>
-        </v-card-title>
+  <div class="flex min-h-screen items-center justify-center">
+    <UCard class="w-full max-w-sm">
+      <div class="mb-6 text-center">
+        <h1 class="text-xl font-semibold text-gray-900 dark:text-white">SB-Flow</h1>
+        <p class="mt-1 text-sm text-gray-500">Studio Blessed — Dashboard</p>
+      </div>
 
-        <v-card-text>
-          <v-form @submit.prevent="handleLogin">
-            <v-text-field
-              v-model="phoneMasked"
-              label="Telefone"
-              placeholder="(11) 98888-0015"
-              :error-messages="errors.phone"
-              variant="outlined"
-              class="mb-3"
-              @update:model-value="handlePhoneInput"
-            />
+      <UForm :schema="schema" :state="form" @submit="handleLogin">
+        <UFormField label="Telefone" name="phone" class="mb-4">
+          <UInput
+            v-model="phoneMasked"
+            placeholder="(11) 98888-0015"
+            @update:model-value="handlePhoneInput"
+          />
+        </UFormField>
 
-            <v-text-field
-              v-model="form.password"
-              label="Senha"
-              type="password"
-              placeholder="Sua senha"
-              :error-messages="errors.password"
-              variant="outlined"
-              class="mb-3"
-            />
+        <UFormField label="Senha" name="password" class="mb-4">
+          <UInput
+            v-model="form.password"
+            type="password"
+            placeholder="Sua senha"
+          />
+        </UFormField>
 
-            <v-alert
-              v-if="loginError"
-              type="error"
-              variant="tonal"
-              density="compact"
-              class="mb-4"
-            >
-              {{ loginError }}
-            </v-alert>
+        <UAlert
+          v-if="loginError"
+          color="error"
+          variant="subtle"
+          class="mb-4"
+          :description="loginError"
+        />
 
-            <v-btn
-              type="submit"
-              color="primary"
-              block
-              :loading="loading"
-              size="large"
-            >
-              {{ loading ? "Entrando..." : "Entrar" }}
-            </v-btn>
-          </v-form>
-        </v-card-text>
-      </v-card>
-    </v-main>
-  </v-app>
+        <UButton
+          type="submit"
+          color="primary"
+          block
+          :loading="loading"
+        >
+          {{ loading ? "Entrando..." : "Entrar" }}
+        </UButton>
+      </UForm>
+    </UCard>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -70,12 +60,7 @@ const phoneMasked = ref("")
 const loading = ref(false)
 const loginError = ref("")
 
-const errors = reactive({
-  phone: "",
-  password: "",
-})
-
-const loginSchema = z.object({
+const schema = z.object({
   phone: z.string().min(10, "Telefone inválido"),
   password: z.string().min(1, "Senha obrigatória"),
 })
@@ -83,28 +68,15 @@ const loginSchema = z.object({
 function handlePhoneInput(val: string) {
   form.phone = unmaskPhone(val)
   phoneMasked.value = maskPhone(val)
-  errors.phone = ""
 }
 
 async function handleLogin() {
-  const result = loginSchema.safeParse({
-    phone: form.phone,
-    password: form.password,
-  })
-
-  if (!result.success) {
-    const fieldErrors = result.error.flatten().fieldErrors
-    errors.phone = fieldErrors.phone?.[0] ?? ""
-    errors.password = fieldErrors.password?.[0] ?? ""
-    return
-  }
-
   loading.value = true
   loginError.value = ""
 
   try {
-    const normalizedPhone = normalizePhone(result.data.phone)
-    await auth.login(normalizedPhone, result.data.password)
+    const normalizedPhone = normalizePhone(form.phone)
+    await auth.login(normalizedPhone, form.password)
     await router.push("/dashboard/agenda")
   } catch (err: unknown) {
     loginError.value = err instanceof Error ? err.message : "Credenciais inválidas"
