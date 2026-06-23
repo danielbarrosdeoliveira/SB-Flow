@@ -50,7 +50,7 @@
 
 **O que:** Implementar a página `/dashboard/` com cards de métricas e blocos de conteúdo.
 
-**Onde:** `packages/dashboard/pages/dashboard/index.vue`
+**Onde:** `packages/dashboard/pages/index.vue`
 
 **Conteúdo:**
 - 4 KPIs (Agendamentos Hoje, Receita Hoje, Clientes Atendidos, Taxa de Ocupação)

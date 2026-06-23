@@ -49,6 +49,7 @@
               <p class="font-medium truncate" style="color: var(--color-foreground)">{{ item.client }}</p>
               <p class="text-xs lg:text-sm truncate" style="color: var(--color-sand)">{{ item.time }} — {{ item.service }}</p>
             </div>
+            <span class="shrink-0 px-2 py-1 rounded-full text-xs font-medium" :class="getStatusClasses(item.status)">{{ item.statusLabel }}</span>
             <span class="text-sm font-medium shrink-0" style="color: var(--color-primary)">{{ item.value }}</span>
           </div>
         </div>
@@ -111,11 +112,20 @@ const kpis = [
   { label: "Taxa de Ocupação", value: "75%", icon: "i-lucide-clock" },
 ];
 
+const getStatusClasses = (status: string) => {
+  const classes: Record<string, string> = {
+    confirmed: "bg-[var(--color-success-light)]/10 text-[var(--color-success)] border border-[var(--color-success)]/20",
+    pending: "bg-[var(--color-warning-light)]/10 text-[var(--color-warning)] border border-[var(--color-warning)]/20",
+    canceled: "bg-[var(--color-error-light)]/10 text-[var(--color-error)] border border-[var(--color-error)]/20",
+  };
+  return classes[status] ?? classes.pending;
+};
+
 const appointments = [
-  { client: "Ana Silva", time: "09:00", service: "Corte + Escova", value: "R$ 120,00", initials: "AS" },
-  { client: "Carla Oliveira", time: "10:30", service: "Coloração", value: "R$ 250,00", initials: "CO" },
-  { client: "Marina Santos", time: "13:00", service: "Manicure", value: "R$ 65,00", initials: "MS" },
-  { client: "Juliana Costa", time: "15:00", service: "Progressiva", value: "R$ 350,00", initials: "JC" },
+  { client: "Ana Silva", time: "09:00", service: "Corte + Escova", value: "R$ 120,00", initials: "AS", status: "confirmed", statusLabel: "Confirmado" },
+  { client: "Carla Oliveira", time: "10:30", service: "Coloração", value: "R$ 250,00", initials: "CO", status: "pending", statusLabel: "Aguardando" },
+  { client: "Marina Santos", time: "13:00", service: "Manicure", value: "R$ 65,00", initials: "MS", status: "confirmed", statusLabel: "Confirmado" },
+  { client: "Juliana Costa", time: "15:00", service: "Progressiva", value: "R$ 350,00", initials: "JC", status: "canceled", statusLabel: "Cancelado" },
 ];
 
 const activities = [
