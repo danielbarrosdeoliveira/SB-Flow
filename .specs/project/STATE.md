@@ -1,7 +1,7 @@
 # State
 
-**Last Updated:** 2026-06-23T01:00:00Z
-**Current Work:** State management conventions — Pinia vs TanStack Query strict separation
+**Last Updated:** 2026-06-24T00:00:00Z
+**Current Work:** Auth refresh fix — Nuxt devProxy + user hydrate on refresh
 
 ---
 
@@ -447,3 +447,97 @@
 - `.specs/codebase/CONVENTIONS.md` — documentação completa da separação
 - `.specs/features/agenda-compartilhada/design.md` — stores Pinia substituídas por TanStack Query composables
 - `.specs/features/agenda-compartilhada/tasks.md` — tasks BOOKING-10 e BOOKING-13 marcadas como desatualizadas
+
+---
+
+### AD-039: Nuxt devProxy + refreshToken hydrate user — correção de logout ao recarregar (2026-06-24)
+
+**Problem:** Ao recarregar a página do dashboard, o usuário era deslogado porque:
+1. O `refresh_token` cookie não era enviado pelo browser no `POST /api/auth/refresh` em dev (cross-origin `localhost:3000` → `192.168.31.202:3001` com `SameSite=Lax`)
+2. Mesmo se o refresh funcionasse, `refreshToken()` não populava o `user` — retornava apenas `true`
+
+**Diagrama de infraestrutura — Dev vs Produção:**
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant N as Nuxt (Nitro)
+    participant F as Fastify API
+
+    rect rgb(220, 240, 255)
+        Note over B,F: DEV — mesmo origem via proxy
+        B->>N: GET /dashboard (SPA)
+        Note over N: Nitro devProxy<br/>/api → 192.168.31.202:3001
+        B->>N: POST /api/auth/refresh
+        Note over N: proxy reescreve para<br/>192.168.31.202:3001/api/auth/refresh
+        N->>F: POST /api/auth/refresh
+        Note over B,F: Cookie enviado ✅ (mesma origem)
+        F-->>N: { ok: true, user: {...} }
+        N-->>B: Response (proxy)
+    end
+
+    rect rgb(230, 255, 230)
+        Note over B,F: PROD — mesmo site via subdomínio
+        Note over B: dashboard.blessedstudio.com.br
+        Note over F: api.blessedstudio.com.br
+        Note over B,F: *.blessedstudio.com.br → mesmo site<br/>SameSite=Lax funciona ✅
+        B->>F: POST https://api.blessedstudio.com.br/api/auth/refresh
+        Note over B,F: Cookie enviado ✅ (mesmo eTLD+1)
+        F-->>B: { ok: true, user: {...} }
+    end
+```
+
+**Diagrama de aplicação — fluxo de refresh ao recarregar:**
+
+```mermaid
+sequenceDiagram
+    participant P as Página
+    participant M as Middleware (auth)
+    participant S as Store (Pinia)
+    participant A as API Client
+    participant F as Fastify API
+
+    Note over P,F: Usuário recarrega a página
+    P->>M: definePageMeta({ middleware: "auth" })
+    M->>S: isAuthenticated?
+    Note over S: user === null (store reiniciada)
+    S-->>M: false
+    M->>S: refreshToken()
+    S->>A: api.post("/api/auth/refresh")
+    A->>F: POST /api/auth/refresh
+    Note over A,F: Cookie enviado ✅ (dev: proxy / prod: same-site)
+    F->>F: verify refresh_token JWT<br/>lookup professional
+    F-->>A: { ok: true, user: { id, name, phone, role } }
+    A-->>S: response data
+    S->>S: user.value = data.user ✅
+    S-->>M: true
+    M->>P: navigateTo original route ✅
+
+    alt Refresh falha (cookie expirado/inválido)
+        F-->>A: 401
+        A-->>S: catch → user.value = null
+        S-->>M: false
+        M->>P: navigateTo("/login")
+    end
+```
+
+**Decision:**
+
+1. **Nuxt devProxy** — `nitro.devProxy` no dashboard roteia `/api` → `http://192.168.31.202:3001`. Frontend chama caminhos relativos (`/api/...`) → mesma origem → cookies enviados.
+2. **apiUrl dinâmico** — `getApiUrl()` lê `import.meta.env.NUXT_PUBLIC_API_URL`. Dev: vazio → relativo. Prod: `https://api.blessedstudio.com.br`.
+3. **API refresh retorna user** — `POST /api/auth/refresh` agora retorna `{ ok: true, user: { id, name, phone, role } }` (antes só `{ ok: true }`).
+4. **refreshToken hydrata user** — `auth.refreshToken()` agora seta `user.value = data.user` após refresh bem-sucedido.
+
+**Trade-off:** `NUXT_PUBLIC_API_URL` precisa ser informado no build de produção. Se esquecer, as requisições vão para o próprio origin (dashboard) em vez da API, quebrando tudo.
+
+**Impact:**
+- `packages/dashboard/nuxt.config.ts` — adicionado `nitro.devProxy` para `/api`
+- `packages/dashboard/app/shared/utils/api.ts` — `getApiUrl()` agora retorna `import.meta.env.NUXT_PUBLIC_API_URL ?? ""`
+- `packages/dashboard/app/shared/composables/use-sse.ts` — mesmo padrão de URL
+- `api/src/modules/auth/routes.ts` — refresh retorna `{ ok: true, user }`
+- `api/src/modules/auth/service.ts` — `refresh()` busca `name` + `phone` e retorna `user`
+- `packages/dashboard/app/features/auth/stores/auth.ts` — `refreshToken()` hydrata `user`
+- `.env` — adicionado `NUXT_PUBLIC_API_URL=` (vazio = dev proxy)
+
+**Commits:**
+- Pendente
