@@ -85,7 +85,13 @@ export async function refresh(token: string) {
     const payload = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
 
     const [professional] = await db
-      .select({ id: professionals.id, role: professionals.role, isActive: professionals.isActive })
+      .select({
+        id: professionals.id,
+        name: professionals.name,
+        phone: professionals.phone,
+        role: professionals.role,
+        isActive: professionals.isActive,
+      })
       .from(professionals)
       .where(eq(professionals.id, payload.professionalId))
       .limit(1);
@@ -106,7 +112,16 @@ export async function refresh(token: string) {
       expiresIn: parseDuration(env.JWT_REFRESH_EXPIRES_IN),
     });
 
-    return { accessToken, refreshToken: newRefreshToken };
+    return {
+      accessToken,
+      refreshToken: newRefreshToken,
+      user: {
+        id: professional.id,
+        name: professional.name,
+        phone: professional.phone,
+        role: professional.role,
+      },
+    };
   } catch {
     throw new AuthError("Sessão expirada");
   }

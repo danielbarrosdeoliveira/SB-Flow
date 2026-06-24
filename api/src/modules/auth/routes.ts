@@ -45,7 +45,7 @@ export async function authRoutes(app: FastifyInstance) {
       reply.setCookie("access_token", result.accessToken, cookieOpts(900));
       reply.setCookie("refresh_token", result.refreshToken, cookieOpts(30 * 24 * 60 * 60));
 
-      return { ok: true };
+      return { ok: true, user: result.user };
     } catch (error) {
       if (error instanceof AuthError) {
         return reply.status(401).send({ error: error.message, statusCode: 401 });

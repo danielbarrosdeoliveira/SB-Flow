@@ -20,7 +20,10 @@ const app = Fastify({
 });
 
 await app.register(cors, {
-  origin: env.WEB_URL,
+  origin: (origin, cb) => {
+    // Em desenvolvimento, aceita absolutamente qualquer coisa que o navegador enviar
+    cb(null, true);
+  },
   credentials: true,
 });
 
