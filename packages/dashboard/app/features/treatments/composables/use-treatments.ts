@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/vue-query";
-import { api } from "~/shared/utils/api";
+import { api } from "~/utils/api";
 
 export interface Treatment {
   id: number;

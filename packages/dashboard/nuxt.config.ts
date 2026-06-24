@@ -15,8 +15,6 @@ export default defineNuxtConfig({
   },
   imports: {
     dirs: [
-      "~/composables",
-      "~/shared/composables",
       "~/features/*/composables",
     ],
   },

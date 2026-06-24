@@ -4,6 +4,11 @@ export default defineAppConfig({
       primary: "sand",
       neutral: "warm",
     },
+    button: {
+      slots: {
+        base: "cursor-pointer",
+      },
+    },
     navigationMenu: {
       compoundVariants: [
         {

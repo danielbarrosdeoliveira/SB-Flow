@@ -48,7 +48,7 @@
 import { ref } from "vue";
 import { z } from "zod";
 import { useAuthStore } from "~/features/auth/stores/auth";
-import { maskPhone, normalizePhone, unmaskPhone } from "~/shared/utils/phone";
+import { maskPhone, normalizePhone, unmaskPhone } from "~/utils/phone";
 
 const auth = useAuthStore();
 

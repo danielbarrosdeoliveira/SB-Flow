@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { api } from "~/shared/utils/api";
+import { api } from "~/utils/api";
 
 interface User {
   id: number;
