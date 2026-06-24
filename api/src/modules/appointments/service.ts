@@ -76,6 +76,10 @@ export async function create(input: CreateAppointmentInput): Promise<Appointment
     throw Object.assign(new Error("Serviço não encontrado"), { statusCode: 404 });
   }
 
+  if (!service.durationMinutes) {
+    throw Object.assign(new Error("Serviço sem duração definida"), { statusCode: 400 });
+  }
+
   const startTime = new Date(input.startTime);
   const endTime = new Date(startTime.getTime() + service.durationMinutes * 60000);
 
@@ -159,6 +163,10 @@ export async function update(
 
     if (!service) {
       throw Object.assign(new Error("Serviço não encontrado"), { statusCode: 404 });
+    }
+
+    if (!service.durationMinutes) {
+      throw Object.assign(new Error("Serviço sem duração definida"), { statusCode: 400 });
     }
 
     if (input.serviceId !== undefined) updates.serviceId = serviceId;

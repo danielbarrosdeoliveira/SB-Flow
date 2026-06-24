@@ -23,9 +23,10 @@ export async function listActiveProfessionals(): Promise<BookingProfessional[]> 
 export interface BookingService {
   id: number;
   name: string;
-  durationMinutes: number;
-  price: string;
+  durationMinutes: number | null;
+  price: string | null;
   description: string | null;
+  parentId: number | null;
 }
 
 export async function listProfessionalServices(professionalId: number): Promise<BookingService[]> {
@@ -36,6 +37,7 @@ export async function listProfessionalServices(professionalId: number): Promise<
       durationMinutes: services.durationMinutes,
       price: services.price,
       description: services.description,
+      parentId: services.parentId,
     })
     .from(services)
     .where(and(eq(services.professionalId, professionalId), eq(services.isActive, true)));
@@ -166,6 +168,10 @@ export async function createBooking(
 
   if (!service) {
     throw Object.assign(new Error("Serviço não encontrado"), { statusCode: 404 });
+  }
+
+  if (!service.durationMinutes) {
+    throw Object.assign(new Error("Serviço sem duração definida"), { statusCode: 400 });
   }
 
   const startTime = new Date(input.startTime);

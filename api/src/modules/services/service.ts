@@ -7,10 +7,13 @@ export interface ServiceRow {
   id: number;
   professionalId: number;
   name: string;
-  durationMinutes: number;
-  price: string;
+  durationMinutes: number | null;
+  price: string | null;
   description: string | null;
   isActive: boolean;
+  category: string | null;
+  procedureType: string | null;
+  parentId: number | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,6 +26,9 @@ const listFields = {
   price: services.price,
   description: services.description,
   isActive: services.isActive,
+  category: services.category,
+  procedureType: services.procedureType,
+  parentId: services.parentId,
   createdAt: services.createdAt,
   updatedAt: services.updatedAt,
 } as const;
@@ -45,9 +51,12 @@ export async function create(input: CreateServiceInput): Promise<ServiceRow> {
     .values({
       professionalId: input.professionalId,
       name: input.name,
-      durationMinutes: input.durationMinutes,
-      price: String(input.price),
+      durationMinutes: input.durationMinutes ?? null,
+      price: input.price !== undefined ? String(input.price) : null,
       description: input.description ?? null,
+      category: input.category ?? null,
+      procedureType: input.procedureType ?? null,
+      parentId: input.parentId ?? null,
     })
     .returning(listFields);
   return row;
@@ -64,6 +73,9 @@ export async function update(
   if (input.price !== undefined) updates.price = String(input.price);
   if (input.description !== undefined) updates.description = input.description;
   if (input.isActive !== undefined) updates.isActive = input.isActive;
+  if (input.category !== undefined) updates.category = input.category;
+  if (input.procedureType !== undefined) updates.procedureType = input.procedureType;
+  if (input.parentId !== undefined) updates.parentId = input.parentId;
 
   if (Object.keys(updates).length === 0) return getById(id);
 
