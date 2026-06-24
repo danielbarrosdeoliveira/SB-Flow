@@ -11,7 +11,7 @@
     <div class="flex items-center justify-center bg-warm-900 px-6 py-12">
       <div class="w-full max-w-sm">
         <div class="mb-8 text-center">
-          <h1 class="font-serif text-3xl text-orange-300">SB-Flow</h1>
+          <h1 class="font-serif text-3xl text-primary-light">SB-Flow</h1>
           <p class="mt-1 text-sm text-warm-600">Studio Blessed — Dashboard</p>
         </div>
 
@@ -23,19 +23,19 @@
           <div>
             <label class="mb-1.5 block text-sm text-warm-600">Telefone</label>
             <input v-model="phoneMasked" @input="handlePhoneInput($event)" placeholder="(11) 98888-0015"
-              class="w-full rounded-lg border border-warm-300 bg-warm-100 px-4 py-2.5 text-warm-950 placeholder-warm-500 outline-none transition focus:border-orange-500" />
+              class="w-full rounded-lg border border-warm-300 bg-warm-100 px-4 py-2.5 text-warm-950 placeholder-warm-500 outline-none transition focus:border-primary" />
             <p v-if="errors.phone" class="mt-1 text-xs text-red-500">{{ errors.phone }}</p>
           </div>
 
           <div>
             <label class="mb-1.5 block text-sm text-warm-600">Senha</label>
             <input v-model="form.password" type="password" placeholder="Sua senha"
-              class="w-full rounded-lg border border-warm-300 bg-warm-100 px-4 py-2.5 text-warm-950 placeholder-warm-500 outline-none transition focus:border-orange-500" />
+              class="w-full rounded-lg border border-warm-300 bg-warm-100 px-4 py-2.5 text-warm-950 placeholder-warm-500 outline-none transition focus:border-primary" />
             <p v-if="errors.password" class="mt-1 text-xs text-red-500">{{ errors.password }}</p>
           </div>
 
           <button type="submit" :disabled="loading"
-            class="w-full cursor-pointer rounded-lg bg-orange-500 px-4 py-2.5 font-semibold text-warm-50 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
+            class="w-full cursor-pointer rounded-lg bg-primary px-4 py-2.5 font-semibold text-primary-950 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
             {{ loading ? "Entrando..." : "Entrar" }}
           </button>
         </form>
@@ -47,10 +47,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { z } from "zod";
-import { useAuthStore } from "~/stores/auth";
-import { maskPhone, normalizePhone, unmaskPhone } from "~/utils/phone";
+import { useAuthStore } from "~/features/auth/stores/auth";
+import { maskPhone, normalizePhone, unmaskPhone } from "~/shared/utils/phone";
 
-const router = useRouter();
 const auth = useAuthStore();
 
 const form = reactive({ phone: "", password: "" });
@@ -87,7 +86,7 @@ async function handleLogin() {
   try {
     const normalizedPhone = normalizePhone(form.phone);
     await auth.login(normalizedPhone, form.password);
-    await router.push("/dashboard/");
+    return navigateTo("/dashboard/");
   } catch (err: unknown) {
     loginError.value = err instanceof Error ? err.message : "Credenciais inválidas";
   } finally {

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/vue-query";
-import { api } from "../utils/api";
+import { api } from "~/shared/utils/api";
 
-export interface Service {
+export interface Treatment {
   id: number;
   professionalId: number;
   name: string;
@@ -11,14 +11,14 @@ export interface Service {
   isActive: boolean;
 }
 
-export function useServices(professionalId?: MaybeRefOrGetter<number | undefined>) {
+export function useTreatments(professionalId?: MaybeRefOrGetter<number | undefined>) {
   const pid = professionalId != null ? toRef(professionalId) : ref(undefined);
 
   return useQuery({
-    queryKey: ["services", pid],
-    queryFn: async (): Promise<Service[]> => {
+    queryKey: ["treatments", pid],
+    queryFn: async (): Promise<Treatment[]> => {
       const query = pid.value !== undefined ? `?professional_id=${pid.value}` : "";
-      return api.get<Service[]>(`/api/services${query}`);
+      return api.get<Treatment[]>(`/api/services${query}`);
     },
   });
 }

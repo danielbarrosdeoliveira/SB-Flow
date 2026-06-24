@@ -1,23 +1,60 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
+  future: {
+    compatibilityVersion: 4,
+  },
   modules: ["@pinia/nuxt", "@nuxt/ui"],
   css: ["~/assets/css/main.css"],
   components: [
     { path: "~/components", pathPrefix: false },
+    { path: "features/*/components", pathPrefix: false },
   ],
+  pinia: {
+    storesDirs: ["~/stores/**", "~/features/*/stores/**"],
+  },
+  imports: {
+    dirs: [
+      "~/composables",
+      "~/shared/composables",
+      "~/features/*/composables",
+    ],
+  },
+  fonts: {
+    families: [
+      { name: "Inter", provider: "google" },
+      { name: "Playfair Display", provider: "google" },
+      { name: "Dancing Script", provider: "google" },
+    ],
+  },
+  colorMode: {
+    classSuffix: "",
+    preference: "system",
+    fallback: "light",
+  },
   runtimeConfig: {
     public: {
-      apiUrl: process.env.NUXT_PUBLIC_API_URL || "http://localhost:3001",
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || "",
+    },
+  },
+  nitro: {
+    devProxy: {
+      "/api": {
+        target: "http://192.168.31.202:3001",
+        changeOrigin: true,
+      },
     },
   },
   vite: {
     optimizeDeps: {
       include: [
+        '@tanstack/vue-query',
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
         '@vueuse/core',
         'zod',
-      ],
-    },
+      ]
+    }
   },
   app: {
     head: {
@@ -30,4 +67,5 @@ export default defineNuxtConfig({
       ],
     },
   },
-})
+
+});

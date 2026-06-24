@@ -2,28 +2,296 @@
 @import "@nuxt/ui";
 
 @theme {
-  --font-sans: "DM Sans", sans-serif;
+  /* ========================================
+   * BRAND FONTS
+   * ======================================== */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-cursive: "Dancing Script", ui-cursive, cursive;
 
-  /* Brand palette - warm beige tones */
-  --color-warm-50: #faf8f5;
-  --color-warm-100: #f5f0e8;
-  --color-warm-200: #ebe3d5;
-  --color-warm-300: #ddd0bc;
-  --color-warm-400: #c9b99d;
-  --color-warm-500: #b8a486;
-  --color-warm-600: #a69172;
-  --color-warm-700: #8a7960;
-  --color-warm-800: #71624f;
-  --color-warm-900: #5d5042;
-  --color-warm-950: #4f4b40;
+  /* ========================================
+   * BRAND COLOR PALETTE - Golden/Bronze Primary
+   * ======================================== */
 
-  /* Semantic aliases */
-  --color-sand: var(--color-warm-600);
-  --color-normal: var(--color-warm-800);
-  --color-dark: var(--color-warm-900);
+  /* Primary (golden bronze) */
+  --color-primary-50: #fdfcf9;
+  --color-primary-100: #f9f5ed;
+  --color-primary-200: #f2e8d4;
+  --color-primary-300: #e4d1b0;
+  --color-primary-400: #d9c49e; /* primary-light */
+  --color-primary-500: #c9a96e;
+  --color-primary-600: #a78b58; /* primary */
+  --color-primary-700: #8b7043;
+  --color-primary-800: #735826; /* primary-dark */
+  --color-primary-900: #5e4820;
+  --color-primary-950: #3f2f15;
 
-  /* Semantic mappings for CSS variables */
-  --color-foreground: var(--color-warm-950);
-  --color-bg: var(--color-warm-50);
-  --color-primary-light: var(--color-orange-300);
+  /* Warm (rich brown) */
+  --color-warm-50: #f6f5f3;
+  --color-warm-100: #eae7e1;
+  --color-warm-200: #d8d2c8;
+  --color-warm-300: #c2b8a7;
+  --color-warm-400: #a89a84;
+  --color-warm-500: #8d7d66;
+  --color-warm-600: #6f6251;
+  --color-warm-700: #574e42;
+  --color-warm-800: #4f4b40; /* warm */
+  --color-warm-900: #3d3832;
+  --color-warm-950: #2a2520;
+
+  /* Sand (light beige) */
+  --color-sand-50: #fdfcf9;
+  --color-sand-100: #f7f3ec;
+  --color-sand-200: #efe6d9;
+  --color-sand-300: #e3d5c1;
+  --color-sand-400: #d3c0a4;
+  --color-sand-500: #c5ae88;
+  --color-sand-600: #a8946d;
+  --color-sand-700: #8b7a58;
+  --color-sand-800: #726449;
+  --color-sand-900: #5d523d;
+  --color-sand-950: #4a4233;
+
+  /* ========================================
+   * SEMANTIC COLOR ALIASES
+   * ======================================== */
+  --color-sand: var(--color-sand-500);
+  --color-warm: var(--color-warm-800);
+  --color-primary-light: var(--color-primary-400);
+  --color-primary-dark: var(--color-primary-800);
+  --color-bg: #f1f1f1;
+}
+
+/* ========================================
+ * LIGHT MODE (default)
+ * ======================================== */
+:root {
+  /* Semantic mappings */
+  --color-foreground: var(--color-warm-900);
+  --color-background: var(--color-bg);
+  --color-surface: var(--color-warm-50);
+  --color-surface-elevated: #ffffff;
+
+  /* Border colors */
+  --color-border: var(--color-warm-200);
+  --color-border-muted: var(--color-warm-100);
+
+  /* Text colors */
+  --color-text: var(--color-warm-900);
+  --color-text-muted: var(--color-warm-600);
+  --color-text-subtle: var(--color-warm-400);
+
+  /* Success/Warning/Error - harmonious with primary palette */
+  --color-success: #4d7c5f;
+  --color-success-light: #86efac;
+  --color-warning: #a67c3d;
+  --color-warning-light: #fcd34d;
+  --color-error: #b54b4b;
+  --color-error-light: #fca5a5;
+}
+
+/* ========================================
+ * DARK MODE - Harmonized warm dark theme
+ * ======================================== */
+.dark {
+  /* Background and surface */
+  --color-bg: #1a1814;
+  --color-background: #1a1814;
+  --color-surface: #242019;
+  --color-surface-elevated: #2e2820;
+
+  /* Foreground and text */
+  --color-foreground: var(--color-sand-200);
+  --color-text: var(--color-sand-200);
+  --color-text-muted: var(--color-sand-400);
+  --color-text-subtle: var(--color-sand-500);
+
+  /* Borders */
+  --color-border: var(--color-warm-700);
+  --color-border-muted: var(--color-warm-800);
+
+  /* Primary adjusted for dark mode - slightly brighter for contrast */
+  --color-primary-light: var(--color-primary-300);
+  --color-primary: var(--color-primary-400);
+  --color-primary-dark: var(--color-primary-600);
+
+  /* Warm adjusted */
+  --color-warm: var(--color-warm-400);
+  --color-sand: var(--color-sand-400);
+
+  /* Status colors adjusted for dark mode */
+  --color-success: #6ba77d;
+  --color-success-light: #22543d;
+  --color-warning: #c99a52;
+  --color-warning-light: #78350f;
+  --color-error: #d36b6b;
+  --color-error-light: #7f1d1d;
+}
+
+/* ========================================
+ * UTILITY CLASSES
+ * ======================================== */
+@layer utilities {
+  /* Font families */
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  .font-cursive {
+    font-family: var(--font-cursive);
+  }
+
+  /* Background colors */
+  .bg-background {
+    background-color: var(--color-background);
+  }
+
+  .bg-surface {
+    background-color: var(--color-surface);
+  }
+
+  .bg-surface-elevated {
+    background-color: var(--color-surface-elevated);
+  }
+
+  /* Text colors */
+  .text-foreground {
+    color: var(--color-foreground);
+  }
+
+  .text-muted {
+    color: var(--color-text-muted);
+  }
+
+  /* Border colors */
+  .border-border {
+    border-color: var(--color-border);
+  }
+
+  .border-muted {
+    border-color: var(--color-border-muted);
+  }
+
+  /* Primary color utilities */
+  .text-primary {
+    color: var(--color-primary);
+  }
+
+  .text-primary-light {
+    color: var(--color-primary-light);
+  }
+
+  .text-primary-dark {
+    color: var(--color-primary-dark);
+  }
+
+  .text-primary-950 {
+    color: var(--color-primary-950);
+  }
+
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+
+  .bg-primary-light {
+    background-color: var(--color-primary-light);
+  }
+
+  .bg-primary-950 {
+    background-color: var(--color-primary-950);
+  }
+
+  /* Warm and sand */
+  .text-warm {
+    color: var(--color-warm);
+  }
+
+  .text-sand {
+    color: var(--color-sand);
+  }
+
+  .bg-warm {
+    background-color: var(--color-warm);
+  }
+
+  .bg-sand {
+    background-color: var(--color-sand);
+  }
+
+  /* Warm tones with opacity */
+  .bg-warm-50 {
+    background-color: var(--color-warm-50);
+  }
+  .bg-warm-100 {
+    background-color: var(--color-warm-100);
+  }
+  .bg-warm-200 {
+    background-color: var(--color-warm-200);
+  }
+  .bg-warm-300 {
+    background-color: var(--color-warm-300);
+  }
+
+  /* Sand tones with opacity */
+  .bg-sand-100 {
+    background-color: var(--color-sand-100);
+  }
+  .bg-sand-200 {
+    background-color: var(--color-sand-200);
+  }
+
+  /* Text warm tones */
+  .text-warm-600 {
+    color: var(--color-warm-600);
+  }
+  .text-warm-700 {
+    color: var(--color-warm-700);
+  }
+  .text-warm-800 {
+    color: var(--color-warm-800);
+  }
+  .text-warm-900 {
+    color: var(--color-warm-900);
+  }
+  .text-warm-950 {
+    color: var(--color-warm-950);
+  }
+
+  /* Sand tones */
+  .text-sand-200 {
+    color: var(--color-sand-200);
+  }
+  .text-sand-300 {
+    color: var(--color-sand-300);
+  }
+  .text-sand-400 {
+    color: var(--color-sand-400);
+  }
+  .text-sand-500 {
+    color: var(--color-sand-500);
+  }
+  .text-sand-600 {
+    color: var(--color-sand-600);
+  }
+
+  /* Border warm */
+  .border-warm-200 {
+    border-color: var(--color-warm-200);
+  }
+  .border-warm-300 {
+    border-color: var(--color-warm-300);
+  }
+  .border-warm-400 {
+    border-color: var(--color-warm-400);
+  }
+
+  /* Focus states */
+  .focus\:border-primary:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Font serif */
+  .text-serif {
+    font-family: var(--font-serif);
+  }
 }

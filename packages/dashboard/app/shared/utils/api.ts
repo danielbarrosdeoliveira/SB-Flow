@@ -1,8 +1,5 @@
 function getApiUrl(): string {
-  if (import.meta.server) {
-    return process.env.NUXT_PUBLIC_API_URL ?? "http://localhost:3001";
-  }
-  return "http://localhost:3001";
+  return import.meta.env.NUXT_PUBLIC_API_URL ?? "";
 }
 
 export class ApiError extends Error {

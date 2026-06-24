@@ -2,10 +2,10 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
   modules: ["@nuxtjs/tailwindcss"],
-  css: ["~/assets/css/tailwind.css"],
+  css: ["~/shared/assets/css/tailwind.css"],
   runtimeConfig: {
     public: {
-      apiUrl: process.env.NUXT_PUBLIC_API_URL || "http://localhost:3001",
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || "http://192.168.31.202:3001",
     },
   },
   app: {

@@ -16,16 +16,13 @@ export function useSSE() {
   function connect() {
     if (eventSource?.readyState === EventSource.OPEN) return;
 
-    const apiUrl = import.meta.server
-      ? (process.env.NUXT_PUBLIC_API_URL ?? "http://localhost:3001")
-      : "http://localhost:3001";
+    const apiUrl = import.meta.env.NUXT_PUBLIC_API_URL ?? "";
 
     eventSource = new EventSource(`${apiUrl}/api/sse`, {
       withCredentials: true,
     });
 
     eventSource.onopen = () => {
-      // connected
     };
 
     for (const [event, queryKeys] of Object.entries(EVENT_QUERY_MAP)) {
@@ -38,7 +35,6 @@ export function useSSE() {
 
     eventSource.onerror = () => {
       eventSource?.close();
-      // Reconnect after 5s on error
       setTimeout(() => connect(), 5000);
     };
   }

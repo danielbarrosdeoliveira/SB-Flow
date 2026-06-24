@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/vue-query";
-import { api } from "../utils/api";
+import { api } from "~/shared/utils/api";
 
 export interface Client {
   id: number;

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { api } from "../utils/api";
+import { api } from "~/shared/utils/api";
 
 interface User {
   id: number;
@@ -8,8 +8,9 @@ interface User {
   role: string;
 }
 
-interface LoginResponse {
+interface AuthResponse {
   user: User;
+  ok?: boolean;
 }
 
 export const useAuthStore = defineStore("auth", () => {
@@ -19,7 +20,7 @@ export const useAuthStore = defineStore("auth", () => {
   const userName = computed(() => user.value?.name ?? "Usuário");
 
   async function login(phone: string, password: string) {
-    const data = await api.post<LoginResponse>("/api/auth/login", {
+    const data = await api.post<AuthResponse>("/api/auth/login", {
       phone,
       password,
     });
@@ -28,8 +29,9 @@ export const useAuthStore = defineStore("auth", () => {
 
   async function refreshToken() {
     try {
-      const data = await api.post<{ ok: boolean }>("/api/auth/refresh");
-      return data.ok;
+      const data = await api.post<AuthResponse>("/api/auth/refresh");
+      user.value = data.user;
+      return true;
     } catch {
       user.value = null;
       return false;
@@ -41,7 +43,6 @@ export const useAuthStore = defineStore("auth", () => {
       await api.post("/api/auth/logout");
     } finally {
       user.value = null;
-      // Limpa todo cache do TanStack Query ao deslogar
       const { useQueryClient } = await import("@tanstack/vue-query");
       const queryClient = useQueryClient();
       queryClient.clear();

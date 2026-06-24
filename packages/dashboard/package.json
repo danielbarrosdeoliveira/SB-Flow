@@ -12,6 +12,7 @@
     "@nuxt/ui": "^4.9.0",
     "@pinia/nuxt": "^0.11.3",
     "@tanstack/vue-query": "^5.101.0",
+    "@vueuse/core": "^14.3.0",
     "nuxt": "^4.4.8",
     "pinia": "^3.0.4",
     "tailwindcss": "^4.3.1",

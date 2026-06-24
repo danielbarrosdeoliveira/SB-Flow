@@ -5,8 +5,10 @@
 </template>
 
 <script setup lang="ts">
+import authMiddleware from "~/features/auth/middleware/auth";
+
 definePageMeta({
   layout: "dashboard",
-  middleware: "auth",
+  middleware: authMiddleware,
 });
 </script>
