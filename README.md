@@ -45,10 +45,10 @@ npm run db:migrate -w api
 npm run db:seed -w api
 
 # 5. Inicie em dev (cada um em um terminal)
-npm run dev:api        # terminal 1 — http://localhost:3001
-npm run dev:dashboard  # terminal 2 — http://localhost:3000
-npm run dev:landing    # terminal 3 — http://localhost:3000 (use -p se ocupada)
-npm run dev:booking    # terminal 4 — http://localhost:3000 (use -p se ocupada)
+npm run dev:api        # terminal 1 — http://192.168.31.202:3001
+npm run dev:dashboard  # terminal 2 — http://192.168.31.202:3000
+npm run dev:landing    # terminal 3 — http://192.168.31.202:3000 (use -p se ocupada)
+npm run dev:booking    # terminal 4 — http://192.168.31.202:3000 (use -p se ocupada)
 ```
 
 ## Scripts
