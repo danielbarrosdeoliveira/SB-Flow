@@ -37,15 +37,15 @@ export default defineNuxtConfig({
       apiUrl: process.env.NUXT_PUBLIC_API_URL || "",
     },
   },
-  nitro: {
-    devProxy: {
-      "/api": {
-        target: "http://192.168.31.202:3001",
-        changeOrigin: true,
+  vite: {
+    server: {
+      proxy: {
+        "/api": {
+          target: "http://192.168.31.202:3001",
+          changeOrigin: true,
+        },
       },
     },
-  },
-  vite: {
     optimizeDeps: {
       include: [
         '@tanstack/vue-query',
