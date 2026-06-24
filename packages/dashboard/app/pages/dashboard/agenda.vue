@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="p-6 text-warm-950">Agenda - Em construção</div>
+    <div class="p-6 text-foreground">Agenda - Em construção</div>
   </div>
 </template>
 

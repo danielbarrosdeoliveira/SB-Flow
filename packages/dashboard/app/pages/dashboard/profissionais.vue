@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="p-6 text-warm-950">Profissionais - Em construção</div>
+    <div class="p-6 text-foreground">Profissionais - Em construção</div>
   </div>
 </template>
 

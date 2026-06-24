@@ -66,14 +66,7 @@ async function handleLogout() {
 
       <template #default="{ collapsed }">
         <UNavigationMenu orientation="vertical" :collapsed="collapsed" :items="navItems" :model-value="route.path"
-          color="primary" variant="link" class="flex-1 py-2 px-2" />
-      </template>
-
-      <template #footer="{ collapsed }">
-        <div class="p-2 border-t border-warm-200">
-          <UButton icon="i-lucide-log-out" color="neutral" variant="ghost" :label="collapsed ? undefined : 'Sair'"
-            :square="collapsed" block @click="handleLogout" />
-        </div>
+          color="primary" variant="link" class="flex-1 p-2" :ui="{ item: 'pt-4' }" />
       </template>
     </UDashboardSidebar>
 

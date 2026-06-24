@@ -12,7 +12,7 @@
       <div class="w-full max-w-sm">
         <div class="mb-8 text-center">
           <h1 class="font-serif text-3xl text-primary-light">SB-Flow</h1>
-          <p class="mt-1 text-sm text-warm-600">Studio Blessed — Dashboard</p>
+          <p class="mt-1 text-sm text-muted">Studio Blessed — Dashboard</p>
         </div>
 
         <div v-if="loginError" class="mb-5 rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-500">
@@ -21,16 +21,16 @@
 
         <form @submit.prevent="handleLogin" class="space-y-5">
           <div>
-            <label class="mb-1.5 block text-sm text-warm-600">Telefone</label>
+            <label class="mb-1.5 block text-sm text-muted">Telefone</label>
             <input v-model="phoneMasked" @input="handlePhoneInput($event)" placeholder="(11) 98888-0015"
-              class="w-full rounded-lg border border-warm-300 bg-warm-100 px-4 py-2.5 text-warm-950 placeholder-warm-500 outline-none transition focus:border-primary" />
+              class="w-full rounded-lg border border-border bg-surface-elevated px-4 py-2.5 text-foreground placeholder-warm-500 outline-none transition focus:border-primary" />
             <p v-if="errors.phone" class="mt-1 text-xs text-red-500">{{ errors.phone }}</p>
           </div>
 
           <div>
-            <label class="mb-1.5 block text-sm text-warm-600">Senha</label>
+            <label class="mb-1.5 block text-sm text-muted">Senha</label>
             <input v-model="form.password" type="password" placeholder="Sua senha"
-              class="w-full rounded-lg border border-warm-300 bg-warm-100 px-4 py-2.5 text-warm-950 placeholder-warm-500 outline-none transition focus:border-primary" />
+              class="w-full rounded-lg border border-border bg-surface-elevated px-4 py-2.5 text-foreground placeholder-warm-500 outline-none transition focus:border-primary" />
             <p v-if="errors.password" class="mt-1 text-xs text-red-500">{{ errors.password }}</p>
           </div>
 

@@ -32,9 +32,7 @@ const columns: TableColumn<Appointment>[] = [
 
 <template>
   <UCard class="rounded-xl">
-    <template #header>
-      <h2 class="text-base lg:text-lg font-semibold text-foreground">Agendamentos de Hoje</h2>
-    </template>
+    <h2 class="text-base lg:text-lg font-semibold">Agendamentos de Hoje</h2>
 
     <UTable :data="appointments" :columns="columns" class="min-w-125">
       <template #status-cell="{ row }">

@@ -4,22 +4,22 @@
     <div class="xl:col-span-9 space-y-4 lg:space-y-6">
       <!-- KPI row -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-        <div v-for="kpi in kpis" :key="kpi.label" class="rounded-xl p-4 border border-warm-200 bg-warm-200">
+        <UCard v-for="kpi in kpis" :key="kpi.label" class="rounded-xl">
           <div class="flex items-center gap-2">
-            <UIcon :name="kpi.icon" class="w-5 h-5 shrink-0 text-primary" />
-            <span class="text-warm-600">{{ kpi.label }}</span>
+            <UIcon :name="kpi.icon" class="w-5 h-5 shrink-0 dark:text-amber-100/50 text-primary-500/50" />
+            <span>{{ kpi.label }}</span>
           </div>
-          <p class="mt-2 text-xl lg:text-2xl font-bold text-warm-950">{{ kpi.value }}</p>
-        </div>
+          <p class="mt-2 text-xl lg:text-2xl font-bold  text-primary">{{ kpi.value }}</p>
+        </UCard>
       </div>
 
-      <!-- Chart placeholder -->
-      <div class="rounded-xl border border-warm-200 bg-warm-100 flex items-center justify-center h-70">
+      <!-- Chart placeholder
+      <UCard class="rounded-xl flex items-center justify-center h-70">
         <div class="text-center">
-          <UIcon name="i-lucide-trending-up" class="w-8 h-8 mx-auto text-warm-600" />
-          <p class="mt-2 text-sm text-warm-600">Gráfico de Faturamento</p>
+          <UIcon name="i-lucide-trending-up" class="w-8 h-8 mx-auto text-muted" />
+          <p class="mt-2 text-sm text-muted">Gráfico de Faturamento</p>
         </div>
-      </div>
+      </UCard> -->
 
       <AppointmentsCard :appointments="appointments" />
     </div>
@@ -27,30 +27,30 @@
     <!-- Right sidebar -->
     <div class="xl:col-span-3 space-y-4 lg:space-y-6">
       <!-- Mini calendar -->
-      <div class="rounded-xl border border-warm-200 p-4 bg-warm-100">
-        <h3 class="text-sm font-semibold mb-3 text-warm-950">{{ currentMonth }}</h3>
+      <UCard class="rounded-xl">
+        <h3 class="text-sm font-semibold mb-3">{{ currentMonth }}</h3>
         <div class="grid grid-cols-7 gap-1 text-center text-xs">
-          <div v-for="d in weekDays" :key="d" class="py-1 font-medium text-warm-600">{{ d }}</div>
+          <div v-for="d in weekDays" :key="d" class="py-1 font-medium text-muted">{{ d }}</div>
           <div v-for="day in 30" :key="day" class="py-1 rounded text-xs"
-            :class="day === todayDay ? 'bg-primary text-primary-950' : 'text-warm-950'">
+            :class="day === todayDay ? 'bg-primary text-primary-950' : 'text-foreground'">
             {{ day }}
           </div>
         </div>
-      </div>
+      </UCard>
 
       <!-- Activity feed -->
-      <div class="rounded-xl border border-warm-200 p-4 bg-warm-100">
-        <h3 class="text-sm font-semibold mb-3 text-warm-950">Atividades Recentes</h3>
+      <UCard class="rounded-xl borde">
+        <h3 class="text-sm font-semibold mb-3">Atividades Recentes</h3>
         <div class="space-y-3">
           <div v-for="(activity, i) in activities" :key="i" class="flex gap-3">
             <div class="w-2 h-2 mt-1.5 rounded-full shrink-0 bg-primary"></div>
             <div class="min-w-0">
-              <p class="text-sm truncate text-warm-950">{{ activity.text }}</p>
-              <p class="text-xs text-warm-600">{{ activity.time }}</p>
+              <p class="text-sm truncate">{{ activity.text }}</p>
+              <p class="text-xs dark:text-amber-100/50 text-primary-500/50">{{ activity.time }}</p>
             </div>
           </div>
         </div>
-      </div>
+      </UCard>
     </div>
   </div>
 </template>
