@@ -1,417 +1,154 @@
 # Task Tracking
 
 > Rastreamento de execução do projeto SB-Flow.
-> Última atualização: 2026-06-22
+> Última atualização: 2026-07-02
 
 ---
 
 ## Status Geral
 
-| Domínio | Tasks | Concluídas | % |
-|---------|-------|-----------|---|
-| Fundação | FOUNDATION-01 a 05 | 5/5 | 100% |
-| Auth | AUTH-01 a 06 | 6/6 | 100% |
-| TanStack Query | TANSTACK-01 a 04 | 4/4 | 100% |
-| Partner (backend) | PARTNER-01 a 03 | 3/3 | 100% |
-| Partner (frontend) | PARTNER-04 a 05 | 2/2 | 100% |
-| Services | SERVICES-01 a 03 | 3/3 | 100% |
-| Clients | CLIENTS-01 a 03 | 3/3 | 100% |
-| Booking | BOOKING-01 a 14 | 9/14 | 64% |
-| Dashboard UI | DASHBOARD-01 a 02 | 2/2 | 100% |
-| CSS Architecture | CSS-01 a 03 | 3/3 | 100% |
-| Landing Page | LANDING-01 a 07 | 7/7 | 100% |
-| Landing Polish | LPOLISH-01 a 03 | 3/3 | 100% |
+| Domínio | Tasks | Concluídas | % | Status Real |
+|---------|-------|-----------|---|-------------|
+| Fundação | 5 | 5/5 | 100% | ✅ |
+| Auth Backend | 4 | 4/4 | 100% | ✅ |
+| Auth Frontend | 2 | 2/2 | 100% | ✅ |
+| TanStack Query | 4 | 4/4 | 100% | ✅ |
+| Partner Backend | 3 | 3/3 | 100% | ✅ |
+| Partner Frontend | 2 | 2/2 | 100% | ✅ |
+| Services Backend | 2 | 2/2 | 100% | ✅ |
+| Services Frontend | 1 | 1/1 | 100% | ✅ |
+| Clients Backend | 2 | 2/2 | 100% | ✅ |
+| Clients Frontend | 1 | 1/1 | 100% | ✅ |
+| Booking Backend | 7 | 7/7 | 100% | ✅ (BOOKING-06 cancelado) |
+| Booking Frontend | 2 | 0/2 | 0% | ⚠️ Placeholder |
+| SSE | 1 | 1/1 | 100% | ✅ |
+| Landing | 7 | 7/7 | 100% | ✅ |
+| **Dashboard UI** | 14 | 2/14 | 14% | ⚠️ Em progresso |
+| **TOTAL** | **57** | **43/57** | **75%** | — |
 
 ---
 
-## Execução — Fase 1 (Fundação) ✅
+## Backend API — ✅ CONCLUÍDO
 
-### FOUNDATION-01: Inicializar monorepo ✅
-- [x] Criar estrutura `api/` + `packages/` na raiz
-- [x] Configurar `package.json` raiz com scripts compartilhados
-- [x] Configurar `tsconfig.json` raiz com paths
-- [x] Configurar `.gitignore`, `.env.example`
-- [x] Configurar Biome na raiz (lint + format) com scripts
-- [x] Validar compilação em ambos subprojetos
+### Auth ✅
+- [x] AUTH-01: Schema professionals (login fields)
+- [x] AUTH-02: Rotas login/refresh/logout
+- [x] AUTH-03: JWT plugin + middleware
+- [x] AUTH-04: RBAC CASL.js
+- [x] AUTH-05: Login page (frontend)
+- [x] AUTH-06: Auth store + proteção de rotas
 
-### FOUNDATION-02: Configurar Docker Compose ✅
-- [x] Criar `docker-compose.yml` com 3 serviços (db, backend, frontend)
-- [x] Criar `Dockerfile` para `api/`
-- [x] Serviço `frontend` removido posteriormente (AD-036) — frontends rodam localmente via `npm run dev:*`
-- [x] Configurar redes, volumes e variáveis de ambiente
+### Partner ✅
+- [x] PARTNER-01: Schema extended
+- [x] PARTNER-02: CRUD profissionais
+- [x] PARTNER-03: CRUD bloqueios
 
-### FOUNDATION-03: Esqueleto Fastify ✅
-- [x] Inicializar `api/package.json` com dependências
-- [x] Criar entry point (`api/src/index.ts`)
-- [x] Configurar plugins globais (CORS, Cookie, Logger)
-- [x] Implementar error handler global
-- [x] Adicionar health check `GET /api/health`
-- [x] Configurar variáveis de ambiente com Zod
+### Services ✅
+- [x] SERVICES-01: Schema services
+- [x] SERVICES-02: CRUD services
 
-### FOUNDATION-04: Esqueleto Nuxt ✅
-- [x] Inicializar `packages/landing/package.json`
-- [x] Configurar Nuxt 3 com SSR + routeRules
-- [x] Configurar runtimeConfig (API URL)
+### Clients ✅
+- [x] CLIENTS-01: Schema clients
+- [x] CLIENTS-02: CRUD clients
 
-### FOUNDATION-05: Schema + Migrations + Seed ✅
-- [x] Criar schema Drizzle `professionals` (com workHoursStart/workHoursEnd)
-- [x] Criar schema Drizzle `blocks`
-- [x] Gerar migrations e aplicar
-- [x] Criar script de seed com conta OWNER admin
-- [x] Rodar seed e validar no banco
+### Appointments + SSE ✅
+- [x] BOOKING-01: Schema appointments
+- [x] BOOKING-02: CRUD appointments
+- [x] BOOKING-03: Transação com checagem de conflito
+- [x] BOOKING-04: Cancelar e alterar status
+- [x] BOOKING-05: SSE tempo real
+
+### Booking Público ✅
+- [x] BOOKING-07: Listagens públicas + criação/cancelamento
+- [x] BOOKING-06: ~~Envio código WhatsApp~~ → **CANCELADO** (AD-025)
 
 ---
 
-## Execução — Fase 2 (Auth) ✅
+## Frontend — ⚠️ PARCIAL
 
-### AUTH-01: Schema de professionals (auth) ✅
-- [x] Tabela `professionals` com id, name, cpf, phone, passwordHash, role, isActive, createdAt, updatedAt
-- [x] Zod schemas de validação (telefone com normalize)
-- [x] Migration gerada e aplicada
-- [x] Índices únicos em cpf e phone
+### Landing Page ✅
+- [x] LANDING-01: Nuxt 4 app dir + novos serviços
+- [x] LANDING-02: Monorepo split (packages)
+- [x] LANDING-03: Carrossel infinito
+- [x] LANDING-04: Social proof stats
+- [x] LANDING-05: Autor alinhado + fotos
+- [x] LANDING-06: Dependencies update
+- [x] LANDING-07: Docker cleanup
 
-### AUTH-02: Rotas de autenticação ✅
-- [x] Módulo Fastify `api/src/modules/auth/` (routes + service + schema)
-- [x] `POST /api/auth/login` — telefone normalizado + bcrypt + JWT
-- [x] `POST /api/auth/refresh` — refresh_token + novos tokens
-- [x] `POST /api/auth/logout` — limpa cookies
-- [x] Cookies HttpOnly, SameSite=Lax, Secure (prod)
-- [x] Testado: login (200 + user), refresh (200 + cookies), logout (200 + clear), credenciais inválidas (401)
+### Dashboard ⚠️ PLACEHOLDER
 
-### AUTH-03: JWT plugin + middlewares ✅
-- [x] Plugin Fastify que decodifica JWT do cookie `access_token`
-- [x] `request.user` injetado com `{ professionalId, role }`
-- [x] Middleware `requireAuth` — 401 se não autenticado
-- [x] Middleware `requireRole('OWNER')` — 403 se negado
-- [x] Middleware `requireRole('OWNER', 'PARTNER')`
+O dashboard existe com DDD structure (`features/` + `shared/`) mas todas as páginas são placeholders "Em construção".
 
-### AUTH-04: RBAC com CASL.js ✅
-- [x] `@casl/ability` instalado
-- [x] Fábrica `createAbility(role, professionalId)` em `api/src/lib/ability.ts`
-- [x] OWNER: `can('manage', 'all')`
-- [x] PARTNER: permissões granulares
+**Estrutura criada:**
+```
+packages/dashboard/app/
+├── features/
+│   ├── auth/          # stores, middleware, pages/login ✅
+│   ├── clients/       # composables ✅ (empty)
+│   ├── appointments/  # composables ✅ (empty)
+│   ├── treatments/    # composables ✅ (empty)
+│   ├── professionals/  # pages ✅ (empty)
+│   └── dashboard/      # layouts ✅ (empty), pages ✅ (placeholder)
+└── shared/
+    ├── composables/   # use-sse ✅, use-user-profile ✅
+    ├── stores/         # layout ✅
+    ├── utils/          # api ✅, phone ✅
+    └── plugins/        # vue-query ✅
+```
 
-### AUTH-05: Tela de login ✅
-- [x] Página `/login` com formulário (telefone + senha)
-- [x] Utility `web/utils/phone.ts` (mask, unmask, normalize)
-- [x] Validação com Zod
-- [x] Erro genérico para credenciais inválidas
-- [x] Redireciona para `/dashboard/agenda` após login
+**Tasks pendentes em `.specs/features/dashboard/tasks.md`**
 
-### AUTH-06: Store de auth + proteção de rotas ✅
-- [x] Store Pinia `auth` (`user`, `isAuthenticated`, `role`, `login()`, `logout()`, `refreshToken()`)
-- [x] Refresh automático em 401 (embutido em `web/utils/api.ts`)
-- [x] Middleware global `auth` — redireciona para `/login`
-- [x] Wrapper API `web/utils/api.ts`
+### Booking ⚠️ PLACEHOLDER
 
----
+`packages/booking/app/pages/index.vue` existe mas é placeholder.
 
-## Execução — Fase 3 (TanStack Query) 🟡
-
-### TANSTACK-01: Plugin Vue Query com SSR hydration ✅
-- [x] `@tanstack/vue-query` instalado
-- [x] `web/plugins/vue-query.ts` — QueryClient isolado por requisição SSR
-- [x] Dehydrate no `app:rendered` → `nuxtApp.payload.vueQuery`
-- [x] Hydrate no `app:created` → restaura cache no cliente
-
-### TANSTACK-02: Composables de domínio ✅
-- [x] `web/composables/use-appointments.ts`
-- [x] `web/composables/use-user-profile.ts`
-- [x] `web/composables/use-services.ts`
-- [x] `web/composables/use-clients.ts`
-
-### TANSTACK-03: Integração com Pinia auth store ✅
-- [x] `logout()` chama `queryClient.clear()`
-- [x] API wrapper com refresh automático em 401
-- [x] SSE events invalidam queries (BOOKING-05)
-
-### TANSTACK-04: SSR prefetch pattern ✅
-- [x] `useAsyncData` + `queryClient.prefetchQuery` em `dashboard/agenda.vue`
-- [x] Plugin dehydrate/hydrate captura e restaura estado
-- [ ] Aplicar nas demais páginas SSR — *pendente*
+**Pendente:**
+- [ ] Fluxo multi-step: profissional → serviço → data/hora → confirmar
+- [ ] "Meus Agendamentos": cliente consulta/cancela por telefone
 
 ---
 
-## Execução — Fase 4 (Partner Backend) ✅
-
-### PARTNER-01: Schema professionals completo ✅
-- [x] Schema já inclui `workHoursStart` (08:00) e `workHoursEnd` (20:00) com defaults
-- [x] Migration 0000 já aplicada com esses campos
-
-### PARTNER-02: CRUD de profissionais ✅
-- [x] Módulo `api/src/modules/partner/` (routes + service + schema)
-- [x] `GET /api/professionals` — OWNER: todas; PARTNER: só própria
-- [x] `GET /api/professionals/:id` — com RBAC
-- [x] `POST /api/professionals` — OWNER only, valida CPF + telefone
-- [x] `PUT /api/professionals/:id` — OWNER: qualquer campo; PARTNER: só nome/phone/workHours
-- [x] `PATCH /api/professionals/:id/toggle-active` — OWNER only
-- [x] Validação de CPF (dígitos verificadores) e telefone (normalize)
-
-### PARTNER-03: CRUD de bloqueios de agenda ✅
-- [x] Tabela `blocks` no Drizzle (migration 0001)
-- [x] Módulo `api/src/modules/partner/blocks/` (routes + service + schema)
-- [x] `GET /api/blocks` — filtro por professional_id, start, end
-- [x] `POST /api/blocks` — OWNER: qualquer; PARTNER: só próprio
-- [x] `DELETE /api/blocks/:id`
-- [x] Atalho "dia inteiro" (00:00-23:45)
-- [x] **EDGE-02**: overlap com block existente → warning
-- [x] **EDGE-03 (parcial)**: estrutura preparada para appointments check
-
----
-
-## Execução — Fase 5 (Partner Frontend) ⬜
-
-### PARTNER-04: Tela de gestão de profissionais ✅
-- [x] Criar página `/dashboard/profissionais` (OWNER only)
-- [x] Listar profissionais com status (ativo/inativo)
-- [x] Modal de criação
-- [x] Modal de edição
-- [x] Botão ativar/desativar
-
-### PARTNER-05: Bloqueios de agenda ✅
-- [x] Formulário de bloqueio (data, hora, "dia inteiro", razão) na agenda
-- [x] Seletor de profissional (OWNER) ou auto-associação (PARTNER)
-- [x] Listagem de bloqueios por data com indicação visual (borda vermelha)
-- [x] Remoção de bloqueio com confirmação
-- [x] Overlapping warning conforme EDGE-02
-
----
-
-## Execução — Fase 6 (Services) ✅
-
-### SERVICES-01: Schema de services ✅
-- [x] Criar tabela `services` no Drizzle
-
-### SERVICES-02: CRUD de serviços ✅
-- [x] Módulo `api/src/modules/services/` (routes + service + schema)
-- [x] `GET /api/services`, `POST`, `PUT`, `DELETE`
-
-### SERVICES-03: Frontend ✅
-- [x] Página `/dashboard/servicos`
-
----
-
-## Execução — Fase 7 (Clients) ✅
-
-### CLIENTS-01: Schema de clients ✅
-- [x] Criar tabela `clients` no Drizzle
-
-### CLIENTS-02: CRUD de clientes ✅
-- [x] Módulo `api/src/modules/clients/` (routes + service + schema)
-
-### CLIENTS-03: Frontend ✅
-- [x] Página `/dashboard/clientes`
-
----
-
-## Execução — Fase 8 (Booking) 🟡
-
-### BOOKING-01: Schema appointments + CRUD ✅
-- [x] Tabela `appointments` no Drizzle
-- [x] CRUD completo (GET / POST / PUT / DELETE)
-
-### BOOKING-02: Transação com checagem de conflito ✅
-- [x] `db.transaction()` com SELECT de verificação antes do INSERT
-- [x] 409 Conflict se horário já ocupado
-
-### BOOKING-03: Cancelar e alterar status ✅
-- [x] Rota PATCH `/api/appointments/:id/status`
-- [x] Validação de transições de status
-
-### BOOKING-04: Agendamentos listados no dashboard ✅
-- [x] Página `/dashboard/agenda` com appointments do dia
-
-### BOOKING-05: SSE (tempo real) ✅
-- [x] Gerenciador de conexões SSE no backend (`api/src/lib/sse-manager.ts`)
-- [x] Endpoint `/api/sse` autenticado via cookie com heartbeat
-- [x] Broadcast em appointments: create, update, cancel, status-changed
-- [x] Broadcast em blocks: created, deleted
-- [x] OWNER recebe eventos de todos os profissionais
-- [x] Composable `useSSE` no frontend com reconexão automática
-- [x] Agenda page conecta SSE e invalida queries em tempo real
-
-### BOOKING-06: Envio/verificação código WhatsApp ❌ Cancelado
-- Cancelado por decisão da proprietária (AD-025). Cliente agenda sem verificação; se errar telefone, a proprietária corrige.
-
-### BOOKING-07: Listagens públicas booking + criação/cancelamento pelo cliente ✅
-- [x] Backend: `GET /api/booking/professionals` — profissionais ativas
-- [x] Backend: `GET /api/booking/professionals/:id/services` — serviços da profissional
-- [x] Backend: `GET /api/booking/professionals/:id/slots?date=` — horários disponíveis (30min slots, exclui ocupados/bloqueios)
-- [x] Backend: `POST /api/booking/appointments` — criar agendamento (cria cliente se novo)
-- [x] Backend: `GET /api/booking/appointments?phone=` — listar agendamentos do cliente
-- [x] Backend: `POST /api/booking/appointments/:id/cancel` — cancelar pelo cliente
-- [x] Frontend: Página `/agendar` com fluxo multi-step (dados → profissional → serviço → data/hora → confirmar)
-- [x] Frontend: Seletor de horários com grade visual (disponível/indisponível)
-- [x] Frontend: Confirmação sem verificação WhatsApp (AD-025)
-- [x] SSE broadcast ao criar agendamento público
-
-### BOOKING-08: Landing page (SSR) ✅
-- [x] Especificação completa (spec, design, tasks) em `.specs/features/landing-page/`
-- [x] Tailwind CSS configurado com tema Studio Blessed (paleta-cores.css)
-- [x] Fontes: Playfair Display, Inter, Dancing Script via Google Fonts
-- [x] 12 componentes de seção em `packages/landing/app/components/`
-- [x] Rota `/` substituída com landing page completa (SSR + prerender)
-- [x] Conteúdo adaptado do legado React (Studio Blessed, Português)
-- [x] Seção de profissionais dinâmica via `GET /api/booking/professionals`
-- [x] Hero com legado textual na nova estrutura anatômica
-- [x] Build + typecheck passando
-
-### BOOKING-09 a BOOKING-14 ⬜
-- **BOOKING-09:** Notificações internas (owner sobre novos agendamentos)
-- **BOOKING-10:** Histórico de agendamentos
-- **BOOKING-11:** Status de agendamento avançado (confirmado, em andamento, concluído)
-- **BOOKING-12:** Cliente ver/cancelar próprios agendamentos (página meus agendamentos)
-- **BOOKING-13:** Relatório de agendamentos por período
-- **BOOKING-14:** Calendário visual completo no dashboard
-
----
-
-## Execução — Dashboard UI ✅
-
-### DASHBOARD-01: Migração dashboard para Vuetify ✅
-- [x] `vuetify-nuxt-module` instalado e configurado
-- [x] `layouts/dashboard.vue` com VNavigationDrawer + VAppBar + VMain
-- [x] Página agenda refatorada para Vuetify (VDialog, VCard, VList, VTextField)
-- [x] Página clientes refatorada com Vuetify (VDialog, VTextField com máscara)
-- [x] Página profissionais refatorada com Vuetify (VSelect, formulários)
-- [x] Página serviços refatorada com Vuetify (agrupamento por profissional)
-- [x] `pages/dashboard/index.vue` com redirect para `/dashboard/agenda`
-- [x] Build + typecheck passando
-
-### DASHBOARD-02: Correção middleware auth ✅
-- [x] `auth.global.ts` renomeado para `auth.ts`
-- [x] `plugins/auth-init.ts` removido
-- [x] `api.ts` condiciona Content-Type à existência de body
-- [x] Dashboard routes autenticadas corretamente
-
----
-
-## Execução — CSS Architecture ✅
-
-### CSS-01: Desativar preflight Tailwind ✅
-- [x] `corePlugins: { preflight: false }` em `tailwind.config.ts`
-- [x] Reset manual escopado em `.page-landing` no layout da landing
-
-### CSS-02: Paleta centralizada via CSS Variables ✅
-- [x] `packages/landing/app/assets/css/tokens.css` com `:root` contendo `--color-*` e `--font-*`
-- [x] Tailwind cores sb-* apontam para `var(--color-*)`
-- [x] Vuetify theme usa mesmos valores hex
-- [x] CSS injetado globalmente via `nuxt.config.ts`
-
-### CSS-03: Layouts escopados ✅
-- [x] `layouts/landing.vue` em `/packages/landing/app/layouts/` com `.page-landing` + reset básico escopado
-- [x] `pages/index.vue` usa `definePageMeta({ layout: "landing" })`
-- [x] LNavbar e LFooter movidos para o layout
-- [x] Dashboard mantém `v-app` controlando escopo Vuetify
-- [ ] Store de booking
-- [ ] Fluxo autoatendimento (multi-step)
-- [ ] Meus agendamentos (cliente)
-- [ ] Calendário do dashboard
-- [ ] Páginas do dashboard
-
----
-
-## Execução — Landing Page Refinements 🟡
-
-### LANDING-01: Nuxt 4 app directory + novos serviços ✅
-- [x] Migrar estrutura para `app/` directory
-- [x] Adicionar serviços: Brow Lamination, Alongamento de Fios
-- [x] Refatorar footer e localização
-- [x] Corrigir ícones quebrados
-
-### LANDING-02: Monorepo split ✅
-- [x] Separar `packages/landing`, `packages/dashboard`, `packages/booking`
-- [x] Configurar scripts dev independentes
-- [x] Migrar de `web/` para estrutura de pacotes
-
-### LANDING-03: Carrossel infinito de depoimentos ✅
-- [x] Array triplicado para navegação infinita
-- [x] Transição sem animação no snap de volta
-- [x] Sem slides em branco no final
-
-### LANDING-04: Social proof stats atualizados ✅
-- [x] Atualizar contadores da seção Why Choose Us
-- [x] Lint formatting
-
-### LANDING-05: Autor do depoimento alinhado + fotos ✅
-- [x] Card usa `flex flex-col` com `mt-auto` no autor
-- [x] Fotos adicionadas para Josiane, Barbara, Stephani
-- [x] Fallback para inicial do nome quando sem foto
-- [x] Imagens em `packages/landing/public/testimonials/`
-
-### LANDING-06: Deps update ✅
-- [x] Nuxt atualizado para ^4.4.8
-- [x] vue-router para v5
-- [x] vue-tsc para v3
-- [x] Deduplicar @iconify/vue
-
-### LANDING-07: Docker cleanup ✅
-- [x] Remover pasta `web/` (cache residual)
-- [x] Remover serviço `frontend` do docker-compose.yml
-- [x] docker-compose.yml agora contém apenas db + backend
-
----
-
-## Próximas Tasks
-
-| Ordem | Task | Depende de | Status |
-|-------|------|-----------|--------|
-| 1 | BOOKING-07: Listagens públicas booking + criação/cancelamento | BOOKING-05 | ✅ Concluído |
-| 2 | BOOKING-08: Landing page (SSR) | BOOKING-07 | ✅ Concluído |
-| 3 | DASHBOARD-01: Migração dashboard para Vuetify | AUTH-06 | ✅ Concluído |
-| 4 | DASHBOARD-02: Correção middleware auth | AUTH-06 | ✅ Concluído |
-| 5 | CSS-01: Desativar preflight Tailwind | BOOKING-08 | ✅ Concluído |
-| 6 | CSS-02: Paleta centralizada via CSS Variables | CSS-01 | ✅ Concluído |
-| 7 | CSS-03: Layouts escopados | CSS-01, CSS-02 | ✅ Concluído |
-| 8 | LANDING-01 a 07: Landing page refinements | BOOKING-08 | ✅ Concluído |
-| 9 | BOOKING-12: Cliente ver/cancelar próprios agendamentos | BOOKING-07, LANDING-01 | ⬜ Pendente |
-| 10 | BOOKING-09: Notificações internas | BOOKING-05 | ⬜ Pendente |
-| 11 | BOOKING-10: Histórico de agendamentos | BOOKING-05 | ⬜ Pendente |
-| 12 | BOOKING-11: Status avançado de agendamento | BOOKING-05 | ⬜ Pendente |
-| 13 | BOOKING-13: Relatório de agendamentos por período | BOOKING-05 | ⬜ Pendente |
-| 14 | BOOKING-14: Calendário visual completo | DASHBOARD-01 | ⬜ Pendente |
-
----
-
-## Commits
+## Prioridade de Execução
 
 ```
-963c398 alinhar autor ao final do card e adicionar fotos aos depoimentos
-11110a4 fix(landing): update social proof stats and lint formatting
-c09c374 fix(landing): infinite testimonials carousel, no blank slides
-87a73b2 chore(deps): update nuxt to ^4.4.8, vue-router to v5, vue-tsc to v3, dedupe @iconify/vue
-b5d73d3 feat(landing): migrate to Nuxt 4 app dir, add brow lamination & alongamento services, fix icons, refactor footer & location
-373d119 refactor: split monorepo into packages/landing and packages/dashboard
-ef318a1 docs: record AD-031 Tailwind scoping fix in STATE.md
-7516186 fix(dashboard): scope Tailwind Preflight to .tw-scope to avoid Vuetify conflict
-3288335 docs: record AD-030 landing page polish in STATE.md
-d4a8f76 feat(landing): polish components — icons, logos, team, layout
-d09e281 feat(landing): add local static assets and replace remote URLs
-8dc61ee build(web): add nuxt-icon module and favicon assets
-b892d63 feat: landing page, dashboard Vuetify, isolamento CSS híbrido
-e86039f docs: BOOKING-07 registrado como concluído
-ac3af19 feat: BOOKING-07 — frontend multi-step de autoatendimento (/agendar)
-549b14a feat: BOOKING-07 — backend API pública de booking
-304d3fa feat: BOOKING-05 — SSE broadcasts em appointments e blocks
-728da31 feat: BOOKING-05 — SSE backend: gerenciador de conexões + endpoint
-870d021 docs: TASKS.md e STATE.md atualizados — PARTNER-04/05 e TANSTACK-02
-45e3b99 feat: PARTNER-05 — bloqueios de agenda integrados
-c499ecf feat: PARTNER-04 — tela de gestão de profissionais
-46bc6be feat: TANSTACK-02 — composables use-services e use-clients
-db56b98 docs: TASKS.md reconciliado — SERVICES, CLIENTS, BOOKING-01-04
-d63f84d docs: AD-024 registrado — booking migra de Vuetify para Tailwind
-a45f1a2 feat: BOOKING-01/02/03/04 — schema appointments + CRUD + conflito
-ffe5963 feat: SERVICES-03 + CLIENTS-03 — frontend páginas
-7b8f6ae feat: SERVICES-01/02 + CLIENTS-01/02 — schemas, CRUD e migrations
-f513887 docs: TASKS.md atualizado — Partner backend completo
-a68fb12 chore: biome import sorting em seed e auth
-6d46b28 feat: PARTNER-03 CRUD bloqueios de agenda
-ef7e777 feat: PARTNER-02 CRUD profissionais + ZodError handler + JWT fix
-5681969 docs: AD-023 TanStack Query, README, TASKS.md
-61c58ba feat: TanStack Query — plugin SSR, composables, auth store
-36e4d4e feat: auth completo — backend login JWT + CASL RBAC, frontend
-a3f9d6b fix: env vars seed opcionais e --env-file no dev
-a8e01b1 chore: .env.example com seed vars seguras
-f44843e feat: fundação — monorepo, docker, fastify, nuxt, drizzle + seed
-ea22ddd docs: spec, design, tasks e ADRs do projeto
+1. DASHBOARD-03: Layout com sidebar + navegação
+   ↓
+2. DASHBOARD-04: Dashboard index com KPIs reais
+   ↓
+3. Booking: Fluxo multi-step (/agendar)
+   ↓
+4. T1-T12: DDD Restructuring (migração completa)
+   ↓
+5. Dashboard pages: agenda, clientes, profissionais, servicos
+   ↓
+6. Meus Agendamentos (cliente)
+```
+
+---
+
+## Commits Registrados
+
+Os últimos commits do projeto (do mais recente ao mais antigo):
+
+```
+963c398 — alinhar autor ao final do card e adicionar fotos aos depoimentos
+11110a4 — fix(landing): update social proof stats and lint formatting
+c09c374 — fix(landing): infinite testimonials carousel, no blank slides
+b5d73d3 — feat(landing): migrate to Nuxt 4 app dir, add services, fix icons
+373d119 — refactor: split monorepo into packages/landing and packages/dashboard
+7516186 — fix(dashboard): scope Tailwind Preflight to .tw-scope
+b892d63 — feat: landing page, dashboard Vuetify, isolamento CSS híbrido
+ac3af19 — feat: BOOKING-07 frontend multi-step de autoatendimento
+549b14a — feat: BOOKING-07 backend API pública de booking
+304d3fa — feat: BOOKING-05 SSE broadcasts
+728da31 — feat: BOOKING-05 SSE gerenciador de conexões
+c499ecf — feat: PARTNER-05 bloqueios de agenda
+46bc6be — feat: TANSTACK-02 composables use-services e use-clients
+a45f1a2 — feat: BOOKING-01/02/03/04 schema + CRUD + conflito
+7b8f6ae — feat: SERVICES-01/02 + CLIENTS-01/02 schemas e CRUD
+6d46b28 — feat: PARTNER-03 CRUD bloqueios de agenda
+ef7e777 — feat: PARTNER-02 CRUD profissionais
+61c58ba — feat: TanStack Query plugin SSR, composables, auth store
+36e4d4e — feat: auth completo backend login JWT + CASL, frontend
+f44843e — feat: fundação — monorepo, docker, fastify, nuxt, drizzle + seed
 ```

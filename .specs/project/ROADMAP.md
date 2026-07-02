@@ -1,77 +1,100 @@
 # SB-Flow — Roadmap
 
-**Última atualização:** 2026-06-22
+**Última atualização:** 2026-07-02
+**Status real verificado no código fonte**
 
 ---
 
-## Fase 1: Desenvolvimento Local (Docker Compose)
+## Fase 1: Desenvolvimento Local
 
-### Milestone 1: Fundação — Setup do Projeto ✅
+### ✅ Milestone 1: Fundação
 
-- [x] Inicializar monorepo (raiz com `api/` e `packages/`)
-- [x] Configurar TypeScript, Biome, tooling compartilhado
-- [x] Configurar Docker Compose (db + backend)
-- [x] Configurar Fastify + DrizzleORM + PostgreSQL (container `db`)
-- [x] Configurar Nuxt 4 + TailwindCSS + Vuetify + routeRules
-- [x] Configurar autenticação (JWT)
-- [x] Script de seed (OWNER admin)
-- [x] Schema inicial do banco de dados
-- [x] Validar pipeline local completo
+- [x] Monorepo, Docker Compose, Fastify, Drizzle, PostgreSQL
+- [x] Autenticação (JWT + CASL RBAC)
+- [x] TanStack Query + SSR hydration
+- [x] Seed (OWNER admin)
 
-### Milestone 2: Agenda Compartilhada + Autoatendimento ✅
+### ✅ Milestone 2: Backend API
 
-**Prioridade máxima. Concluído.**
+- [x] Auth (login/refresh/logout)
+- [x] Professionals + Blocks CRUD
+- [x] Services CRUD
+- [x] Clients CRUD
+- [x] Appointments CRUD + Transação de conflito
+- [x] SSE (tempo real)
+- [x] Booking público (criação + cancelamento)
 
-- [x] Cadastro de Profissionais (autônomas parceiras)
-- [x] Cadastro de Serviços (por profissional, com valores + duração)
-- [x] Cadastro de Clientes
-- [x] CRUD Agendamentos (proprietária gerencia todas; parceira gerencia só a própria)
-- [x] Visualização de agenda compartilhada (todos veem horários ocupados sem ver valores)
-- [x] Bloqueio de agenda individual
-- [x] Dashboard individual (agenda do dia, clientes, valores próprios)
-- [x] **Autoatendimento do cliente** — link público, informa telefone, escolhe profissional/serviço/horário
-- [x] Tempo real (SSE) para atualizações
+### ✅ Milestone 3: Landing Page
 
-### Milestone 3: Dashboards 🟡 (em andamento)
+- [x] 11 seções SSR com Tailwind CSS
+- [x] Carrossel infinito de depoimentos
+- [x] Fotos e alinhamento de autor
+- [x] Nuxt 4 app directory
 
-- [ ] Dashboard da proprietária (visão financeira geral)
-- [ ] Movimentação financeira por profissional
-- [ ] Polimento UI/UX
-- [x] Landing page do salão (SSR)
-- [x] Depoimentos com fotos e autor alinhado
-- [x] Carrossel infinito
-- [ ] Página "Meus Agendamentos" para clientes
-- [x] Stack visual migrada: Vuetify → Nuxt UI v4 + Tailwind CSS
+### ⚠️ Milestone 4: Dashboard (EM ANDAMENTO)
+
+**Estrutura DDD criada.** Todas as páginas são placeholders.
+
+**Feito:**
+- [x] DDD structure (`features/` + `shared/`)
+- [x] Auth flow completo
+- [x] TanStack Query setup
+- [x] Nuxt UI v4 configurado
+- [x] Layout com sidebar + navegação (DASHBOARD-03) — 20 testes
+
+**Pendente:**
+- [ ] Dashboard index com KPIs reais (DASHBOARD-04)
+- [ ] Dashboard index com KPIs reais (DASHBOARD-04)
+- [ ] `/dashboard/agenda` — calendário funcional
+- [ ] `/dashboard/clientes` — CRUD
+- [ ] `/dashboard/profissionais` — CRUD
+- [ ] `/dashboard/servicos` — CRUD
+- [ ] T1-T12: DDD Restructuring
+
+### ⚠️ Milestone 5: Booking (EM ANDAMENTO)
+
+**Backend API pronta. Frontend incompleto.**
+
+**Feito:**
+- [x] API pública (`/api/booking/*`)
+
+**Pendente:**
+- [ ] Fluxo multi-step (`/agendar`)
+- [ ] "Meus Agendamentos" para cliente
 
 ---
 
 ## Fase 2: Validação e Deploy
 
-### Milestone 4: Validação com a Proprietária
+### Milestone 6: Validação com a Proprietária
 
-- [ ] Testes end-to-end dos fluxos críticos com usuária real (Studio Blessed)
+- [ ] Testes end-to-end com usuária real
 - [ ] Ajustes baseados no feedback
 
-### Milestone 5: Deploy (Oracle Cloud + GitHub Actions)
+**Pré-requisito:** Milestones 4 e 5 completas
 
-- [ ] Provisionar VPS Oracle Cloud (VM Arm Ampere A1, Always Free)
-- [ ] Configurar Docker Compose na VPS (mesma stack local)
-- [ ] Configurar GitHub Actions para deploy automatizado
-- [ ] Configurar domínio + SSL (Cloudflare ou Oracle LB)
-- [ ] Deploy oficial (produção)
+### Milestone 7: Deploy
+
+- [ ] Oracle Cloud VPS provisioning
+- [ ] Docker Compose na VPS
+- [ ] GitHub Actions
+- [ ] Domínio + SSL
+- [ ] Deploy produção
+
+**Pré-requisito:** Milestone 6 completa
 
 ---
 
-## Próximas Versões (pós-v1)
+## v2 (Pós-deploy)
 
-### v2 — Bot WhatsApp Conversacional
-- Integração EvolutionAPI completa (fluxo conversacional)
-- Agendamento via WhatsApp
-- Lembretes automáticos
+- Notificações internas (dashboard badge)
+- Histórico de agendamentos
+- Status avançado de agendamento
+- Bot WhatsApp (EvolutionAPI)
 
-### v3 — Expansão
-- Auto-lock por inatividade + desbloqueio PIN
-- Relatórios para extração de dados
+## v3
+
+- Relatórios
+- Auto-lock por inatividade
 - Controle de estoque
-- Métodos de pagamento
-- Integração Google Calendar (OAuth, sync bidirecional, ler agenda pessoal da profissional e criar bloqueios automáticos)
+- Google Calendar integration
